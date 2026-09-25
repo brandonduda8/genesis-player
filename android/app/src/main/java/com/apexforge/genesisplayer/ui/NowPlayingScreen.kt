@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
@@ -20,6 +21,10 @@ import androidx.compose.material.icons.filled.RepeatOne
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.ThumbDown
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,8 +40,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,6 +52,8 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import coil.compose.AsyncImage
 import com.apexforge.genesisplayer.PlayerService
+import com.apexforge.genesisplayer.data.Ratings
+import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.sendGenesis
 import kotlinx.coroutines.delay
 
@@ -65,6 +74,9 @@ fun NowPlayingScreen(controller: MediaController?, modifier: Modifier = Modifier
     var shuffle by remember { mutableStateOf(false) }
     var repeat by remember { mutableStateOf(Player.REPEAT_MODE_OFF) }
     var scrubTo by remember { mutableStateOf<Long?>(null) }
+    var mediaId by remember { mutableStateOf<String?>(null) }
+    var rating by remember { mutableStateOf<String?>(null) }
+    val ctx = LocalContext.current
 
     LaunchedEffect(controller) {
         while (true) {
@@ -79,9 +91,20 @@ fun NowPlayingScreen(controller: MediaController?, modifier: Modifier = Modifier
                 shuffle = c.shuffleModeEnabled
                 repeat = c.repeatMode
                 if (scrubTo == null) position = c.currentPosition.coerceAtLeast(0)
+                val mid = c.currentMediaItem?.mediaId
+                if (mid != mediaId) {
+                    mediaId = mid
+                    rating = mid?.let { RatingsStore.get(ctx, it) }
+                }
             }
             delay(500)
         }
+    }
+
+    fun toggleRating(which: String) {
+        val id = mediaId ?: return
+        val next = if (rating == which) null else which
+        if (Ratings.apply(ctx, controller, id, next)) rating = next
     }
 
     Column(
@@ -105,7 +128,32 @@ fun NowPlayingScreen(controller: MediaController?, modifier: Modifier = Modifier
             maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
         Text(artist, style = MaterialTheme.typography.bodyLarge, color = TextDim,
             maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(4.dp))
+        // Apollo taste: like / dislike. Tapping toggles; filled = rated.
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { toggleRating("dislike") }) {
+                Icon(
+                    if (rating == "dislike") Icons.Filled.ThumbDown else Icons.Outlined.ThumbDown,
+                    contentDescription = "Dislike",
+                    tint = if (rating == "dislike") EmberOrange else TextDim,
+                    modifier = Modifier.size(30.dp).alpha(if (rating == "dislike") 1f else 0.55f)
+                )
+            }
+            Spacer(Modifier.width(40.dp))
+            IconButton(onClick = { toggleRating("like") }) {
+                Icon(
+                    if (rating == "like") Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                    contentDescription = "Like",
+                    tint = if (rating == "like") EmberOrange else TextDim,
+                    modifier = Modifier.size(30.dp).alpha(if (rating == "like") 1f else 0.55f)
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
         Slider(
             value = (scrubTo ?: position).toFloat(),
             onValueChange = { scrubTo = it.toLong() },

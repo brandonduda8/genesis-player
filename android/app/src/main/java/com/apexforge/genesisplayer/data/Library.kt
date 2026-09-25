@@ -10,6 +10,8 @@ data class Track(
     val streamUrl: String,
     val artworkUrl: String,
     val durationS: Long,
+    /** Genre from the remote catalog (empty when unknown). Drives taste learning + queue boosts. */
+    val genre: String = "",
     /**
      * SoundCloud permalink (e.g. https://soundcloud.com/tha-aadity/phoenix).
      * When non-empty, [streamUrl] is ignored and the playable URL is resolved

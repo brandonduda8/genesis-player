@@ -19,7 +19,9 @@ import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import com.apexforge.genesisplayer.data.HistoryStore
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.SoundCloudResolver
+import com.apexforge.genesisplayer.data.TasteSync
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.atomic.AtomicInteger
@@ -65,6 +67,7 @@ class PlayerService : MediaSessionService() {
                 if (newId != currentId) {
                     currentId = newId
                     currentPlayRecorded = false
+                    Log.i(TAG, "now playing id=$newId")
                 }
             }
 
@@ -103,6 +106,9 @@ class PlayerService : MediaSessionService() {
             .setCallback(SessionCallback())
             .build()
         Log.i(TAG, "service created, library=${Library.tracks.size} tracks")
+        val (nRatings, nUnsynced) = RatingsStore.loadSummary(this)
+        Log.i(TAG, "RatingsStore: loaded $nRatings ratings ($nUnsynced unsynced)")
+        TasteSync.syncNow(this)
     }
 
     /**
@@ -164,9 +170,37 @@ class PlayerService : MediaSessionService() {
 
     fun playTracks(ids: List<String>, startIndex: Int = 0) {
         val p = player ?: return
+        // Taste-aware queue: disliked tracks never enter a queue again;
+        // tracks by liked artists/genres float to the front (stable order).
+        val ctx = this@PlayerService
+        val excluded = ids.filter { RatingsStore.isDisliked(ctx, it) }
+        val kept = ids.filter { !RatingsStore.isDisliked(ctx, it) }
+        val likedArtists = RatingsStore.likedArtists(ctx)
+        val likedGenres = RatingsStore.likedGenres(ctx)
+        val ordered: List<String>
+        val boosted: Int
+        if (likedArtists.isEmpty() && likedGenres.isEmpty()) {
+            ordered = kept
+            boosted = 0
+        } else {
+            val (b, rest) = kept.partition { id ->
+                val t = Library.track(id)
+                t != null && (t.artist in likedArtists || (t.genre.isNotEmpty() && t.genre in likedGenres))
+            }
+            ordered = b + rest
+            boosted = b.size
+        }
+        val startId = ids.getOrNull(startIndex)
+        val idx = (if (startId != null) ordered.indexOf(startId) else -1).takeIf { it >= 0 } ?: 0
+        Log.i(
+            TAG,
+            "playTracks: queue ${ordered.size} tracks " +
+                "(${excluded.size} excluded by dislike [${excluded.take(5).joinToString(",")}], " +
+                "$boosted boosted by taste)"
+        )
         val gen = playGen.incrementAndGet()
         Thread {
-            val items = ids.mapNotNull { id ->
+            val items = ordered.mapNotNull { id ->
                 if (playGen.get() != gen) return@mapNotNull null
                 itemFor(id)
             }
@@ -175,10 +209,10 @@ class PlayerService : MediaSessionService() {
                 Log.w(TAG, "playTracks: no playable items in queue")
                 return@Thread
             }
-            val idx = startIndex.coerceIn(items.indices)
+            val start = idx.coerceIn(items.indices)
             Handler(Looper.getMainLooper()).post {
                 if (playGen.get() != gen) return@post
-                p.setMediaItems(items, idx, 0L)
+                p.setMediaItems(items, start, 0L)
                 p.prepare()
                 p.play()
             }

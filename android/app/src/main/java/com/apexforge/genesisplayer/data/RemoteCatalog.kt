@@ -92,6 +92,22 @@ object RemoteCatalog {
     }
 
     /**
+     * Playlist membership for one remote track object.
+     * Reads the optional "playlists" JSON array first (a track may belong to
+     * several playlists, e.g. its genre shelf AND "Full Blend"); falls back
+     * to the legacy single "playlist" string; then to the caller default.
+     */
+    private fun playlistNames(o: JSONObject, fallback: List<String>): List<String> {
+        val arr = o.optJSONArray("playlists")
+        if (arr != null && arr.length() > 0) {
+            val names = List(arr.length()) { i -> arr.optString(i, "") }
+                .filter { it.isNotEmpty() }
+            if (names.isNotEmpty()) return names
+        }
+        return fallback
+    }
+
+    /**
      * Translate the remote schema into the app's Library model.
      * Remote tracks that match a bundled stream URL keep their bundled id,
      * artwork, duration, and playlist membership — so playback queues and
@@ -120,11 +136,11 @@ object RemoteCatalog {
                 val bundled = bundledByScUrl[scUrl]
                 val slug = scSlugRe.find(scUrl)?.groupValues?.get(1) ?: continue
                 val plName = o.optString("playlist", "")
-                val names = when {
+                val names = playlistNames(o, when {
                     plName.isNotEmpty() -> listOf(plName)
                     bundled != null -> bundledPl[bundled.id].orEmpty().ifEmpty { listOf("Tha Aadity") }
                     else -> listOf("Tha Aadity")
-                }
+                })
                 paired.add(
                     Track(
                         id = bundled?.id ?: "sc_$slug",
@@ -133,6 +149,7 @@ object RemoteCatalog {
                         streamUrl = "",
                         artworkUrl = bundled?.artworkUrl ?: "",
                         durationS = bundled?.durationS ?: 0,
+                        genre = o.optString("genre", ""),
                         soundcloudUrl = scUrl
                     ) to names
                 )
@@ -142,11 +159,11 @@ object RemoteCatalog {
             val remoteId = idRe.find(url)?.groupValues?.get(1) ?: continue
             val bundled = bundledByUrl[url]
             val plName = o.optString("playlist", "")
-            val names = when {
+            val names = playlistNames(o, when {
                 plName.isNotEmpty() -> listOf(plName)
                 bundled != null -> bundledPl[bundled.id].orEmpty().ifEmpty { listOf("Radar") }
                 else -> listOf("Radar")
-            }
+            })
             paired.add(
                 Track(
                     id = bundled?.id ?: remoteId,
@@ -154,13 +171,17 @@ object RemoteCatalog {
                     title = o.optString("title", "Untitled"),
                     streamUrl = url,
                     artworkUrl = bundled?.artworkUrl ?: "",
-                    durationS = bundled?.durationS ?: 0
+                    durationS = bundled?.durationS ?: 0,
+                    genre = o.optString("genre", "")
                 ) to names
             )
         }
         val grouped = linkedMapOf<String, MutableList<String>>()
         paired.forEach { (t, names) ->
             names.forEach { name -> grouped.getOrPut(name) { mutableListOf() }.add(t.id) }
+        }
+        grouped.forEach { (name, ids) ->
+            Log.i(TAG, "RemoteCatalog: playlist '$name' (${ids.size} tracks)")
         }
         return paired.map { it.first } to grouped.map { (name, ids) -> Playlist(name, ids) }
     }

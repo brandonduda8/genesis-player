@@ -31,6 +31,7 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionToken
+import com.apexforge.genesisplayer.data.Ratings
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RemoteCatalog
 import com.apexforge.genesisplayer.data.RemoteConfig
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
         RemoteConfig.checkForUpdates(this)
         handleTestPlay(intent)
         handleTestRefresh(intent)
+        handleTestRate(intent)
         setContent { GenesisTheme { GenesisApp() } }
     }
 
@@ -62,6 +64,7 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         handleTestPlay(intent)
         handleTestRefresh(intent)
+        handleTestRate(intent)
     }
 
     private var testController: MediaController? = null
@@ -97,6 +100,9 @@ class MainActivity : ComponentActivity() {
                     putInt("index", index.coerceIn(ids.indices))
                 }
                 c.sendGenesis(PlayerService.ACTION_PLAY_IDS, args)
+                if (intent.getBooleanExtra("shuffle", false)) {
+                    c.shuffleModeEnabled = true
+                }
                 Log.i("GenesisPlayer", "TEST_PLAY fired index=$index")
             } catch (e: Exception) {
                 Log.e("GenesisPlayer", "TEST_PLAY failed", e)
@@ -115,6 +121,34 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val TEST_PLAY_ACTION = "com.apexforge.genesisplayer.TEST_PLAY"
         const val TEST_REFRESH_ACTION = "com.apexforge.genesisplayer.TEST_REFRESH"
+        const val TEST_RATE_ACTION = "com.apexforge.genesisplayer.TEST_RATE"
+    }
+
+    /**
+     * DEBUG-ONLY hook for the CI emulator gate: applies a like/dislike rating
+     * through the exact same code path as the Now Playing buttons.
+     * Extras: "track_id" (default: currently playing), "rating"
+     * ("like" | "dislike" | "clear"). Release builds ignore it entirely.
+     */
+    private fun handleTestRate(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_RATE_ACTION) return
+        val trackId = intent.getStringExtra("track_id")
+        val rating = intent.getStringExtra("rating")
+        val token = SessionToken(this, ComponentName(this, PlayerService::class.java))
+        val future = MediaController.Builder(this, token).buildAsync()
+        future.addListener({
+            try {
+                val c = future.get()
+                testController = c
+                val ok = Ratings.apply(this, c, trackId, rating)
+                Log.i("GenesisPlayer", "TEST_RATE fired track=$trackId rating=$rating ok=$ok")
+            } catch (e: Exception) {
+                Log.e("GenesisPlayer", "TEST_RATE failed", e)
+            } finally {
+                MediaController.releaseFuture(future)
+            }
+        }, MoreExecutors.directExecutor())
     }
 
     /**
