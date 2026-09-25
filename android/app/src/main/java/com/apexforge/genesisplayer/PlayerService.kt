@@ -141,6 +141,22 @@ class PlayerService : MediaSessionService() {
     }
 
     private inner class SessionCallback : MediaSession.Callback {
+        override fun onConnect(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo
+        ): MediaSession.ConnectionResult {
+            // Custom commands are dropped by default — explicitly accept ours.
+            val commands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+                .add(SessionCommand(ACTION_PLAY_IDS, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_SKIP_NEXT, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_SKIP_PREV, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_PLAY_FORYOU, Bundle.EMPTY))
+                .build()
+            return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+                .setAvailableSessionCommands(commands)
+                .build()
+        }
+
         override fun onCustomCommand(
             session: MediaSession,
             controller: MediaSession.ControllerInfo,
