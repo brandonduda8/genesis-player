@@ -4,6 +4,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -17,8 +19,10 @@ import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import com.apexforge.genesisplayer.data.HistoryStore
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.SoundCloudResolver
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Foreground playback service: ExoPlayer + MediaSession.
@@ -101,13 +105,30 @@ class PlayerService : MediaSessionService() {
         Log.i(TAG, "service created, library=${Library.tracks.size} tracks")
     }
 
+    /**
+     * Build a playable MediaItem for a track id. SoundCloud tracks resolve
+     * their signed stream URL here, at play time — never from storage.
+     * BLOCKING for SoundCloud tracks: call off the main thread.
+     * Returns null when the track is missing or unresolvable (caller skips).
+     */
     private fun itemFor(trackId: String): MediaItem? {
         val t = Library.track(trackId) ?: return null
+        val uri = if (t.soundcloudUrl.isNotEmpty()) {
+            val r = SoundCloudResolver.resolve(this@PlayerService, t.soundcloudUrl)
+            if (r == null) {
+                Log.w(TAG, "SoundCloud unresolvable, skipping: ${t.artist} - ${t.title}")
+                return null
+            }
+            r.streamUrl
+        } else {
+            t.streamUrl
+        }
+        if (uri.isEmpty()) return null
         val meta = MediaMetadata.Builder()
             .setTitle(t.title)
             .setArtist(t.artist)
         if (t.artworkUrl.isNotEmpty()) meta.setArtworkUri(Uri.parse(t.artworkUrl))
-        return MediaItem.Builder().setMediaId(t.id).setUri(t.streamUrl).setMediaMetadata(meta.build()).build()
+        return MediaItem.Builder().setMediaId(t.id).setUri(uri).setMediaMetadata(meta.build()).build()
     }
 
     private fun itemForYou(itemId: String): MediaItem? {
@@ -133,13 +154,35 @@ class PlayerService : MediaSessionService() {
         if (direction > 0) p.seekToNextMediaItem() else p.seekToPreviousMediaItem()
     }
 
+    /**
+     * Queue assembly runs off the main thread because SoundCloud tracks need
+     * live stream resolution (network). Direct-stream tracks resolve
+     * instantly. The generation counter drops stale assemblies when the user
+     * taps a new queue before the old one finished resolving.
+     */
+    private val playGen = AtomicInteger(0)
+
     fun playTracks(ids: List<String>, startIndex: Int = 0) {
         val p = player ?: return
-        val items = ids.mapNotNull { itemFor(it) }
-        if (items.isEmpty()) return
-        p.setMediaItems(items, startIndex.coerceIn(items.indices), 0L)
-        p.prepare()
-        p.play()
+        val gen = playGen.incrementAndGet()
+        Thread {
+            val items = ids.mapNotNull { id ->
+                if (playGen.get() != gen) return@mapNotNull null
+                itemFor(id)
+            }
+            if (playGen.get() != gen) return@Thread
+            if (items.isEmpty()) {
+                Log.w(TAG, "playTracks: no playable items in queue")
+                return@Thread
+            }
+            val idx = startIndex.coerceIn(items.indices)
+            Handler(Looper.getMainLooper()).post {
+                if (playGen.get() != gen) return@post
+                p.setMediaItems(items, idx, 0L)
+                p.prepare()
+                p.play()
+            }
+        }.apply { isDaemon = true; name = "genesis-play" }.start()
     }
 
     fun playForYou(itemId: String) {

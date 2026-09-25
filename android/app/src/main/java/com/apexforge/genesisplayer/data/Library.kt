@@ -9,7 +9,13 @@ data class Track(
     val title: String,
     val streamUrl: String,
     val artworkUrl: String,
-    val durationS: Long
+    val durationS: Long,
+    /**
+     * SoundCloud permalink (e.g. https://soundcloud.com/tha-aadity/phoenix).
+     * When non-empty, [streamUrl] is ignored and the playable URL is resolved
+     * at play time via [SoundCloudResolver] — never catalogued, never stored.
+     */
+    val soundcloudUrl: String = ""
 )
 
 data class Playlist(val name: String, val trackIds: List<String>)
@@ -50,7 +56,8 @@ object Library {
                     title = o.getString("title"),
                     streamUrl = o.getString("stream_url"),
                     artworkUrl = o.optString("artwork_url", ""),
-                    durationS = o.optLong("duration_s", 0)
+                    durationS = o.optLong("duration_s", 0),
+                    soundcloudUrl = o.optString("soundcloud_url", "")
                 )
             }
         }

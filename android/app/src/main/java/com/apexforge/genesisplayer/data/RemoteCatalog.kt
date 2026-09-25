@@ -103,12 +103,41 @@ object RemoteCatalog {
             pl.trackIds.forEach { bundledPl.getOrPut(it) { mutableListOf() }.add(pl.name) }
         }
         val bundledByUrl = Library.tracks.associateBy { it.streamUrl }
+        val bundledByScUrl = Library.tracks
+            .filter { it.soundcloudUrl.isNotEmpty() }
+            .associateBy { it.soundcloudUrl }
 
         val idRe = Regex("""/tracks/([^/?]+)/stream""")
+        val scSlugRe = Regex("""soundcloud\.com/[^/]+/([^/?#]+)""")
         val paired = mutableListOf<Pair<Track, List<String>>>()
         val arr = root.optJSONArray("tracks") ?: return emptyList<Track>() to emptyList()
         for (i in 0 until arr.length()) {
             val o = arr.getJSONObject(i)
+            val scUrl = o.optString("soundcloud_url", "")
+            if (scUrl.isNotEmpty()) {
+                // SoundCloud entry: the playable URL resolves at play time via
+                // SoundCloudResolver — the permalink is the only thing catalogued.
+                val bundled = bundledByScUrl[scUrl]
+                val slug = scSlugRe.find(scUrl)?.groupValues?.get(1) ?: continue
+                val plName = o.optString("playlist", "")
+                val names = when {
+                    plName.isNotEmpty() -> listOf(plName)
+                    bundled != null -> bundledPl[bundled.id].orEmpty().ifEmpty { listOf("Tha Aadity") }
+                    else -> listOf("Tha Aadity")
+                }
+                paired.add(
+                    Track(
+                        id = bundled?.id ?: "sc_$slug",
+                        artist = o.optString("artist", "Unknown"),
+                        title = o.optString("title", "Untitled"),
+                        streamUrl = "",
+                        artworkUrl = bundled?.artworkUrl ?: "",
+                        durationS = bundled?.durationS ?: 0,
+                        soundcloudUrl = scUrl
+                    ) to names
+                )
+                continue
+            }
             val url = o.optString("audius_stream_url", "")
             val remoteId = idRe.find(url)?.groupValues?.get(1) ?: continue
             val bundled = bundledByUrl[url]

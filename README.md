@@ -12,9 +12,12 @@ orange, phoenix gold.
 - **Real audio effects** — `android.media.audiofx` BassBoost, Equalizer (with
   device presets + per-band control), and LoudnessEnhancer attached to the
   player's live audio session. Persisted across restarts.
-- **Library** — 170 verified native Audius streams across 5 playlists
-  (Peep Forever, Deep Poetry Trap, Cloud Nine). Streams re-verified
-  2026-09-25 (HTTP 206, audio/mpeg).
+- **Library** — 220 tracks across 6 playlists: 170 verified native Audius
+  streams (Peep Forever, Deep Poetry Trap, Cloud Nine, Apollo Hunt, Loved —
+  re-verified 2026-09-25, HTTP 206, audio/mpeg) plus the **Tha Aadity** shelf:
+  50 SoundCloud tracks by Brandon's cousin, resolved to signed streams at
+  play time via the SoundCloud adapter (stream-only, nothing ripped or stored;
+  see SOUNDCLOUD_ADAPTER.md).
 - **For You (Apollo v1)** — 8 curated underground picks, each with a
   plain-language why-reason. On-device play/skip/completion counters are
   recorded; the full learning re-rank loop is v2.

@@ -229,29 +229,51 @@ jobs:
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
             -a com.apexforge.genesisplayer.TEST_PLAY --ei index 0
           for i in $(seq 1 24); do
-            if adb logcat -d | grep -q "RemoteCatalog: applied version 1 (301 tracks"; then break; fi
+            if adb logcat -d | grep -Eq "RemoteCatalog: applied version [0-9]+ \([0-9]+ tracks"; then break; fi
             sleep 5
           done
           adb logcat -d | grep -E "RemoteCatalog|RemoteConfig" | tail -6
-          adb logcat -d | grep -q "RemoteCatalog: applied version 1 (301 tracks" \
-            || { echo "REMOTE CATALOG NOT APPLIED ON LAUNCH"; exit 1; }
-          echo "REMOTE CATALOG v1 APPLIED ON LAUNCH (301 tracks live)"
-          echo "--- local test server: magenta-accent config v2 + catalog v2 ---"
+          APPLIED=$(adb logcat -d | grep -Eo "RemoteCatalog: applied version [0-9]+ \([0-9]+ tracks" | tail -1)
+          COUNT=$(echo "$APPLIED" | grep -Eo "[0-9]+ tracks" | grep -Eo "[0-9]+")
+          [ -n "$COUNT" ] && [ "$COUNT" -ge 351 ] \
+            || { echo "REMOTE CATALOG NOT APPLIED ON LAUNCH (got: $APPLIED)"; exit 1; }
+          echo "REMOTE CATALOG APPLIED ON LAUNCH ($APPLIED; >=351 incl. SoundCloud shelf)"
+          echo "--- PHASE A2: SoundCloud shelf plays end to end on the emulator ---"
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Tha Aadity"
+          SC_PLAYING=0
+          SC_PREV=""
+          for i in $(seq 1 24); do
+            R=$(python3 /tmp/session_probe.py)
+            echo "sc poll $i: $R"
+            POS=$(echo "$R" | grep -oE 'POS=[0-9]+' | cut -d= -f2)
+            if [ -n "$POS" ] && [ -n "$SC_PREV" ] && [ "$POS" -gt "$SC_PREV" ]; then SC_PLAYING=1; break; fi
+            [ -n "$POS" ] && SC_PREV=$POS
+            sleep 5
+          done
+          [ "$SC_PLAYING" = "1" ] || { echo "SOUNDCLOUD SHELF NEVER PLAYED"; adb logcat -d | grep "GenesisPlayer" | tail -30; exit 1; }
+          echo "SOUNDCLOUD SHELF PROVEN: resolve -> signed stream -> position advancing"
+          echo "--- local test server: magenta-accent config + catalog at live+1 ---"
           mkdir -p /tmp/remote_test
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" -o /tmp/remote_test/catalog.json
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/config.json" -o /tmp/remote_test/config.json
-          python3 - << 'PYEOF'
+          TEST_CAT_V=$(python3 - << 'PYEOF'
           import json
           cat = json.load(open('/tmp/remote_test/catalog.json'))
-          cat['version'] = 2
+          cat['version'] = int(cat.get('version', 0)) + 1
           json.dump(cat, open('/tmp/remote_test/catalog.json','w'))
           cfg = json.load(open('/tmp/remote_test/config.json'))
-          cfg['version'] = 2
+          cfg['version'] = int(cfg.get('version', 0)) + 1
           cfg['theme']['accent'] = '#FF00FF'
           cfg['theme']['ember'] = '#FF00FF'
           json.dump(cfg, open('/tmp/remote_test/config.json','w'))
-          print("test files ready: catalog v%s, config v%s accent %s" % (cat['version'], cfg['version'], cfg['theme']['accent']))
+          print("%s %s" % (cat['version'], cfg['version']))
           PYEOF
+          )
+          TEST_CAT_V=$(echo "$TEST_CAT_V" | awk '{print $1}')
+          TEST_CFG_V=$(python3 -c "import json; print(json.load(open('/tmp/remote_test/config.json'))['version'])")
+          echo "test files ready: catalog v$TEST_CAT_V, config v$TEST_CFG_V accent #FF00FF"
           (cd /tmp/remote_test && nohup python3 -m http.server 18999 > /tmp/http_test.log 2>&1 &)
           sleep 2
           curl -s --max-time 10 "http://127.0.0.1:18999/config.json" | head -c 80; echo
@@ -263,15 +285,15 @@ jobs:
             --es catalog_url "http://127.0.0.1:18999/catalog.json" \
             --es config_url "http://127.0.0.1:18999/config.json"
           for i in $(seq 1 24); do
-            if adb logcat -d | grep -q "RemoteConfig: applied version 2"; then break; fi
+            if adb logcat -d | grep -q "RemoteConfig: applied version $TEST_CFG_V"; then break; fi
             sleep 5
           done
           adb logcat -d | grep "RemoteConfig" | tail -5
-          adb logcat -d | grep -q "RemoteConfig: applied version 2 accent=#FF00FF" \
+          adb logcat -d | grep -q "RemoteConfig: applied version $TEST_CFG_V accent=#FF00FF" \
             || { echo "THEME CHANGE NOT APPLIED"; exit 1; }
-          adb logcat -d | grep -q "RemoteCatalog: applied version 2" \
+          adb logcat -d | grep -q "RemoteCatalog: applied version $TEST_CAT_V" \
             || { echo "CATALOG REFRESH NOT APPLIED"; exit 1; }
-          echo "THEME CHANGE PROVEN: accent=#FF00FF applied live, no reinstall; catalog v2 applied"
+          echo "THEME CHANGE PROVEN: accent=#FF00FF applied live, no reinstall; catalog v$TEST_CAT_V applied"
           sleep 3
           adb shell screencap -p /sdcard/player_magenta.png || true
           adb pull /sdcard/player_magenta.png /tmp/player_magenta.png || true

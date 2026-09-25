@@ -82,7 +82,16 @@ class MainActivity : ComponentActivity() {
             try {
                 val c = future.get()
                 testController = c // held until onDestroy so the command is delivered
-                val ids = Library.tracks.map { it.id }
+                // Optional "playlist" extra (DEBUG gate): play a named playlist
+                // instead of the whole library. Used to prove the SoundCloud
+                // shelf end to end on the emulator.
+                val plName = intent.getStringExtra("playlist")
+                val ids = if (plName != null) {
+                    Library.playlists.find { it.name == plName }?.trackIds
+                        ?: Library.tracks.map { it.id }
+                } else {
+                    Library.tracks.map { it.id }
+                }
                 val args = Bundle().apply {
                     putStringArrayList("ids", ArrayList(ids))
                     putInt("index", index.coerceIn(ids.indices))
