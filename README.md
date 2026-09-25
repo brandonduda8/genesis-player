@@ -12,7 +12,7 @@ orange, phoenix gold.
 - **Real audio effects** — `android.media.audiofx` BassBoost, Equalizer (with
   device presets + per-band control), and LoudnessEnhancer attached to the
   player's live audio session. Persisted across restarts.
-- **Library** — 167 verified native Audius streams across 4 playlists
+- **Library** — 170 verified native Audius streams across 5 playlists
   (Peep Forever, Deep Poetry Trap, Cloud Nine). Streams re-verified
   2026-09-25 (HTTP 206, audio/mpeg).
 - **For You (Apollo v1)** — 8 curated underground picks, each with a

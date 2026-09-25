@@ -1669,6 +1669,48 @@
    "playlists": [
     "Apollo Hunt"
    ]
+  },
+  {
+   "id": "NPPrOaw",
+   "title": "left on read ~ Demo",
+   "artist": "悲 Cry bb 悲",
+   "stream_url": "https://api.audius.co/v1/tracks/NPPrOaw/stream?app_name=APOLLOHUNT",
+   "artwork_url": "",
+   "genre": "Punk",
+   "mood": "Melancholy",
+   "why": "Brandon loved it on first scan — punk/melancholy",
+   "source": "apollo-radar",
+   "playlists": [
+    "Loved"
+   ]
+  },
+  {
+   "id": "3AEx370",
+   "title": "Lost Souls",
+   "artist": "HannibalBeatz",
+   "stream_url": "https://api.audius.co/v1/tracks/3AEx370/stream?app_name=APOLLOHUNT",
+   "artwork_url": "",
+   "genre": "Hip-Hop/Rap",
+   "mood": "Sentimental",
+   "why": "Brandon loved it — sentimental hip-hop",
+   "source": "apollo-radar",
+   "playlists": [
+    "Loved"
+   ]
+  },
+  {
+   "id": "9OKNAqa",
+   "title": "Geezer",
+   "artist": "Aarr Kellz",
+   "stream_url": "https://api.audius.co/v1/tracks/9OKNAqa/stream?app_name=APOLLOHUNT",
+   "artwork_url": "",
+   "genre": "Alternative",
+   "mood": "Yearning",
+   "why": "Brandon loved it — yearning alternative",
+   "source": "apollo-radar",
+   "playlists": [
+    "Loved"
+   ]
   }
  ],
  "playlists": [
@@ -1857,6 +1899,14 @@
     "oE48X",
     "1A9m3",
     "lajx0jO"
+   ]
+  },
+  {
+   "name": "Loved",
+   "track_ids": [
+    "NPPrOaw",
+    "3AEx370",
+    "9OKNAqa"
    ]
   }
  ],
