@@ -160,13 +160,15 @@ jobs:
           state, pos = probe()
           print(f"STATE={state} POS={pos}")
           PYEOF
-          echo "--- wait for PLAYING (state=3) ---"
+          echo "--- wait for playback: position must advance (state parse is best-effort) ---"
           PLAYING=0
+          PREV=""
           for i in $(seq 1 24); do
             R=$(python3 /tmp/session_probe.py)
             echo "poll $i: $R"
-            STATE=$(echo "$R" | grep -oE 'STATE=[0-9]+' | cut -d= -f2)
-            if [ "$STATE" = "3" ]; then PLAYING=1; break; fi
+            POS=$(echo "$R" | grep -oE 'POS=[0-9]+' | cut -d= -f2)
+            if [ -n "$POS" ] && [ -n "$PREV" ] && [ "$POS" -gt "$PREV" ]; then PLAYING=1; break; fi
+            [ -n "$POS" ] && PREV=$POS
             sleep 5
           done
           [ "$PLAYING" = "1" ] || { echo "NEVER REACHED PLAYING STATE"; adb shell dumpsys media_session | grep -A5 genesisplayer | head -20; echo "--- app log tail ---"; adb logcat -d | grep "GenesisPlayer" | tail -30; exit 1; }
