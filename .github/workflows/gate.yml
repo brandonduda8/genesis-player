@@ -304,7 +304,7 @@ jobs:
           echo "    (audio stays stream-only; offline PROOF is launch + cached render, not playback)"
           adb logcat -c
           adb shell settings put global airplane_mode_on 1
-          adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true > /dev/null
+          adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true > /dev/null 2>&1 || true  # API 34 denies this broadcast; settings toggle is what matters
           sleep 3
           adb shell am force-stop com.apexforge.genesisplayer
           sleep 2
@@ -322,7 +322,7 @@ jobs:
           adb pull /sdcard/player_offline.png /tmp/player_offline.png || true
           echo "OFFLINE FALLBACK PROVEN (launched from bundled/cached library+config, no crash/ANR)"
           adb shell settings put global airplane_mode_on 0
-          adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false > /dev/null
+          adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false > /dev/null 2>&1 || true
           echo "REMOTE GATE PASS"
 
       - name: Upload gate screenshot
