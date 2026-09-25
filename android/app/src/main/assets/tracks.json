@@ -1,0 +1,208 @@
+{
+ "tracks": [
+  {
+   "id": "85l3W",
+   "title": "Star Shopping",
+   "artist": "Lil Peep",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/85l3W/stream",
+   "artwork_url": "https://validator.stuffisup.com/content/QmYjLqTHNbxWRnwATNaP4u8cTAigE53rk99Zh4MM",
+   "playlists": [
+    "Peep Forever"
+   ]
+  },
+  {
+   "id": "y5kk7",
+   "title": "Awful Things",
+   "artist": "Lil Peep (feat. Lil Tracy)",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y5kk7/stream",
+   "artwork_url": "https://v.monophonic.digital/content/QmeWxcWN63mix8fASriEhHszTg6aMRBxwDEdTjHVqae",
+   "playlists": [
+    "Peep Forever"
+   ]
+  },
+  {
+   "id": "4jpz10y",
+   "title": "crybaby",
+   "artist": "Lil Peep",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/4jpz10y/stream",
+   "artwork_url": "https://v.monophonic.digital/content/01J61CABV07Y46X2Y6JFHJJ30Q/1000x1000.jpg",
+   "playlists": [
+    "Peep Forever"
+   ]
+  },
+  {
+   "id": "QVy6v",
+   "title": "white wine",
+   "artist": "Lil Peep & Lil Tracy",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/QVy6v/stream",
+   "artwork_url": "https://audius-content-14.figment.io/content/QmYHVYq868EVZSNmmYL1RNPh6zEgahnpKLS",
+   "playlists": [
+    "Peep Forever"
+   ]
+  },
+  {
+   "id": "8ZbXqJa",
+   "title": "ghost girl",
+   "artist": "Lil Peep",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/8ZbXqJa/stream",
+   "artwork_url": "https://audius-discovery-1.altego.net/content/01J61CAC87ET48J3DYD3WNSWAY/1000x10",
+   "playlists": [
+    "Peep Forever"
+   ]
+  },
+  {
+   "id": "zEYyO",
+   "title": "Avoid",
+   "artist": "Lil Peep (feat. Wicca Phase Springs Eternal & D\u00f8ves)",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/zEYyO/stream",
+   "artwork_url": "https://audius-creator-13.theblueprint.xyz/content/QmfE7Y197Jd8mWVbDBx7woDZvzMLw",
+   "playlists": [
+    "Cloud Nine"
+   ]
+  },
+  {
+   "id": "dRW7P",
+   "title": "HDMI",
+   "artist": "BONES",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/dRW7P/stream",
+   "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmPip4HqUvvUH8XZ7PNbhAqNH9Q6tm",
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "872xP",
+   "title": "WeatherMan",
+   "artist": "BONES & Xavier Wulf",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/872xP/stream",
+   "artwork_url": "https://v.monophonic.digital/content/QmdXPAnn5Qni3KS7yZsUBm2qKj2anRTCVmuy5jJ24VZ",
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "wy19k",
+   "title": "Psycho Pass",
+   "artist": "Xavier Wulf",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/wy19k/stream",
+   "artwork_url": "https://audius-discovery-2.altego.net/content/QmdB9BPDWcVdW4qV31r1c3Y6Sy9k3zsFVX",
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "9O3EkRG",
+   "title": "Contraband",
+   "artist": "Night Lovell",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/9O3EkRG/stream",
+   "artwork_url": "https://audius-creator-7.theblueprint.xyz/content/baeaaaiqseaiz7nxzdelmujbfvl4s5",
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "b5vMO",
+   "title": "Mercury: Retrograde",
+   "artist": "Ghostemane",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/b5vMO/stream",
+   "artwork_url": "https://audius-creator-5.theblueprint.xyz/content/QmX4ETv8Rc4TFgmui6teQYSTHCLJ95",
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  }
+ ],
+ "playlists": [
+  {
+   "name": "Peep Forever",
+   "track_ids": [
+    "85l3W",
+    "y5kk7",
+    "4jpz10y",
+    "QVy6v",
+    "8ZbXqJa"
+   ]
+  },
+  {
+   "name": "Deep Poetry Trap",
+   "track_ids": [
+    "dRW7P",
+    "872xP",
+    "wy19k",
+    "9O3EkRG",
+    "b5vMO"
+   ]
+  },
+  {
+   "name": "Cloud Nine",
+   "track_ids": [
+    "zEYyO"
+   ]
+  }
+ ],
+ "for_you": [
+  {
+   "id": "fy_z98Xp",
+   "title": "Girls (Lil Peep x Horsehead cover)",
+   "artist": "jimi jeneris",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/z98Xp/stream",
+   "artwork_url": "https://cn3.mainnet.audiusindex.org/content/QmX38gCMWWkH1ivf45qE83fxejzEUAqmm6jDZYTpBWJoGU/1000x1000.jpg",
+   "why": "A bedroom cover of Peep's 'Girls' \u2014 same heartbreak, stripped to guitar and voice."
+  },
+  {
+   "id": "fy_WaddB",
+   "title": "Lil Kennedy (miro edit)",
+   "artist": "miro",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/WaddB/stream",
+   "artwork_url": "https://audius-discovery-2.altego.net/content/QmeA3UGn2V6Foab5PDCfdCwdZbSYHSP5cTQ8Bz76HXfRRw/1000x1000.jpg",
+   "why": "An underground rework of a Peep deep cut \u2014 made for late-night repeat."
+  },
+  {
+   "id": "fy_54VBjg6",
+   "title": "I'll be okay (in memory of lil peep)",
+   "artist": "depressedintokyo",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/54VBjg6/stream",
+   "artwork_url": "https://audius-creator-6.theblueprint.xyz/content/QmPGX6vWhhtRE1DiLR2KJUZvJQJLdzTc9Stt9gACV1gJ1Q/1000x1000.jpg",
+   "why": "A short tribute from the underground that carries Peep's ghost in every bar."
+  },
+  {
+   "id": "fy_wY2ab",
+   "title": "DECAY",
+   "artist": "KXLLSWXTCH",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/wY2ab/stream",
+   "artwork_url": "https://v.monophonic.digital/content/QmQmEQK6ThycA3MtXrNzenU7xdBRaTnfbFRqhCQjjcAay8/1000x1000.jpg",
+   "why": "Kxllswxtch himself \u2014 raw, blown-out trap from one of your core anchors."
+  },
+  {
+   "id": "fy_KK2vr",
+   "title": "five degrees",
+   "artist": "beth",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/KK2vr/stream",
+   "artwork_url": "https://audius-creator-7.theblueprint.xyz/content/QmfXUqS2jgyP2AbuUKkWvUiDWgwvJpmD7ST4uzNZPYZffe/1000x1000.jpg",
+   "why": "A rare, lo-fi Peep recording circulating underground \u2014 unfiltered and untouched."
+  },
+  {
+   "id": "fy_NQ920",
+   "title": "Falling Down (acoustic cover)",
+   "artist": "SELTRAH",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/NQ920/stream",
+   "artwork_url": "https://v.monophonic.digital/content/Qme3KqjiUUtq3sxaPWExpoDCRjaWMTRbj3oZxyfUnvWuxn/1000x1000.jpg",
+   "why": "Peep & X's anthem rebuilt as a raw acoustic session \u2014 grief without the gloss."
+  },
+  {
+   "id": "fy_LK7El",
+   "title": "Casket",
+   "artist": "Keyworld",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/LK7El/stream",
+   "artwork_url": "https://audius-05.staked.cloud/content/QmSYJPqXAphJgPKv7BFk7gxcESAZ2ECwYHi2kVEvxriHeR/1000x1000.jpg",
+   "why": "Night Lovell on the production \u2014 dark, heavy, and straight out of your lane."
+  },
+  {
+   "id": "fy_PjKRkE5",
+   "title": "Pac Ave",
+   "artist": "Diggy Graves",
+   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/PjKRkE5/stream",
+   "artwork_url": "https://v.monophonic.digital/content/01JSWRF0XFJJ38BRQB10PGEE02/1000x1000.jpg",
+   "why": "Diggy Graves in his element \u2014 underground emo-trap from a core anchor."
+  }
+ ]
+}
