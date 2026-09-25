@@ -32,6 +32,8 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionToken
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.RemoteCatalog
+import com.apexforge.genesisplayer.data.RemoteConfig
 import com.apexforge.genesisplayer.ui.EqScreen
 import com.apexforge.genesisplayer.ui.ForYouScreen
 import com.apexforge.genesisplayer.ui.GenesisTheme
@@ -43,7 +45,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Library.load(this)
+        // Re-apply persisted remote state first (instant, offline-safe), then
+        // fetch live in the background. Neither fetch ever blocks launch.
+        RemoteCatalog.applyCache(this)
+        RemoteConfig.applyCache(this)
+        title = com.apexforge.genesisplayer.ui.RemoteTheme.labels.value.appName
+        RemoteCatalog.checkForUpdates(this)
+        RemoteConfig.checkForUpdates(this)
         handleTestPlay(intent)
+        handleTestRefresh(intent)
         setContent { GenesisTheme { GenesisApp() } }
     }
 
@@ -51,6 +61,7 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleTestPlay(intent)
+        handleTestRefresh(intent)
     }
 
     private var testController: MediaController? = null
@@ -94,6 +105,20 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val TEST_PLAY_ACTION = "com.apexforge.genesisplayer.TEST_PLAY"
+        const val TEST_REFRESH_ACTION = "com.apexforge.genesisplayer.TEST_REFRESH"
+    }
+
+    /**
+     * DEBUG-ONLY hook for the CI emulator gate: forces a re-check of BOTH the
+     * remote catalog and the remote config (same as the "Refresh music" button).
+     * Release builds ignore it entirely.
+     */
+    private fun handleTestRefresh(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_REFRESH_ACTION) return
+        RemoteCatalog.checkForUpdates(this)
+        RemoteConfig.checkForUpdates(this)
+        Log.i("GenesisPlayer", "TEST_REFRESH fired")
     }
 }
 
@@ -118,18 +143,32 @@ fun MediaController.sendGenesis(action: String, args: Bundle = Bundle()) {
     sendCustomCommand(SessionCommand(action, Bundle.EMPTY), args)
 }
 
-private data class Tab(val name: String, val icon: ImageVector)
+private data class Tab(val id: String, val name: String, val icon: ImageVector)
 
 @Composable
 fun GenesisApp() {
     val controller = rememberPlayerController()
     var tab by remember { mutableStateOf(0) }
-    val tabs = listOf(
-        Tab("Now Playing", Icons.Filled.PlayCircle),
-        Tab("Library", Icons.Filled.LibraryMusic),
-        Tab("For You", Icons.Filled.AutoAwesome),
-        Tab("EQ", Icons.Filled.GraphicEq)
+    // Tabs are driven by the remote config's sections; hidden sections vanish.
+    val sections = com.apexforge.genesisplayer.ui.RemoteTheme.sections.value.filter { it.visible }
+    val icons = mapOf(
+        "nowplaying" to Icons.Filled.PlayCircle,
+        "library" to Icons.Filled.LibraryMusic,
+        "foryou" to Icons.Filled.AutoAwesome,
+        "eq" to Icons.Filled.GraphicEq
     )
+    val tabs = sections.mapNotNull { s ->
+        icons[s.id]?.let { Tab(s.id, s.label, it) }
+    }.ifEmpty {
+        listOf(
+            Tab("nowplaying", "Now Playing", Icons.Filled.PlayCircle),
+            Tab("library", "Library", Icons.Filled.LibraryMusic),
+            Tab("foryou", "For You", Icons.Filled.AutoAwesome),
+            Tab("eq", "EQ", Icons.Filled.GraphicEq)
+        )
+    }
+    val safeTab = tab.coerceIn(tabs.indices)
+    if (safeTab != tab) tab = safeTab
     Scaffold(
         bottomBar = {
             NavigationBar(containerColor = com.apexforge.genesisplayer.ui.SurfaceDark) {
@@ -150,11 +189,11 @@ fun GenesisApp() {
         }
     ) { pad ->
         Modifier.padding(pad)
-        when (tab) {
-            0 -> NowPlayingScreen(controller, Modifier.padding(pad))
-            1 -> LibraryScreen(controller, Modifier.padding(pad))
-            2 -> ForYouScreen(controller, Modifier.padding(pad))
-            3 -> EqScreen(Modifier.padding(pad))
+        when (tabs[tab].id) {
+            "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
+            "library" -> LibraryScreen(controller, Modifier.padding(pad))
+            "foryou" -> ForYouScreen(controller, Modifier.padding(pad))
+            "eq" -> EqScreen(Modifier.padding(pad))
         }
     }
 }

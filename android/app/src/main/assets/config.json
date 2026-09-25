@@ -1,0 +1,42 @@
+{
+ "generated_at": "2026-09-25T05:45:00Z",
+ "labels": {
+  "app_name": "Genesis Player",
+  "library_subtitle": "{count} tracks \u2014 streamed, never downloaded",
+  "library_title": "Library",
+  "refresh_button": "\u27f3 Refresh music"
+ },
+ "sections": [
+  {
+   "id": "nowplaying",
+   "label": "Now Playing",
+   "visible": true
+  },
+  {
+   "id": "library",
+   "label": "Library",
+   "visible": true
+  },
+  {
+   "id": "foryou",
+   "label": "For You",
+   "visible": true
+  },
+  {
+   "id": "eq",
+   "label": "EQ",
+   "visible": true
+  }
+ ],
+ "theme": {
+  "accent": "#FF6A00",
+  "background": "#0A0A0C",
+  "card": "#1B1B1F",
+  "ember": "#FF6A00",
+  "gold": "#F5B942",
+  "surface": "#141417",
+  "text": "#FFFFFF",
+  "text_dim": "#9A9AA0"
+ },
+ "version": 0
+}

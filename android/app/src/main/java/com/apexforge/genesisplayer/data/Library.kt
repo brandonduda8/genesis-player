@@ -33,11 +33,15 @@ object Library {
 
     private val byId = mutableMapOf<String, Track>()
 
+    /** Bundled catalog from assets. Safe to call repeatedly. */
     fun load(context: Context) {
         if (::tracks.isInitialized) return
         val json = context.assets.open("tracks.json").bufferedReader().use { it.readText() }
-        val root = JSONObject(json)
-        tracks = root.getJSONArray("tracks").let { arr ->
+        applyJson(JSONObject(json))
+    }
+
+    private fun applyJson(root: JSONObject) {
+        val parsed = root.getJSONArray("tracks").let { arr ->
             List(arr.length()) { i ->
                 val o = arr.getJSONObject(i)
                 Track(
@@ -50,30 +54,45 @@ object Library {
                 )
             }
         }
-        byId.clear()
-        tracks.forEach { byId[it.id] = it }
-        playlists = root.getJSONArray("playlists").let { arr ->
+        val ids = parsed.associateBy { it.id }
+        val parsedPl = root.getJSONArray("playlists").let { arr ->
             List(arr.length()) { i ->
                 val o = arr.getJSONObject(i)
-                val ids = o.getJSONArray("track_ids")
+                val plIds = o.getJSONArray("track_ids")
                 // keep only tracks that actually exist in the native library
-                val valid = List(ids.length()) { j -> ids.getString(j) }.filter { byId.containsKey(it) }
+                val valid = List(plIds.length()) { j -> plIds.getString(j) }.filter { ids.containsKey(it) }
                 Playlist(o.getString("name"), valid)
             }.filter { it.trackIds.isNotEmpty() }
         }
-        forYou = root.getJSONArray("for_you").let { arr ->
-            List(arr.length()) { i ->
-                val o = arr.getJSONObject(i)
-                ForYouItem(
-                    id = o.getString("id"),
-                    artist = o.getString("artist"),
-                    title = o.getString("title"),
-                    streamUrl = o.getString("stream_url"),
-                    artworkUrl = o.optString("artwork_url", ""),
-                    why = o.getString("why")
-                )
+        applyRemote(parsed, parsedPl)
+        if (!::forYou.isInitialized) {
+            forYou = root.getJSONArray("for_you").let { arr ->
+                List(arr.length()) { i ->
+                    val o = arr.getJSONObject(i)
+                    ForYouItem(
+                        id = o.getString("id"),
+                        artist = o.getString("artist"),
+                        title = o.getString("title"),
+                        streamUrl = o.getString("stream_url"),
+                        artworkUrl = o.optString("artwork_url", ""),
+                        why = o.getString("why")
+                    )
+                }
             }
         }
+    }
+
+    /**
+     * Replace the active track library with a remotely fetched one.
+     * For You stays bundled (the remote catalog carries no for-you picks).
+     * Synchronized: PlayerService may be resolving ids on another thread.
+     */
+    @Synchronized
+    fun applyRemote(newTracks: List<Track>, newPlaylists: List<Playlist>) {
+        tracks = newTracks
+        playlists = newPlaylists
+        byId.clear()
+        newTracks.forEach { byId[it.id] = it }
     }
 
     fun track(id: String): Track? = byId[id]

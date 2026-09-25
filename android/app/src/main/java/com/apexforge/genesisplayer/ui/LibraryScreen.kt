@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,16 +36,38 @@ import androidx.media3.session.MediaController
 import coil.compose.AsyncImage
 import com.apexforge.genesisplayer.PlayerService
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.RemoteCatalog
+import com.apexforge.genesisplayer.data.RemoteConfig
 import com.apexforge.genesisplayer.sendGenesis
 
 @Composable
 fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val labels = RemoteTheme.labels.value
+    val note by RemoteCatalog.note
     var openPlaylist by remember { mutableStateOf<String?>(null) }
     LazyColumn(modifier = modifier.fillMaxSize().padding(16.dp)) {
         item {
-            Text("Library", style = MaterialTheme.typography.headlineMedium, color = PhoenixGold)
-            Text("${Library.tracks.size} native tracks — streamed, never downloaded",
-                color = TextDim, fontSize = 13.sp)
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.weight(1f)) {
+                    Text(labels.libraryTitle, style = MaterialTheme.typography.headlineMedium, color = PhoenixGold)
+                    Text(
+                        labels.librarySubtitle.replace("{count}", Library.tracks.size.toString()),
+                        color = TextDim, fontSize = 13.sp
+                    )
+                }
+                TextButton(onClick = {
+                    // Force re-check of BOTH the music catalog and the look-and-feel config.
+                    RemoteCatalog.checkForUpdates(context)
+                    RemoteConfig.checkForUpdates(context)
+                }) {
+                    Text(labels.refreshLabel, color = EmberOrange, fontSize = 13.sp)
+                }
+            }
+            // Subtle sync note; only ever set when a version actually advanced.
+            note?.let {
+                Text(it, color = PhoenixGold, fontSize = 12.sp, modifier = Modifier.padding(top = 4.dp))
+            }
             Spacer(Modifier.height(12.dp))
         }
         if (openPlaylist == null) {
