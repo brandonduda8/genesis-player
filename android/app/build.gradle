@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'com.apexforge.genesisplayer'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId 'com.apexforge.genesisplayer'
