@@ -223,14 +223,19 @@ jobs:
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
-          echo "--- remote catalog must have been picked up on launch ---"
+          echo "--- PHASE A: fresh install must pick up the live catalog on launch ---"
+          adb shell pm clear com.apexforge.genesisplayer
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_PLAY --ei index 0
           for i in $(seq 1 24); do
-            if adb logcat -d | grep -q "RemoteCatalog: applied version"; then break; fi
+            if adb logcat -d | grep -q "RemoteCatalog: applied version 1 (301 tracks"; then break; fi
             sleep 5
           done
-          adb logcat -d | grep "RemoteCatalog" | tail -5
-          adb logcat -d | grep -q "RemoteCatalog: applied version 1" || { echo "REMOTE CATALOG NOT APPLIED"; exit 1; }
-          echo "REMOTE CATALOG v1 APPLIED (301 tracks live)"
+          adb logcat -d | grep -E "RemoteCatalog|RemoteConfig" | tail -6
+          adb logcat -d | grep -q "RemoteCatalog: applied version 1 (301 tracks" \
+            || { echo "REMOTE CATALOG NOT APPLIED ON LAUNCH"; exit 1; }
+          echo "REMOTE CATALOG v1 APPLIED ON LAUNCH (301 tracks live)"
           echo "--- local test server: magenta-accent config v2 + catalog v2 ---"
           mkdir -p /tmp/remote_test
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" -o /tmp/remote_test/catalog.json
@@ -251,7 +256,8 @@ jobs:
           sleep 2
           curl -s --max-time 10 "http://127.0.0.1:18999/config.json" | head -c 80; echo
           adb reverse tcp:18999 tcp:18999
-          echo "--- force refresh against the test server (same code path as Refresh button) ---"
+          echo "--- PHASE B: force refresh against the test server (same code path as Refresh button) ---"
+          adb logcat -c
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
             -a com.apexforge.genesisplayer.TEST_REFRESH \
             --es catalog_url "http://127.0.0.1:18999/catalog.json" \
@@ -271,7 +277,8 @@ jobs:
           adb pull /sdcard/player_magenta.png /tmp/player_magenta.png || true
           adb reverse --remove tcp:18999 || true
           pkill -f "http.server 18999" || true
-          echo "--- airplane mode: launch must still work from bundled/cached ---"
+          echo "--- PHASE C: airplane mode — launch must still work from bundled/cached ---"
+          adb logcat -c
           adb shell settings put global airplane_mode_on 1
           adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true > /dev/null
           sleep 3
