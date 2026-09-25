@@ -6,9 +6,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- Phase 1 Apollo voice: input-only push-to-talk, requested at first mic
+         use (Apollo tab). The ONLY new permission in this release. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
-        android:label="Genesis Player"
+        android:label="@string/app_name"
         android:theme="@style/Theme.GenesisPlayer"
         android:allowBackup="true"
         android:supportsRtl="true">

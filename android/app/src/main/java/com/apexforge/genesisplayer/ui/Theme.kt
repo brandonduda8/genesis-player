@@ -53,7 +53,7 @@ object RemoteTheme {
     )
 
     fun defaultLabels() = AppLabels(
-        appName = "Genesis Player",
+        appName = "BRKN Vibes",
         libraryTitle = "Library",
         librarySubtitle = "{count} tracks — streamed, never downloaded",
         refreshLabel = "⟳ Refresh music"

@@ -79,7 +79,7 @@ object RemoteConfig {
         } ?: RemoteTheme.defaultSections()
         val l = root.optJSONObject("labels")
         val labels = if (l != null) AppLabels(
-            appName = l.optString("app_name", "Genesis Player"),
+            appName = l.optString("app_name", "BRKN Vibes"),
             libraryTitle = l.optString("library_title", "Library"),
             librarySubtitle = l.optString("library_subtitle", "{count} tracks — streamed, never downloaded"),
             refreshLabel = l.optString("refresh_button", "⟳ Refresh music")
