@@ -285,7 +285,8 @@ jobs:
             --es catalog_url "http://127.0.0.1:18999/catalog.json" \
             --es config_url "http://127.0.0.1:18999/config.json"
           for i in $(seq 1 24); do
-            if adb logcat -d | grep -q "RemoteConfig: applied version $TEST_CFG_V"; then break; fi
+            if adb logcat -d | grep -q "RemoteConfig: applied version $TEST_CFG_V" \
+               && adb logcat -d | grep -q "RemoteCatalog: applied version $TEST_CAT_V"; then break; fi
             sleep 5
           done
           adb logcat -d | grep "RemoteConfig" | tail -5
