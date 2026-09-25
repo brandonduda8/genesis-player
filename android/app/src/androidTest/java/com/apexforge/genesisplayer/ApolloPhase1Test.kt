@@ -265,6 +265,21 @@ class ApolloPhase1Test {
         assertEquals("test", items[0].source)
     }
 
+    @Test
+    fun dropsPayload_parsesDecidedStatuses() {
+        // NEVER-2 pin: only a real "published" status may ever flip a
+        // SYNCING decision to PUBLISHED; "approved" must not.
+        val root = JSONObject(
+            """{"pending":[],
+               |"decided":[{"id":"a1","status":"approved"},{"id":"p1","status":"published"},
+               |{"id":"r1","status":"rejected"}]}""".trimMargin()
+        )
+        ApolloDrops.parseDropsPayload(root, "test")
+        assertEquals("approved", ApolloDrops.decidedStatuses["a1"])
+        assertEquals("published", ApolloDrops.decidedStatuses["p1"])
+        assertEquals("rejected", ApolloDrops.decidedStatuses["r1"])
+    }
+
     // ---- pending-decision state machine (APOLLO-LIVE §5) ----
 
     @Test

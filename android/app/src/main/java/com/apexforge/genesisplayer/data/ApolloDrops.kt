@@ -36,9 +36,14 @@ data class DropItem(
  *   "Awaiting publish…" — never "added".
  *
  * CONTRACT NOTE for the machine-side sibling: this posts decisions to
- * POST /apollo/decide {client_request_id, suggestion_id, decision}. Until
- * that endpoint exists, decisions stay RECORDED locally and retry — the UI
- * honestly shows "Awaiting publish…".
+ * POST /apollo/decide {client_request_id, suggestion_id, decision}. If that
+ * endpoint is unreachable, decisions stay RECORDED locally and retry — the
+ * UI honestly shows "Awaiting publish…".
+ *
+ * HONESTY RULE (NEVER-2): a decision only becomes PUBLISHED when the machine
+ * reports the suggestion's status as "published" (i.e. the catalog version
+ * actually advanced and the track is in it). "approved" keeps the card on
+ * "Awaiting publish…" — never "Published ✓".
  */
 object ApolloDrops {
     /** Live list; observed by the Fresh Signals rail. Empty = no card. */
@@ -49,6 +54,14 @@ object ApolloDrops {
 
     /** Epoch ms of the last successful poll (any source). */
     val lastPollAt = mutableStateOf(0L)
+
+    /**
+     * Decided-suggestion statuses from the last drops poll, keyed by
+     * suggestion id (forward-compatible "decided" extra on the machine's
+     * /apollo/drops). Drives the honest reconcile below: only a real
+     * "published" status may flip a SYNCING decision to PUBLISHED.
+     */
+    internal var decidedStatuses: Map<String, String> = emptyMap()
 
     fun current(): List<DropItem> = drops.value
 
@@ -114,6 +127,19 @@ object ApolloDrops {
         take(root.optJSONArray("pending"))
         take(root.optJSONArray("hunter_fresh"))
         take(root.optJSONArray("suggestions"))
+        // Forward-compatible machine extra: decided suggestions
+        // (approved/rejected/published) with their real status. Absence keeps
+        // the old reconcile behavior (never claim published).
+        val decided = mutableMapOf<String, String>()
+        root.optJSONArray("decided")?.let { arr ->
+            for (i in 0 until arr.length()) {
+                val o = arr.optJSONObject(i) ?: continue
+                val id = o.optString("id", "")
+                val st = o.optString("status", "")
+                if (id.isNotEmpty() && st.isNotEmpty()) decided[id] = st
+            }
+        }
+        decidedStatuses = decided
         return out
     }
 
@@ -126,17 +152,33 @@ object ApolloDrops {
     }
 
     /**
-     * Reconcile pending decisions against the fresh poll:
-     * a SYNCING decision whose suggestion vanished from pending was consumed
-     * machine-side → PUBLISHED. (The "Catalog updated — N tracks (vN)" note
-     * fires separately, only when the version actually advanced.)
+     * Reconcile pending decisions against the fresh poll — honestly.
+     * A SYNCING decision becomes PUBLISHED ONLY when the machine's "decided"
+     * array reports its status as "published" (catalog version really
+     * advanced). "approved" keeps the card on "Awaiting publish…"; anything
+     * unconfirmed stays SYNCING — never a premature "Published ✓" (NEVER-2).
      */
     private fun reconcileDecisions(app: Context, items: List<DropItem>) {
-        val pendingIds = items.map { it.id }.toSet()
         for (d in ApolloStore.decisions(app)) {
-            if (d.state == DecisionState.SYNCING && d.id !in pendingIds) {
-                ApolloStore.setDecisionState(app, d.id, DecisionState.PUBLISHED)
-                Log.i(TAG, "ApolloDrops: decision ${d.id} consumed machine-side -> published")
+            if (d.state != DecisionState.SYNCING) continue
+            when (decidedStatuses[d.id]) {
+                "published" -> {
+                    ApolloStore.setDecisionState(app, d.id, DecisionState.PUBLISHED)
+                    Log.i(TAG, "ApolloDrops: decision ${d.id} verified published machine-side")
+                }
+                "approved" -> Log.i(
+                    TAG,
+                    "ApolloDrops: decision ${d.id} approved machine-side; " +
+                        "card stays on Awaiting publish…"
+                )
+                "rejected" -> {
+                    ApolloStore.removeDecision(app, d.id)
+                    Log.i(TAG, "ApolloDrops: decision ${d.id} rejected machine-side; record dropped")
+                }
+                else -> Log.i(
+                    TAG,
+                    "ApolloDrops: decision ${d.id} not confirmed machine-side; staying SYNCING"
+                )
             }
         }
     }
