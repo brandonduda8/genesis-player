@@ -325,6 +325,136 @@ jobs:
           adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false > /dev/null 2>&1 || true
           echo "REMOTE GATE PASS"
 
+      - name: Gate — Full Blend playlist + like/dislike taste learning
+        run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          echo "--- FB1: Full Blend exists with the FULL catalog track count ---"
+          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          echo "live catalog track_count=$LIVE_COUNT"
+          adb shell pm clear com.apexforge.genesisplayer
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity
+          for i in $(seq 1 24); do
+            if adb logcat -d | grep -q "RemoteCatalog: playlist 'Full Blend'"; then break; fi
+            sleep 5
+          done
+          FB_LINE=$(adb logcat -d | grep -Eo "RemoteCatalog: playlist 'Full Blend' \([0-9]+ tracks\)" | tail -1)
+          echo "gate line: $FB_LINE"
+          FB_COUNT=$(echo "$FB_LINE" | grep -Eo "[0-9]+" | tail -1)
+          [ -n "$FB_COUNT" ] && [ "$FB_COUNT" = "$LIVE_COUNT" ] \
+            || { echo "FULL BLEND COUNT MISMATCH (got $FB_COUNT, live $LIVE_COUNT)"; exit 1; }
+          echo "FULL BLEND PROVEN: $FB_COUNT tracks = full live catalog"
+          echo "--- FB2: like/dislike buttons render on Now Playing ---"
+          sleep 3
+          adb shell uiautomator dump /sdcard/ui.xml > /dev/null
+          adb pull /sdcard/ui.xml /tmp/ui.xml > /dev/null
+          grep -q 'content-desc="Like"' /tmp/ui.xml \
+            || { echo "LIKE BUTTON NOT RENDERED"; exit 1; }
+          grep -q 'content-desc="Dislike"' /tmp/ui.xml \
+            || { echo "DISLIKE BUTTON NOT RENDERED"; exit 1; }
+          echo "BUTTONS RENDERED: Like + Dislike on Now Playing"
+          adb shell screencap -p /sdcard/player_ratings.png || true
+          adb pull /sdcard/player_ratings.png /tmp/player_ratings.png || true
+          echo "--- FB3: Full Blend shuffle playback advances ---"
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Full Blend" --ez shuffle true
+          FB_PLAYING=0; FB_PREV=""
+          for i in $(seq 1 24); do
+            R=$(python3 /tmp/session_probe.py)
+            echo "fb poll $i: $R"
+            POS=$(echo "$R" | grep -oE 'POS=[0-9]+' | cut -d= -f2)
+            if [ -n "$POS" ] && [ -n "$FB_PREV" ] && [ "$POS" -gt "$FB_PREV" ]; then FB_PLAYING=1; break; fi
+            [ -n "$POS" ] && FB_PREV=$POS
+            sleep 5
+          done
+          [ "$FB_PLAYING" = "1" ] || { echo "FULL BLEND SHUFFLE NEVER PLAYED"; adb logcat -d | grep "GenesisPlayer" | tail -30; exit 1; }
+          echo "FULL BLEND SHUFFLE PLAYING (position advancing)"
+          CUR_ID=$(adb logcat -d | grep -Eo "now playing id=[^ ]+" | tail -1 | cut -d= -f2)
+          echo "currently playing id=$CUR_ID"
+          [ -n "$CUR_ID" ] || { echo "NO NOW-PLAYING ID OBSERVED"; exit 1; }
+          echo "--- FB4: dislike skips NOW ---"
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_RATE --es track_id "$CUR_ID" --es rating dislike
+          for i in $(seq 1 12); do
+            if adb logcat -d | grep -q "rating: dislike on current track — skipped to next"; then break; fi
+            sleep 5
+          done
+          adb logcat -d | grep -E "rating: dislike" | tail -3
+          adb logcat -d | grep -q "rating: dislike on current track — skipped to next" \
+            || { echo "DISLIKE DID NOT SKIP"; exit 1; }
+          sleep 4
+          NEW_ID=$(adb logcat -d | grep -Eo "now playing id=[^ ]+" | tail -1 | cut -d= -f2)
+          echo "after dislike: now playing id=$NEW_ID (was $CUR_ID)"
+          [ -n "$NEW_ID" ] && [ "$NEW_ID" != "$CUR_ID" ] \
+            || { echo "TRACK DID NOT ADVANCE AFTER DISLIKE"; exit 1; }
+          echo "DISLIKE-SKIP PROVEN: $CUR_ID -> $NEW_ID"
+          echo "--- FB5: disliked track never resurfaces in a Full Blend queue ---"
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Full Blend" --ez shuffle true
+          for i in $(seq 1 12); do
+            if adb logcat -d | grep -q "playTracks: queue"; then break; fi
+            sleep 5
+          done
+          Q_LINE=$(adb logcat -d | grep -Eo "playTracks: queue [0-9]+ tracks \([0-9]+ excluded by dislike \[[^]]*\]" | tail -1)
+          echo "queue line: $Q_LINE"
+          echo "$Q_LINE" | grep -q "$CUR_ID" \
+            || { echo "DISLIKED TRACK $CUR_ID NOT IN EXCLUSION LIST"; exit 1; }
+          Q_COUNT=$(echo "$Q_LINE" | grep -Eo "queue [0-9]+" | grep -Eo "[0-9]+")
+          [ "$Q_COUNT" = "$((LIVE_COUNT - 1))" ] \
+            || { echo "QUEUE COUNT WRONG (got $Q_COUNT, want $((LIVE_COUNT - 1)))"; exit 1; }
+          echo "EXCLUSION PROVEN: $CUR_ID excluded, queue=$Q_COUNT"
+          echo "--- FB6: like boosts queue ordering ---"
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_RATE --es track_id "$NEW_ID" --es rating like
+          sleep 5
+          adb logcat -d | grep -q "rating: like" || { echo "LIKE NOT RECORDED"; exit 1; }
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Full Blend"
+          for i in $(seq 1 12); do
+            if adb logcat -d | grep -q "playTracks: queue"; then break; fi
+            sleep 5
+          done
+          B_LINE=$(adb logcat -d | grep -Eo "playTracks: queue [0-9]+ tracks \([0-9]+ excluded by dislike \[[^]]*\], [0-9]+ boosted by taste\)" | tail -1)
+          echo "queue line: $B_LINE"
+          BOOSTED=$(echo "$B_LINE" | grep -Eo "[0-9]+ boosted by taste" | grep -Eo "[0-9]+")
+          [ -n "$BOOSTED" ] && [ "$BOOSTED" -ge 1 ] \
+            || { echo "LIKE BOOST NOT OBSERVED"; exit 1; }
+          echo "LIKE BOOST PROVEN: $BOOSTED track(s) floated up"
+          echo "--- FB7: taste sync fires fire-and-forget (CI has no tailnet route — must not block/crash) ---"
+          adb logcat -d | grep -E "TasteSync" | tail -4
+          adb logcat -d | grep -qE "TasteSync: (unreachable|synced)" \
+            || { echo "TASTE SYNC NEVER FIRED"; exit 1; }
+          echo "TASTE SYNC FIRED (queued, non-blocking)"
+          echo "--- FB8: ratings persist across relaunch ---"
+          adb shell am force-stop com.apexforge.genesisplayer
+          sleep 2
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity
+          for i in $(seq 1 12); do
+            if adb logcat -d | grep -q "RatingsStore: loaded"; then break; fi
+            sleep 5
+          done
+          R_LINE=$(adb logcat -d | grep -Eo "RatingsStore: loaded [0-9]+ ratings" | tail -1)
+          echo "ratings line: $R_LINE"
+          R_COUNT=$(echo "$R_LINE" | grep -Eo "[0-9]+" | head -1)
+          [ -n "$R_COUNT" ] && [ "$R_COUNT" -ge 2 ] \
+            || { echo "RATINGS NOT PERSISTED (got: $R_LINE)"; exit 1; }
+          echo "PERSISTENCE PROVEN: $R_COUNT ratings survived relaunch"
+          echo "--- crash/ANR check ---"
+          if adb logcat -d | grep -i "FATAL EXCEPTION" | grep -i "genesisplayer"; then
+            echo "CRASH FOUND"; exit 1
+          fi
+          if adb logcat -d | grep -iE "ANR in" | grep -i "genesisplayer"; then
+            echo "ANR FOUND"; exit 1
+          fi
+          echo "FULL BLEND + RATINGS GATE PASS"
+
       - name: Upload gate screenshot
         if: always()
         uses: actions/upload-artifact@v4
@@ -345,3 +475,10 @@ jobs:
         with:
           name: gate-screenshot-offline
           path: /tmp/player_offline.png
+
+      - name: Upload ratings (like/dislike) screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-screenshot-ratings
+          path: /tmp/player_ratings.png
