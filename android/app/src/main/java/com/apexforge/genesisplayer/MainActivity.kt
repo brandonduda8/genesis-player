@@ -111,13 +111,15 @@ class MainActivity : ComponentActivity() {
     /**
      * DEBUG-ONLY hook for the CI emulator gate: forces a re-check of BOTH the
      * remote catalog and the remote config (same as the "Refresh music" button).
-     * Release builds ignore it entirely.
+     * Optional intent extras "catalog_url" / "config_url" redirect the fetch at
+     * a test server (the gate uses a local one via adb reverse) — production
+     * code paths are otherwise identical. Release builds ignore it entirely.
      */
     private fun handleTestRefresh(intent: Intent?) {
         if (!BuildConfig.DEBUG) return
         if (intent?.action != TEST_REFRESH_ACTION) return
-        RemoteCatalog.checkForUpdates(this)
-        RemoteConfig.checkForUpdates(this)
+        RemoteCatalog.checkForUpdates(this, intent.getStringExtra("catalog_url"))
+        RemoteConfig.checkForUpdates(this, intent.getStringExtra("config_url"))
         Log.i("GenesisPlayer", "TEST_REFRESH fired")
     }
 }

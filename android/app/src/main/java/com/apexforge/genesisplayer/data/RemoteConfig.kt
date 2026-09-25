@@ -29,11 +29,15 @@ object RemoteConfig {
     fun activeVersion(context: Context): Int =
         prefs(context).getInt("config_version", BUNDLED_VERSION)
 
-    fun checkForUpdates(context: Context) {
+    /**
+     * @param urlOverride DEBUG/test hook: fetch from this URL instead of the
+     * production one (the gate points it at a local test server).
+     */
+    fun checkForUpdates(context: Context, urlOverride: String? = null) {
         val app = context.applicationContext
         runBackground {
             try {
-                val root = JSONObject(fetchJson(CONFIG_URL))
+                val root = JSONObject(fetchJson(urlOverride ?: CONFIG_URL))
                 val v = root.optInt("version", 0)
                 val cur = activeVersion(app)
                 if (v > cur) {

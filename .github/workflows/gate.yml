@@ -220,8 +220,6 @@ jobs:
           adb pull /sdcard/player_nowplaying.png /tmp/player_nowplaying.png || true
 
       - name: Gate — remote catalog pickup + config theme change + airplane fallback
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
@@ -233,29 +231,31 @@ jobs:
           adb logcat -d | grep "RemoteCatalog" | tail -5
           adb logcat -d | grep -q "RemoteCatalog: applied version 1" || { echo "REMOTE CATALOG NOT APPLIED"; exit 1; }
           echo "REMOTE CATALOG v1 APPLIED (301 tracks live)"
-          echo "--- remote config: publish a magenta-accent test config ---"
-          CFG_JSON=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/brandonduda8/genesis-catalog/contents/config.json")
-          CFG_SHA=$(echo "$CFG_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'])")
-          echo "$CFG_JSON" | python3 -c "import json,sys,base64; open('/tmp/config_orig.json','w').write(base64.b64decode(json.load(sys.stdin)['content']).decode())"
+          echo "--- local test server: magenta-accent config v2 + catalog v2 ---"
+          mkdir -p /tmp/remote_test
+          curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" -o /tmp/remote_test/catalog.json
+          curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/config.json" -o /tmp/remote_test/config.json
           python3 - << 'PYEOF'
           import json
-          d = json.load(open('/tmp/config_orig.json'))
-          d['version'] = 2
-          d['theme']['accent'] = '#FF00FF'
-          d['theme']['ember'] = '#FF00FF'
-          json.dump(d, open('/tmp/config_test.json','w'), indent=1)
+          cat = json.load(open('/tmp/remote_test/catalog.json'))
+          cat['version'] = 2
+          json.dump(cat, open('/tmp/remote_test/catalog.json','w'))
+          cfg = json.load(open('/tmp/remote_test/config.json'))
+          cfg['version'] = 2
+          cfg['theme']['accent'] = '#FF00FF'
+          cfg['theme']['ember'] = '#FF00FF'
+          json.dump(cfg, open('/tmp/remote_test/config.json','w'))
+          print("test files ready: catalog v%s, config v%s accent %s" % (cat['version'], cfg['version'], cfg['theme']['accent']))
           PYEOF
-          B64=$(base64 -w0 /tmp/config_test.json)
-          curl -s -X PUT -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/brandonduda8/genesis-catalog/contents/config.json" \
-            -d "{\"message\":\"gate test: magenta accent\",\"content\":\"$B64\",\"sha\":\"$CFG_SHA\"}" | head -c 300
-          echo
-          echo "--- force refresh in the emulator ---"
+          (cd /tmp/remote_test && nohup python3 -m http.server 18999 > /tmp/http_test.log 2>&1 &)
+          sleep 2
+          curl -s --max-time 10 "http://127.0.0.1:18999/config.json" | head -c 80; echo
+          adb reverse tcp:18999 tcp:18999
+          echo "--- force refresh against the test server (same code path as Refresh button) ---"
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
-            -a com.apexforge.genesisplayer.TEST_REFRESH
+            -a com.apexforge.genesisplayer.TEST_REFRESH \
+            --es catalog_url "http://127.0.0.1:18999/catalog.json" \
+            --es config_url "http://127.0.0.1:18999/config.json"
           for i in $(seq 1 24); do
             if adb logcat -d | grep -q "RemoteConfig: applied version 2"; then break; fi
             sleep 5
@@ -263,21 +263,14 @@ jobs:
           adb logcat -d | grep "RemoteConfig" | tail -5
           adb logcat -d | grep -q "RemoteConfig: applied version 2 accent=#FF00FF" \
             || { echo "THEME CHANGE NOT APPLIED"; exit 1; }
-          echo "THEME CHANGE PROVEN: accent=#FF00FF applied live, no reinstall"
+          adb logcat -d | grep -q "RemoteCatalog: applied version 2" \
+            || { echo "CATALOG REFRESH NOT APPLIED"; exit 1; }
+          echo "THEME CHANGE PROVEN: accent=#FF00FF applied live, no reinstall; catalog v2 applied"
           sleep 3
           adb shell screencap -p /sdcard/player_magenta.png || true
           adb pull /sdcard/player_magenta.png /tmp/player_magenta.png || true
-          echo "--- restore the original config ---"
-          CFG2=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/brandonduda8/genesis-catalog/contents/config.json")
-          CFG2_SHA=$(echo "$CFG2" | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'])")
-          B64R=$(base64 -w0 /tmp/config_orig.json)
-          curl -s -X PUT -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/brandonduda8/genesis-catalog/contents/config.json" \
-            -d "{\"message\":\"gate test: restore config\",\"content\":\"$B64R\",\"sha\":\"$CFG2_SHA\"}" | head -c 300
-          echo
+          adb reverse --remove tcp:18999 || true
+          pkill -f "http.server 18999" || true
           echo "--- airplane mode: launch must still work from bundled/cached ---"
           adb shell settings put global airplane_mode_on 1
           adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true > /dev/null
