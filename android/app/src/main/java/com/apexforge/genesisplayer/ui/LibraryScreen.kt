@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -26,15 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.session.MediaController
-import coil.compose.AsyncImage
 import com.apexforge.genesisplayer.PlayerService
+import com.apexforge.genesisplayer.data.ApolloDrops
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RemoteCatalog
 import com.apexforge.genesisplayer.data.RemoteConfig
@@ -57,9 +54,11 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                     )
                 }
                 TextButton(onClick = {
-                    // Force re-check of BOTH the music catalog and the look-and-feel config.
+                    // Force re-check of the music catalog, the look-and-feel
+                    // config, AND the Fresh Signals drops.
                     RemoteCatalog.checkForUpdates(context)
                     RemoteConfig.checkForUpdates(context)
+                    ApolloDrops.poll(context)
                 }) {
                     Text(labels.refreshLabel, color = EmberOrange, fontSize = 13.sp)
                 }
@@ -67,6 +66,32 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
             // Subtle sync note; only ever set when a version actually advanced.
             note?.let {
                 Text(it, color = PhoenixGold, fontSize = 12.sp, modifier = Modifier.padding(top = 4.dp))
+            }
+            Spacer(Modifier.height(12.dp))
+            // SHUFFLE EVERYTHING (Phase 1): one-tap global shuffle across the
+            // whole catalog. Dislikes excluded; first audio stays fast.
+            Card(
+                modifier = Modifier.fillMaxWidth()
+                    .clickable {
+                        controller?.sendGenesis(PlayerService.ACTION_SHUFFLE_ALL)
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = EmberOrange.copy(alpha = 0.16f)
+                )
+            ) {
+                Row(
+                    Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("🔀 Shuffle everything", color = PhoenixGold, fontSize = 17.sp)
+                        Text(
+                            "${Library.tracks.size} tracks — dislikes skipped",
+                            color = TextDim, fontSize = 13.sp
+                        )
+                    }
+                    Text("▶", color = EmberOrange, fontSize = 20.sp)
+                }
             }
             Spacer(Modifier.height(12.dp))
         }
@@ -106,13 +131,7 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (t.artworkUrl.isNotEmpty()) {
-                        AsyncImage(t.artworkUrl, "Art",
-                            modifier = Modifier.size(52.dp).clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop)
-                    } else {
-                        EmberPlaceholder(Modifier.size(52.dp))
-                    }
+                    TrackArtwork(t.id, t.artworkUrl, Modifier.size(52.dp), "Art", 8.dp)
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
                         Text(t.title, color = MaterialTheme.colorScheme.onSurface,

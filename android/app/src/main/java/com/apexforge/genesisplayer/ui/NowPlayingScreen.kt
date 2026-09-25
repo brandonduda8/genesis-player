@@ -1,7 +1,10 @@
 package com.apexforge.genesisplayer.ui
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -31,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,8 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
-import coil.compose.AsyncImage
 import com.apexforge.genesisplayer.PlayerService
 import com.apexforge.genesisplayer.data.Ratings
 import com.apexforge.genesisplayer.data.RatingsStore
@@ -113,15 +114,32 @@ fun NowPlayingScreen(controller: MediaController?, modifier: Modifier = Modifier
         verticalArrangement = Arrangement.Top
     ) {
         Spacer(Modifier.height(8.dp))
-        if (artwork.isNotEmpty()) {
-            AsyncImage(
-                model = artwork, contentDescription = "Artwork",
-                modifier = Modifier.fillMaxWidth(0.85f).aspectRatio(1f)
-                    .clip(RoundedCornerShape(20.dp)),
-                contentScale = ContentScale.Crop
+        // Artwork: catalog art when present, else the seeded ember render.
+        // Swipe right = like, swipe left = dislike (APOLLO-LIVE Flow C).
+        Box(
+            modifier = Modifier.fillMaxWidth(0.85f).aspectRatio(1f)
+                .pointerInput(mediaId) {
+                    detectHorizontalDragGestures { _, dragAmount ->
+                        val id = mediaId ?: return@detectHorizontalDragGestures
+                        val r = if (dragAmount > 0) "like" else "dislike"
+                        if (Ratings.apply(ctx, controller, id, r)) {
+                            rating = r
+                            Toast.makeText(
+                                ctx,
+                                if (r == "like") "Liked" else "Disliked — skipping",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+        ) {
+            TrackArtwork(
+                trackId = mediaId ?: "none",
+                artworkUrl = artwork,
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = "Artwork",
+                corner = 20.dp
             )
-        } else {
-            EmberPlaceholder(Modifier.fillMaxWidth(0.85f).aspectRatio(1f))
         }
         Spacer(Modifier.height(20.dp))
         Text(title, style = MaterialTheme.typography.headlineSmall, color = PhoenixGold,
@@ -152,6 +170,18 @@ fun NowPlayingScreen(controller: MediaController?, modifier: Modifier = Modifier
                     modifier = Modifier.size(30.dp).alpha(if (rating == "like") 1f else 0.55f)
                 )
             }
+        }
+        // MORE LIKE THIS (Phase 1): builds a queue from the current track's
+        // artist/genre lane + on-device taste vectors. Catalog ids only,
+        // never dislikes — QueuePlanner.moreLikeThis.
+        TextButton(onClick = {
+            val id = mediaId ?: return@TextButton
+            controller?.sendGenesis(
+                PlayerService.ACTION_MORE_LIKE_THIS,
+                Bundle().apply { putString("id", id) }
+            )
+        }) {
+            Text("✦ More like this", color = PhoenixGold, fontSize = 14.sp)
         }
         Spacer(Modifier.height(8.dp))
         Slider(
