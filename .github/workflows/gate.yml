@@ -240,8 +240,25 @@ jobs:
           echo "REMOTE CATALOG APPLIED ON LAUNCH ($APPLIED; >=351 incl. SoundCloud shelf)"
           echo "--- PHASE A2: SoundCloud shelf plays end to end on the emulator ---"
           adb logcat -c
+          # Nested quotes: the playlist name must survive adb's remote-shell
+          # word-splitting as ONE arg. Without them "Tha Aadity" arrives as
+          # playlist="Tha" + stray package "Aadity", the app silently falls
+          # back to the full library, and the shelf is never actually tested.
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
-            -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Tha Aadity"
+            -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "'Tha Aadity'"
+          # Prove the SHELF (not the full-library fallback) queued: the
+          # playTracks count must equal the live catalog's Tha Aadity membership.
+          SHELF_N=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" | python3 -c "import json,sys; c=json.load(sys.stdin); print(sum(1 for t in c['tracks'] if 'Tha Aadity' in (t.get('playlists') or [])))")
+          [ -n "$SHELF_N" ] || { echo "CATALOG FETCH FAILED (shelf size)"; exit 1; }
+          echo "expected shelf size: $SHELF_N"
+          SC_QUEUED=0; Q=""
+          for i in $(seq 1 12); do
+            Q=$(adb logcat -d | grep -Eo "playTracks: queue [0-9]+ tracks" | tail -1 | grep -Eo "[0-9]+")
+            if [ -n "$Q" ] && [ "$Q" = "$SHELF_N" ]; then SC_QUEUED=1; break; fi
+            sleep 5
+          done
+          [ "$SC_QUEUED" = "1" ] || { echo "SHELF NOT QUEUED (queue=$Q, want $SHELF_N)"; adb logcat -d | grep "GenesisPlayer" | tail -20; exit 1; }
+          echo "SHELF QUEUED: $SHELF_N SoundCloud tracks"
           SC_PLAYING=0
           SC_PREV=""
           for i in $(seq 1 24); do
