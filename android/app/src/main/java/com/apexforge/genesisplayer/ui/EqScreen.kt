@@ -95,7 +95,8 @@ fun EqScreen(modifier: Modifier = Modifier) {
                     Text("$label  ${lvl / 100} dB", color = TextDim, fontSize = 12.sp)
                     Slider(lvl.toFloat(), {
                         lvl = it.toInt()
-                        if (fx != null) { fx.clearPreset(); fx.setBandLevel(b, lvl) } else saveBand(context, b, lvl)
+                        val f = fx
+                        if (f != null) { f.clearPreset(); f.setBandLevel(b, lvl) } else saveBand(context, b, lvl)
                     }, valueRange = -1500f..1500f, colors = emberSlider())
                 }
             }
@@ -124,6 +125,7 @@ fun EqScreen(modifier: Modifier = Modifier) {
 
 // ---------- helpers ----------
 
+@Composable
 private fun emberSlider() = SliderDefaults.colors(
     thumbColor = EmberOrange, activeTrackColor = EmberOrange
 )
