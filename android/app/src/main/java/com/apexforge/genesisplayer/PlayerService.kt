@@ -49,6 +49,7 @@ class PlayerService : MediaSessionService() {
         player = p
         p.addListener(object : Player.Listener {
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
+                Log.i(TAG, "audioSessionId changed -> $audioSessionId")
                 if (audioSessionId != C.AUDIO_SESSION_ID_UNSET && audioSessionId != 0) {
                     fx?.release()
                     fx = AudioFxController(this@PlayerService, audioSessionId)
@@ -64,6 +65,15 @@ class PlayerService : MediaSessionService() {
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying && fx == null) {
+                    // Fallback: if the session-id callback never fired with a valid
+                    // id (e.g. odd emulator audio paths), try a lazy attach.
+                    val sid = p.audioSessionId
+                    Log.i(TAG, "lazy FX attach attempt, sessionId=$sid")
+                    if (sid != C.AUDIO_SESSION_ID_UNSET && sid != 0) {
+                        fx = AudioFxController(this@PlayerService, sid)
+                    }
+                }
                 val id = currentId ?: p.currentMediaItem?.mediaId
                 if (isPlaying && id != null && !currentPlayRecorded) {
                     currentPlayRecorded = true
