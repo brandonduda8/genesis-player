@@ -274,7 +274,9 @@ jobs:
           echo "expected shelf size: $SHELF_N"
           SC_QUEUED=0; Q=""
           for i in $(seq 1 12); do
-            Q=$(adb logcat -d | grep -Eo "playTracks: queue [0-9]+ tracks" | tail -1 | grep -Eo "[0-9]+")
+            # || true: an empty first poll must NOT trip `bash -e` — the loop
+            # below still fails the gate if the shelf never queues within 60s.
+            Q=$(adb logcat -d | grep -Eo "playTracks: queue [0-9]+ tracks" | tail -1 | grep -Eo "[0-9]+" || true)
             if [ -n "$Q" ] && [ "$Q" = "$SHELF_N" ]; then SC_QUEUED=1; break; fi
             sleep 5
           done
