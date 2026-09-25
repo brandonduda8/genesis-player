@@ -147,7 +147,10 @@ object RemoteCatalog {
                         artist = o.optString("artist", "Unknown"),
                         title = o.optString("title", "Untitled"),
                         streamUrl = "",
-                        artworkUrl = bundled?.artworkUrl ?: "",
+                        // Remote artwork wins; bundled art is the fallback
+                        // (VISION.md §5: art flows through, never invented).
+                        artworkUrl = o.optString("artwork_url", "")
+                            .ifEmpty { bundled?.artworkUrl ?: "" },
                         durationS = bundled?.durationS ?: 0,
                         genre = o.optString("genre", ""),
                         soundcloudUrl = scUrl
@@ -170,7 +173,8 @@ object RemoteCatalog {
                     artist = o.optString("artist", "Unknown"),
                     title = o.optString("title", "Untitled"),
                     streamUrl = url,
-                    artworkUrl = bundled?.artworkUrl ?: "",
+                    artworkUrl = o.optString("artwork_url", "")
+                        .ifEmpty { bundled?.artworkUrl ?: "" },
                     durationS = bundled?.durationS ?: 0,
                     genre = o.optString("genre", "")
                 ) to names

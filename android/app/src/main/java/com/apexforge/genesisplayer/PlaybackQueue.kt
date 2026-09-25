@@ -2,6 +2,7 @@ package com.apexforge.genesisplayer
 
 import androidx.media3.common.MediaItem
 import com.apexforge.genesisplayer.data.Track
+import kotlin.random.Random
 
 /**
  * Tap-to-play queue engine (2026-09-25 repair).
@@ -22,6 +23,9 @@ import com.apexforge.genesisplayer.data.Track
  *
  * QueuePlanner and SoundCloudRefresher are pure / injectable so the API-34
  * instrumented tests can prove the behavior without a network.
+ *
+ * QueuePlanner is also the seam the Phase-2c Apollo DJ will drive
+ * (predictive next-up): it owns queue ORDER, the service owns playback.
  */
 
 /** Result of pure queue planning: filtered+boosted ids and the tapped track. */
@@ -74,6 +78,62 @@ object QueuePlanner {
         }
         return QueuePlan(ordered, startId, boosted)
     }
+
+    /**
+     * Shuffle-everything order (Phase 1): the full catalog in random order,
+     * dislikes excluded. Pure — the seed pins it for tests; the service
+     * passes a time-based seed so every tap shuffles fresh. The tap-to-play
+     * path still resolves only the first track before first audio.
+     */
+    fun shuffleOrder(
+        ids: List<String>,
+        isDisliked: (String) -> Boolean,
+        seed: Long
+    ): List<String> = ids.filter { !isDisliked(it) }.shuffled(Random(seed))
+
+    /**
+     * "More like this" (Phase 1): a queue seeded from one track's
+     * artist/genre/mood, ranked by on-device taste signals. Pure and
+     * deterministic — ties keep catalog order. Only catalog ids in, only
+     * catalog ids out; the seed itself and dislikes are excluded.
+     *
+     * Scoring: same artist +3, same genre +2, shared genre token +1
+     * (so "dark phonk" rides the "phonk" lane), liked artist +1,
+     * liked genre +1. boostedCount = tracks scoring above zero.
+     */
+    fun moreLikeThis(
+        seed: Track,
+        ids: List<String>,
+        isDisliked: (String) -> Boolean,
+        likedArtists: Set<String>,
+        likedGenres: Set<String>,
+        trackOf: (String) -> Track?
+    ): QueuePlan {
+        val seedGenre = seed.genre.lowercase()
+        val seedTokens = seedGenre.split(Regex("[^a-z0-9]+"))
+            .filter { it.isNotEmpty() }.toSet()
+        val seedArtist = seed.artist.lowercase()
+        // Triple(position, id, score) — no local class, keeps it simple.
+        val ranked = ids.mapIndexedNotNull { pos, id ->
+            if (id == seed.id || isDisliked(id)) return@mapIndexedNotNull null
+            val t = trackOf(id) ?: return@mapIndexedNotNull null
+            var s = 0
+            if (t.artist.lowercase() == seedArtist) s += 3
+            val g = t.genre.lowercase()
+            if (g.isNotEmpty()) {
+                if (g == seedGenre) s += 2
+                else if (seedTokens.isNotEmpty() &&
+                    g.split(Regex("[^a-z0-9]+")).any { it in seedTokens }
+                ) s += 1
+            }
+            if (t.artist in likedArtists) s += 1
+            if (t.genre.isNotEmpty() && t.genre in likedGenres) s += 1
+            Triple(pos, id, s)
+        }.sortedWith(compareByDescending<Triple<Int, String, Int>> { it.third }
+            .thenBy { it.first })
+        val ordered = ranked.map { it.second }
+        return QueuePlan(ordered, ordered.firstOrNull(), ranked.count { it.third > 0 })
+    }
 }
 
 /**
@@ -119,9 +179,13 @@ class PlaybackQueue(
         // 2. Tap-to-first-audio: the player's first call happens after exactly
         //    the resolutions above (1 in the healthy case), not after N.
         control.setAndPlayFirst(head)
-        // 3. Background: resolve the rest in tap order (minus the head) and
-        //    append in batches so a 494-track queue streams in progressively.
-        val rest = order.filter { it != firstId }
+        // 3. Background: resolve the rest DOWNWARD from the tap, then wrap to
+        //    the head (AUDIT §2.1 defect 2). After the tapped track, playback
+        //    continues from the tap position — it never restarts at the
+        //    playlist head. Any Up Next UI built on this ordering is honest.
+        val firstPos = order.indexOf(firstId).takeIf { it >= 0 } ?: startPos
+        val rest = (order.drop(firstPos + 1) + order.take(firstPos))
+            .filter { it != firstId }
         val batch = ArrayList<MediaItem>(batchSize)
         for (id in rest) {
             if (isStale()) return

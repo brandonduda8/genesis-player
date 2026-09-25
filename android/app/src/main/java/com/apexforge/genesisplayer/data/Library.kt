@@ -48,7 +48,12 @@ object Library {
         applyJson(JSONObject(json))
     }
 
-    private fun applyJson(root: JSONObject) {
+    /**
+     * Parse a catalog JSON root into the active library. Internal (not
+     * private) so the API-34 instrumented tests can prove genre flows
+     * through — the bundled genre-drop (AUDIT §2.1 defect 3) is pinned here.
+     */
+    internal fun applyJson(root: JSONObject) {
         val parsed = root.getJSONArray("tracks").let { arr ->
             List(arr.length()) { i ->
                 val o = arr.getJSONObject(i)
@@ -59,6 +64,7 @@ object Library {
                     streamUrl = o.getString("stream_url"),
                     artworkUrl = o.optString("artwork_url", ""),
                     durationS = o.optLong("duration_s", 0),
+                    genre = o.optString("genre", ""),
                     soundcloudUrl = o.optString("soundcloud_url", "")
                 )
             }

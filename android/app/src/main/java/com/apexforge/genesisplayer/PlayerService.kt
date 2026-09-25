@@ -7,17 +7,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import com.apexforge.genesisplayer.data.ApolloStore
 import com.apexforge.genesisplayer.data.HistoryStore
+import com.apexforge.genesisplayer.data.HistorySync
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.SoundCloudResolver
@@ -40,6 +44,24 @@ class PlayerService : MediaSessionService() {
     // history bookkeeping
     private var currentId: String? = null
     private var currentPlayRecorded = false
+
+    /** AUDIT §2.1 defect 1: dead/expired URLs skip + tell the user. Never stall silently. */
+    private val errorGuard = PlaybackErrorGuard()
+
+    /** Consecutive mood-gate skips; bursts auto-clear the gate instead of spinning. */
+    private var gatedSkips = 0
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    private fun toast(msg: String) {
+        mainHandler.post {
+            try {
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.w(TAG, "toast failed (${e.message})")
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -68,13 +90,54 @@ class PlayerService : MediaSessionService() {
                     currentId = newId
                     currentPlayRecorded = false
                     Log.i(TAG, "now playing id=$newId")
+                    // Apollo mood gate (client-side, APOLLO-LIVE Flow D): a
+                    // gated genre skips automatically at the transition, with
+                    // a burst guard so an all-gated queue can't spin forever.
+                    val gated = ApolloStore.isGated(this@PlayerService, newId?.let { Library.track(it) })
+                    if (gated && item != null) {
+                        gatedSkips++
+                        if (gatedSkips > 30) {
+                            gatedSkips = 0
+                            ApolloStore.clearMoodGate(this@PlayerService)
+                            toast("Gate cleared — everything was getting skipped.")
+                            Log.i(TAG, "mood gate auto-cleared after skip burst")
+                        } else {
+                            toast("Gated lane — skipping ahead.")
+                            Log.i(TAG, "mood gate: skipping $newId")
+                            mainHandler.post { player?.seekToNext() }
+                        }
+                        return
+                    }
+                    gatedSkips = 0
                     // SoundCloud signed URLs expire within minutes: re-resolve
                     // at every transition (just-started item + upcoming one).
                     if (item != null) refreshSoundCloudAtTransition(item)
                 }
             }
 
+            override fun onPlayerError(error: PlaybackException) {
+                // AUDIT §2.1 defect 1: a dead/expired URL used to stall the
+                // player in an error state with no skip, no retry, no message.
+                // Now: skip to the next playable + tell the user. A whole
+                // queue of dead URLs stops honestly instead of spinning.
+                Log.w(TAG, "onPlayerError: ${error.errorCodeName} (${error.message})")
+                when (val d = errorGuard.onError()) {
+                    is PlaybackErrorGuard.Decision.Skip -> {
+                        toast(d.message)
+                        mainHandler.post { player?.seekToNext() }
+                    }
+                    is PlaybackErrorGuard.Decision.Stop -> {
+                        toast(d.message)
+                        mainHandler.post {
+                            player?.stop()
+                            player?.clearMediaItems()
+                        }
+                    }
+                }
+            }
+
             override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying) errorGuard.onSuccess()
                 if (isPlaying && fx == null) {
                     // Fallback: if the session-id callback never fired with a valid
                     // id (e.g. odd emulator audio paths), try a lazy attach.
@@ -112,6 +175,7 @@ class PlayerService : MediaSessionService() {
         val (nRatings, nUnsynced) = RatingsStore.loadSummary(this)
         Log.i(TAG, "RatingsStore: loaded $nRatings ratings ($nUnsynced unsynced)")
         TasteSync.syncNow(this)
+        HistorySync.flush(this)
     }
 
     /**
@@ -178,7 +242,6 @@ class PlayerService : MediaSessionService() {
     private val playGen = AtomicInteger(0)
 
     fun playTracks(ids: List<String>, startIndex: Int = 0) {
-        val p = player ?: return
         val ctx = this@PlayerService
         val plan = QueuePlanner.plan(
             ids = ids,
@@ -202,6 +265,16 @@ class PlayerService : MediaSessionService() {
             Log.w(TAG, "playTracks: no playable tracks after filtering")
             return
         }
+        launchQueue(plan, "play")
+    }
+
+    /**
+     * Shared tap-to-play launch: generation-guarded background queue on the
+     * tap-to-play path (first audio after one resolution). [tag] names the
+     * worker thread and log lines.
+     */
+    private fun launchQueue(plan: QueuePlan, tag: String) {
+        val p = player ?: return
         val gen = playGen.incrementAndGet()
         val main = Handler(Looper.getMainLooper())
         val control = object : PlaybackQueue.PlayerControl {
@@ -211,7 +284,7 @@ class PlayerService : MediaSessionService() {
                     p.setMediaItems(listOf(item), 0, 0L)
                     p.prepare()
                     p.play()
-                    Log.i(TAG, "playTracks: tapped track playing (id=${item.mediaId})")
+                    Log.i(TAG, "$tag: first track playing (id=${item.mediaId})")
                 }
             }
 
@@ -219,7 +292,7 @@ class PlayerService : MediaSessionService() {
                 main.post {
                     if (playGen.get() != gen) return@post
                     p.addMediaItems(items)
-                    Log.i(TAG, "playTracks: appended ${items.size} queued tracks")
+                    Log.i(TAG, "$tag: appended ${items.size} queued tracks")
                 }
             }
         }
@@ -229,7 +302,73 @@ class PlayerService : MediaSessionService() {
                 control = control,
                 isStale = { playGen.get() != gen }
             ).start(plan)
-        }.apply { isDaemon = true; name = "genesis-play" }.start()
+        }.apply { isDaemon = true; name = "genesis-$tag" }.start()
+    }
+
+    /**
+     * SHUFFLE EVERYTHING (Phase 1): one-tap global shuffle across the whole
+     * catalog. Dislikes excluded; first audio stays fast via the tap-to-play
+     * path (only the first shuffled track resolves before playback starts).
+     */
+    fun shuffleAll() {
+        val ctx = this@PlayerService
+        val ids = Library.tracks.map { it.id }
+        if (ids.isEmpty()) {
+            toast("Nothing to shuffle yet — hit Refresh music first.")
+            Log.w(TAG, "shuffleAll: empty catalog")
+            return
+        }
+        val shuffled = QueuePlanner.shuffleOrder(
+            ids,
+            { RatingsStore.isDisliked(ctx, it) },
+            System.currentTimeMillis()
+        )
+        if (shuffled.isEmpty()) {
+            toast("Everything's disliked — undislike something to shuffle.")
+            Log.w(TAG, "shuffleAll: all ${ids.size} tracks disliked")
+            return
+        }
+        Log.i(
+            TAG,
+            "shuffleAll: queue ${shuffled.size} tracks " +
+                "(${ids.size - shuffled.size} excluded by dislike)"
+        )
+        launchQueue(QueuePlan(shuffled, shuffled.first(), 0), "shuffleAll")
+    }
+
+    /**
+     * MORE LIKE THIS (Phase 1): a queue seeded from the given track's
+     * artist/genre/mood, ranked by the on-device taste vectors
+     * (QueuePlanner.moreLikeThis). Deterministic, catalog ids only, never
+     * the seed itself, never dislikes.
+     */
+    fun moreLikeThis(seedId: String) {
+        val ctx = this@PlayerService
+        val seed = Library.track(seedId)
+        if (seed == null) {
+            toast("Couldn't find that track.")
+            Log.w(TAG, "moreLikeThis: unknown seed id=$seedId")
+            return
+        }
+        val plan = QueuePlanner.moreLikeThis(
+            seed = seed,
+            ids = Library.tracks.map { it.id },
+            isDisliked = { RatingsStore.isDisliked(ctx, it) },
+            likedArtists = RatingsStore.likedArtists(ctx),
+            likedGenres = RatingsStore.likedGenres(ctx),
+            trackOf = { Library.track(it) }
+        )
+        if (plan.startId == null) {
+            toast("Nothing else in that lane yet.")
+            Log.w(TAG, "moreLikeThis: empty pool for seed id=$seedId")
+            return
+        }
+        Log.i(
+            TAG,
+            "moreLikeThis: queue ${plan.orderedIds.size} tracks like " +
+                "${seed.artist} — ${seed.title} (${plan.boostedCount} in-lane)"
+        )
+        launchQueue(plan, "moreLikeThis")
     }
 
     /**
@@ -276,6 +415,41 @@ class PlayerService : MediaSessionService() {
         p.play()
     }
 
+    /**
+     * Apollo `queue_up_next` (APOLLO-LIVE §2.1): insert up to 10 catalog
+     * tracks directly after the current one. Resolved off the main thread;
+     * unknown ids are dropped, never played. The rest of the queue stays
+     * as it was.
+     */
+    fun queueUpNext(ids: List<String>) {
+        val p = player ?: return
+        val wanted = ids.filter { Library.track(it) != null }.take(10)
+        if (wanted.isEmpty()) {
+            Log.w(TAG, "queueUpNext: no known ids, ignoring")
+            return
+        }
+        Thread {
+            val items = wanted.mapNotNull { itemFor(it) }
+            if (items.isEmpty()) {
+                mainHandler.post { toast("Those tracks wouldn't play — nothing queued.") }
+                return@Thread
+            }
+            mainHandler.post {
+                val cur = player ?: return@post
+                if (cur.mediaItemCount == 0) {
+                    cur.setMediaItems(items, 0, 0L)
+                    cur.prepare()
+                    cur.play()
+                } else {
+                    val at = (cur.currentMediaItemIndex + 1).coerceIn(0, cur.mediaItemCount)
+                    cur.addMediaItems(at, items)
+                }
+                toast("Queued ${items.size} up next.")
+                Log.i(TAG, "queueUpNext: inserted ${items.size} after current")
+            }
+        }.apply { isDaemon = true; name = "genesis-queue-up-next" }.start()
+    }
+
     private inner class SessionCallback : MediaSession.Callback {
         override fun onConnect(
             session: MediaSession,
@@ -284,6 +458,9 @@ class PlayerService : MediaSessionService() {
             // Custom commands are dropped by default — explicitly accept ours.
             val commands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                 .add(SessionCommand(ACTION_PLAY_IDS, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_SHUFFLE_ALL, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_MORE_LIKE_THIS, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_QUEUE_UP_NEXT, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_SKIP_NEXT, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_SKIP_PREV, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_PLAY_FORYOU, Bundle.EMPTY))
@@ -303,6 +480,12 @@ class PlayerService : MediaSessionService() {
                 ACTION_PLAY_IDS -> {
                     val ids = args.getStringArrayList("ids") ?: arrayListOf()
                     playTracks(ids, args.getInt("index", 0))
+                }
+                ACTION_SHUFFLE_ALL -> shuffleAll()
+                ACTION_MORE_LIKE_THIS -> moreLikeThis(args.getString("id", ""))
+                ACTION_QUEUE_UP_NEXT -> {
+                    val ids = args.getStringArrayList("ids") ?: arrayListOf()
+                    queueUpNext(ids)
                 }
                 ACTION_SKIP_NEXT -> userSkip(1)
                 ACTION_SKIP_PREV -> userSkip(-1)
@@ -325,6 +508,9 @@ class PlayerService : MediaSessionService() {
     companion object {
         const val TAG = "GenesisPlayer"
         const val ACTION_PLAY_IDS = "GENESIS_PLAY_IDS"
+        const val ACTION_SHUFFLE_ALL = "GENESIS_SHUFFLE_ALL"
+        const val ACTION_MORE_LIKE_THIS = "GENESIS_MORE_LIKE_THIS"
+        const val ACTION_QUEUE_UP_NEXT = "GENESIS_QUEUE_UP_NEXT"
         const val ACTION_SKIP_NEXT = "GENESIS_SKIP_NEXT"
         const val ACTION_SKIP_PREV = "GENESIS_SKIP_PREV"
         const val ACTION_PLAY_FORYOU = "GENESIS_PLAY_FORYOU"

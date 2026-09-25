@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.Psychology
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
@@ -40,6 +41,8 @@ import com.apexforge.genesisplayer.ui.ForYouScreen
 import com.apexforge.genesisplayer.ui.GenesisTheme
 import com.apexforge.genesisplayer.ui.LibraryScreen
 import com.apexforge.genesisplayer.ui.NowPlayingScreen
+import com.apexforge.genesisplayer.ui.ApolloScreen
+import com.apexforge.genesisplayer.data.ApolloDrops
 import com.google.common.util.concurrent.MoreExecutors
 
 class MainActivity : ComponentActivity() {
@@ -53,6 +56,7 @@ class MainActivity : ComponentActivity() {
         title = com.apexforge.genesisplayer.ui.RemoteTheme.labels.value.appName
         RemoteCatalog.checkForUpdates(this)
         RemoteConfig.checkForUpdates(this)
+        ApolloDrops.poll(this) // Phase 1: Fresh Signals poll at launch (Refresh Music re-polls).
         handleTestPlay(intent)
         handleTestRefresh(intent)
         handleTestRate(intent)
@@ -202,7 +206,7 @@ fun GenesisApp() {
         "foryou" to Icons.Filled.AutoAwesome,
         "eq" to Icons.Filled.GraphicEq
     )
-    val tabs = sections.mapNotNull { s ->
+    val baseTabs = sections.mapNotNull { s ->
         icons[s.id]?.let { Tab(s.id, s.label, it) }
     }.ifEmpty {
         listOf(
@@ -212,6 +216,9 @@ fun GenesisApp() {
             Tab("eq", "EQ", Icons.Filled.GraphicEq)
         )
     }
+    // Apollo is a pinned tab, independent of stale remote config (APOLLO-LIVE §1.1).
+    val tabs = if (baseTabs.any { it.id == "apollo" }) baseTabs
+    else baseTabs + Tab("apollo", "Apollo", Icons.Filled.Psychology)
     val safeTab = tab.coerceIn(tabs.indices)
     if (safeTab != tab) tab = safeTab
     Scaffold(
@@ -238,6 +245,7 @@ fun GenesisApp() {
             "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
             "library" -> LibraryScreen(controller, Modifier.padding(pad))
             "foryou" -> ForYouScreen(controller, Modifier.padding(pad))
+            "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
             "eq" -> EqScreen(Modifier.padding(pad))
         }
     }
