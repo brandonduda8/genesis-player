@@ -276,7 +276,7 @@ jobs:
           adb shell screencap -p /sdcard/player_magenta.png || true
           adb pull /sdcard/player_magenta.png /tmp/player_magenta.png || true
           adb reverse --remove tcp:18999 || true
-          pkill -f "http.server 18999" || true
+          pkill -f "[h]ttp.server 18999" || true
           echo "--- PHASE C: airplane mode — launch must still work from bundled/cached ---"
           adb logcat -c
           adb shell settings put global airplane_mode_on 1
