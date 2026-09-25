@@ -125,6 +125,27 @@ jobs:
           adb shell input keyevent 82 || true
           sleep 3
 
+      - name: API-34 instrumented tests (tap-to-play queue repair)
+        working-directory: android
+        run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          /tmp/gradle-8.7/bin/gradle connectedDebugAndroidTest --no-daemon
+          echo "--- instrumented test report ---"
+          find app/build/outputs/androidTest-results -name "*.xml" | head
+          python3 - << 'PYEOF'
+          import glob, xml.etree.ElementTree as ET
+          total=fail=err=skip=0
+          for f in glob.glob('app/build/outputs/androidTest-results/**/*.xml', recursive=True):
+              r=ET.parse(f).getroot()
+              total+=int(r.get('tests',0)); fail+=int(r.get('failures',0))
+              err+=int(r.get('errors',0)); skip+=int(r.get('skipped',0))
+              print(f.split('/')[-1], 'tests=%s failures=%s errors=%s skipped=%s' % (
+                  r.get('tests'), r.get('failures'), r.get('errors'), r.get('skipped')))
+          print(f"TOTAL tests={total} failures={fail} errors={err} skipped={skip}")
+          raise SystemExit(1 if (fail or err) else 0)
+          PYEOF
+
       - name: Gate — install, play, prove audio, background + screen-off
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk

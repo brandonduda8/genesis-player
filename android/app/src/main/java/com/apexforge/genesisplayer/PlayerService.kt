@@ -68,6 +68,9 @@ class PlayerService : MediaSessionService() {
                     currentId = newId
                     currentPlayRecorded = false
                     Log.i(TAG, "now playing id=$newId")
+                    // SoundCloud signed URLs expire within minutes: re-resolve
+                    // at every transition (just-started item + upcoming one).
+                    if (item != null) refreshSoundCloudAtTransition(item)
                 }
             }
 
@@ -161,62 +164,108 @@ class PlayerService : MediaSessionService() {
     }
 
     /**
-     * Queue assembly runs off the main thread because SoundCloud tracks need
-     * live stream resolution (network). Direct-stream tracks resolve
-     * instantly. The generation counter drops stale assemblies when the user
-     * taps a new queue before the old one finished resolving.
+     * Tap-to-play (2026-09-25 repair): the tapped track resolves and plays
+     * IMMEDIATELY; the rest of the queue resolves in the background and is
+     * appended in batches. The old code resolved the entire playlist serially
+     * before any audio started — a tap could wait on 50-494 resolutions.
+     *
+     * Queue planning (dislike filter + taste boost + tap-index mapping) is
+     * pure and instant via [QueuePlanner]; only SoundCloud URL resolution
+     * touches the network, off the main thread. The generation counter drops
+     * stale queues when the user taps a new queue before the old one
+     * finished resolving.
      */
     private val playGen = AtomicInteger(0)
 
     fun playTracks(ids: List<String>, startIndex: Int = 0) {
         val p = player ?: return
-        // Taste-aware queue: disliked tracks never enter a queue again;
-        // tracks by liked artists/genres float to the front (stable order).
         val ctx = this@PlayerService
+        val plan = QueuePlanner.plan(
+            ids = ids,
+            startIndex = startIndex,
+            isDisliked = { RatingsStore.isDisliked(ctx, it) },
+            likedArtists = RatingsStore.likedArtists(ctx),
+            likedGenres = RatingsStore.likedGenres(ctx),
+            trackOf = { Library.track(it) }
+        )
+        val ordered = plan.orderedIds
         val excluded = ids.filter { RatingsStore.isDisliked(ctx, it) }
-        val kept = ids.filter { !RatingsStore.isDisliked(ctx, it) }
-        val likedArtists = RatingsStore.likedArtists(ctx)
-        val likedGenres = RatingsStore.likedGenres(ctx)
-        val ordered: List<String>
-        val boosted: Int
-        if (likedArtists.isEmpty() && likedGenres.isEmpty()) {
-            ordered = kept
-            boosted = 0
-        } else {
-            val (b, rest) = kept.partition { id ->
-                val t = Library.track(id)
-                t != null && (t.artist in likedArtists || (t.genre.isNotEmpty() && t.genre in likedGenres))
-            }
-            ordered = b + rest
-            boosted = b.size
-        }
-        val startId = ids.getOrNull(startIndex)
-        val idx = (if (startId != null) ordered.indexOf(startId) else -1).takeIf { it >= 0 } ?: 0
+        // Log format is load-bearing: the CI gate greps
+        // "playTracks: queue N tracks (X excluded by dislike [...], Y boosted by taste)".
         Log.i(
             TAG,
             "playTracks: queue ${ordered.size} tracks " +
                 "(${excluded.size} excluded by dislike [${excluded.take(5).joinToString(",")}], " +
-                "$boosted boosted by taste)"
+                "${plan.boostedCount} boosted by taste)"
         )
+        if (plan.startId == null) {
+            Log.w(TAG, "playTracks: no playable tracks after filtering")
+            return
+        }
         val gen = playGen.incrementAndGet()
+        val main = Handler(Looper.getMainLooper())
+        val control = object : PlaybackQueue.PlayerControl {
+            override fun setAndPlayFirst(item: MediaItem) {
+                main.post {
+                    if (playGen.get() != gen) return@post
+                    p.setMediaItems(listOf(item), 0, 0L)
+                    p.prepare()
+                    p.play()
+                    Log.i(TAG, "playTracks: tapped track playing (id=${item.mediaId})")
+                }
+            }
+
+            override fun appendItems(items: List<MediaItem>) {
+                main.post {
+                    if (playGen.get() != gen) return@post
+                    p.addMediaItems(items)
+                    Log.i(TAG, "playTracks: appended ${items.size} queued tracks")
+                }
+            }
+        }
         Thread {
-            val items = ordered.mapNotNull { id ->
-                if (playGen.get() != gen) return@mapNotNull null
-                itemFor(id)
-            }
-            if (playGen.get() != gen) return@Thread
-            if (items.isEmpty()) {
-                Log.w(TAG, "playTracks: no playable items in queue")
-                return@Thread
-            }
-            val start = idx.coerceIn(items.indices)
-            Handler(Looper.getMainLooper()).post {
-                if (playGen.get() != gen) return@post
-                p.setMediaItems(items, start, 0L)
-                p.prepare()
-                p.play()
-            }
+            PlaybackQueue(
+                resolve = { id -> itemFor(id) },
+                control = control,
+                isStale = { playGen.get() != gen }
+            ).start(plan)
         }.apply { isDaemon = true; name = "genesis-play" }.start()
+    }
+
+    /**
+     * Re-resolve SoundCloud signed URLs at a track transition: the
+     * just-started item plus the upcoming one. Runs off the main thread;
+     * swaps the playlist entry (position preserved for the current item) only
+     * when the resolver returns a URL, and only while this queue generation
+     * is still current and the entry still holds the same track.
+     */
+    private fun refreshSoundCloudAtTransition(item: MediaItem) {
+        val p = player ?: return
+        val index = p.currentMediaItemIndex
+        val count = p.mediaItemCount
+        val targets = listOf(index, index + 1).filter { it in 0 until count }
+        if (targets.isEmpty()) return
+        val gen = playGen.get()
+        for (i in targets) {
+            val target = p.getMediaItemAt(i)
+            val t = Library.track(target.mediaId) ?: continue
+            if (t.soundcloudUrl.isEmpty()) continue
+            Thread {
+                val freshItem = SoundCloudRefresher.refresh(target, t) { permalink ->
+                    SoundCloudResolver.resolve(this@PlayerService, permalink)?.streamUrl
+                } ?: return@Thread
+                Handler(Looper.getMainLooper()).post {
+                    val cur = player ?: return@post
+                    if (playGen.get() != gen || i >= cur.mediaItemCount) return@post
+                    if (cur.getMediaItemAt(i).mediaId != target.mediaId) return@post
+                    val isCurrent = i == cur.currentMediaItemIndex
+                    val pos = if (isCurrent) cur.currentPosition else C.TIME_UNSET
+                    cur.replaceMediaItem(i, freshItem)
+                    if (isCurrent && pos != C.TIME_UNSET) cur.seekTo(i, pos)
+                    Log.i(TAG, "SoundCloud URL refreshed at transition: ${t.artist} - ${t.title}")
+                }
+            }.apply { isDaemon = true; name = "genesis-sc-refresh" }.start()
+        }
     }
 
     fun playForYou(itemId: String) {

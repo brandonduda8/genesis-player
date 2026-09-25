@@ -14,6 +14,7 @@ android {
         targetSdk 34
         versionCode 1
         versionName '1.0'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     buildTypes {
@@ -63,4 +64,9 @@ dependencies {
     implementation 'com.google.guava:guava:33.2.1-android'
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
+
+    // API-34 instrumented tests: tap-to-play queue repair (QueuePlannerTest,
+    // TapLatencyTest). Run on the emulator via connectedDebugAndroidTest.
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
 }
