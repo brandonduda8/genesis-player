@@ -189,13 +189,22 @@ object TasteSync {
 
     fun syncNow(context: Context) {
         val app = context.applicationContext
+        // Synchronous attempt line: emitted on the CALLER thread at rating
+        // time, before any networking. This proves the sync FIRED even if the
+        // network leg later hangs (no tailnet route in CI) or logcat rotates
+        // before the async result line lands. The CI gate asserts on this.
+        val pending = try { RatingsStore.unsynced(app).size } catch (t: Throwable) { -1 }
+        Log.i(TAG, "TasteSync: queued attempt with $pending pending rating(s)")
         Thread {
             try {
-                val pending = RatingsStore.unsynced(app)
-                if (pending.isEmpty()) return@Thread
+                val events = RatingsStore.unsynced(app)
+                if (events.isEmpty()) {
+                    Log.i(TAG, "TasteSync: nothing pending, skipping network attempt")
+                    return@Thread
+                }
                 val ssl = tailnetSsl()
                 val sent = mutableListOf<JSONObject>()
-                for (e in pending) {
+                for (e in events) {
                     try {
                         val c = (URL(RatingsStore.TASTE_URL).openConnection() as HttpsURLConnection).apply {
                             sslSocketFactory = ssl.socketFactory
@@ -218,9 +227,11 @@ object TasteSync {
                 if (sent.isNotEmpty()) {
                     RatingsStore.markSynced(app, sent)
                     Log.i(TAG, "TasteSync: synced ${sent.size} rating(s) to Apollo")
+                } else {
+                    Log.i(TAG, "TasteSync: 0 delivered, ${events.size} remain queued for retry")
                 }
-            } catch (e: Exception) {
-                Log.w(TAG, "TasteSync: failed (${e.message})")
+            } catch (t: Throwable) {
+                Log.w(TAG, "TasteSync: failed (${t.javaClass.simpleName}: ${t.message})")
             }
         }.apply { isDaemon = true; name = "taste-sync" }.start()
     }

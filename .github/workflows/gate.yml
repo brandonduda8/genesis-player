@@ -427,10 +427,24 @@ jobs:
             || { echo "LIKE BOOST NOT OBSERVED"; exit 1; }
           echo "LIKE BOOST PROVEN: $BOOSTED track(s) floated up"
           echo "--- FB7: taste sync fires fire-and-forget (CI has no tailnet route — must not block/crash) ---"
+          adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_RATE --es track_id "$NEW_ID" --es rating like
+          # The attempt line is emitted synchronously on the rating call itself,
+          # before any networking — it must appear within seconds. The async
+          # network leg may hang or fail in CI (no tailnet route); that is the
+          # accepted outbox state there, not a failure.
+          SYNC_OK=0
+          for i in $(seq 1 15); do
+            if adb logcat -d | grep -q "TasteSync: queued attempt"; then SYNC_OK=1; break; fi
+            sleep 2
+          done
+          [ "$SYNC_OK" = "1" ] || { echo "TASTE SYNC NEVER FIRED"; exit 1; }
           adb logcat -d | grep -E "TasteSync" | tail -4
-          adb logcat -d | grep -qE "TasteSync: (unreachable|synced)" \
-            || { echo "TASTE SYNC NEVER FIRED"; exit 1; }
-          echo "TASTE SYNC FIRED (queued, non-blocking)"
+          echo "TASTE SYNC FIRED (fire-and-forget)"
+          # …and the app must be alive right after (no block, no crash).
+          adb shell pidof com.apexforge.genesisplayer | grep -q . || { echo "APP DIED AFTER SYNC"; exit 1; }
+          echo "APP ALIVE AFTER SYNC"
           echo "--- FB8: ratings persist across relaunch ---"
           adb shell am force-stop com.apexforge.genesisplayer
           sleep 2
