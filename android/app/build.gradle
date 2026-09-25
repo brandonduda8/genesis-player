@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.compose'
+    // (no kotlin.plugin.compose on Kotlin 1.9.x — see root build.gradle)
 }
 
 android {
