@@ -36,6 +36,16 @@ data class QueuePlan(
     val boostedCount: Int
 )
 
+/**
+ * Load-bearing log formatting for the DEBUG queue-dump gate hook
+ * (PlayerService.debugQueueDump). Kept here, next to queue ownership, so the
+ * format has exactly one home. Pure — pinned by BrknWavesTest.
+ */
+object QueueDump {
+    fun format(ids: List<String>, currentIndex: Int): String =
+        "QueueDump: order [${ids.joinToString(",")}] (current=$currentIndex)"
+}
+
 object QueuePlanner {
     /**
      * Pure queue planning. No Android framework calls — unit-testable.

@@ -1,14 +1,22 @@
 package com.apexforge.genesisplayer.data
 
 import android.content.Context
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
- * V1 on-device listening history: per-track play / skip / completion counters.
- * The full Apollo learning loop (re-ranking For You from these signals) is v2;
- * v1 records honestly and surfaces counts in the UI.
+ * V1 on-device listening history: per-track play / skip / completion counters,
+ * plus a timestamped recent-plays list (BRKN wave 3) backing the Library's
+ * Recently Played section. The full Apollo learning loop (re-ranking For You
+ * from these signals) is v2; v1 records honestly and surfaces counts in the UI.
  */
 object HistoryStore {
     private const val PREFS = "genesis_history"
+    private const val K_RECENT = "recent_plays"
+    private const val RECENT_CAP = 20
+
+    /** One timestamped recent play, newest first. */
+    data class RecentPlay(val trackId: String, val playedAt: Long)
 
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -16,7 +24,39 @@ object HistoryStore {
     fun recordPlay(context: Context, trackId: String) {
         val p = prefs(context)
         p.edit().putInt("play_$trackId", p.getInt("play_$trackId", 0) + 1).apply()
+        recordRecent(context, trackId)
         HistorySync.record(context, trackId, "play")
+    }
+
+    /** Newest-first recent plays, capped. Never throws. */
+    fun recentPlays(context: Context): List<RecentPlay> {
+        return try {
+            val arr = JSONArray(prefs(context).getString(K_RECENT, "[]") ?: "[]")
+            List(arr.length()) { i ->
+                val o = arr.getJSONObject(i)
+                RecentPlay(o.optString("id", ""), o.optLong("ts", 0L))
+            }.filter { it.trackId.isNotEmpty() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun recordRecent(context: Context, trackId: String) {
+        try {
+            val p = prefs(context)
+            val arr = JSONArray(p.getString(K_RECENT, "[]") ?: "[]")
+            val out = JSONArray()
+            out.put(JSONObject().put("id", trackId).put("ts", System.currentTimeMillis()))
+            // De-dupe: the track moves to the head instead of doubling up.
+            for (i in 0 until arr.length()) {
+                val o = arr.getJSONObject(i)
+                if (o.optString("id") != trackId) out.put(o)
+                if (out.length() >= RECENT_CAP) break
+            }
+            p.edit().putString(K_RECENT, out.toString()).apply()
+        } catch (e: Exception) {
+            // Best-effort; the counters above already recorded the play.
+        }
     }
 
     fun recordSkip(context: Context, trackId: String) {

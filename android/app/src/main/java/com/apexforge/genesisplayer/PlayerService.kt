@@ -20,10 +20,13 @@ import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import com.apexforge.genesisplayer.data.ApolloStore
+import com.apexforge.genesisplayer.data.AudioSessionHub
+import com.apexforge.genesisplayer.data.CrossfadeMath
 import com.apexforge.genesisplayer.data.HistoryStore
 import com.apexforge.genesisplayer.data.HistorySync
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RatingsStore
+import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.data.SoundCloudResolver
 import com.apexforge.genesisplayer.data.TasteSync
 import com.google.common.util.concurrent.Futures
@@ -78,6 +81,9 @@ class PlayerService : MediaSessionService() {
         p.addListener(object : Player.Listener {
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 Log.i(TAG, "audioSessionId changed -> $audioSessionId")
+                // BRKN wave 1: publish to the shared hub so the UI's ember
+                // visualizer can attach a Visualizer to the real session.
+                AudioSessionHub.audioSessionId = audioSessionId
                 if (audioSessionId != C.AUDIO_SESSION_ID_UNSET && audioSessionId != 0) {
                     fx?.release()
                     fx = AudioFxController(this@PlayerService, audioSessionId)
@@ -138,11 +144,15 @@ class PlayerService : MediaSessionService() {
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) errorGuard.onSuccess()
+                // BRKN wave 2: a pause mid-crossfade aborts it — the fading
+                // players must never keep rendering under a paused session.
+                if (!isPlaying) abortCrossfade("paused")
                 if (isPlaying && fx == null) {
                     // Fallback: if the session-id callback never fired with a valid
                     // id (e.g. odd emulator audio paths), try a lazy attach.
                     val sid = p.audioSessionId
                     Log.i(TAG, "lazy FX attach attempt, sessionId=$sid")
+                    AudioSessionHub.audioSessionId = sid
                     if (sid != C.AUDIO_SESSION_ID_UNSET && sid != 0) {
                         fx = AudioFxController(this@PlayerService, sid)
                     }
@@ -160,6 +170,16 @@ class PlayerService : MediaSessionService() {
                 if (state == Player.STATE_ENDED) {
                     HistoryStore.recordCompletion(this@PlayerService, id)
                     Log.i(TAG, "history: completion $id")
+                    // BRKN wave 2: end-of-queue sleep timer wins over autoplay.
+                    if (sleepEndOfQueue) {
+                        sleepEndOfQueue = false
+                        toast("Sleep timer — end of queue.")
+                        Log.i(TAG, "SleepTimer: fired at end of queue, stopping")
+                    } else if (autoplayEnabled() && p.repeatMode == Player.REPEAT_MODE_OFF) {
+                        // BRKN wave 4: autoplay — the queue's last item ended;
+                        // seed moreLikeThis from it and keep playing.
+                        seedAutoplay(id)
+                    }
                 }
             }
         })
@@ -176,6 +196,9 @@ class PlayerService : MediaSessionService() {
         Log.i(TAG, "RatingsStore: loaded $nRatings ratings ($nUnsynced unsynced)")
         TasteSync.syncNow(this)
         HistorySync.flush(this)
+        // BRKN wave 2: the crossfade watcher ticks every 500ms on the main
+        // thread; it no-ops unless crossfade seconds > 0 are configured.
+        mainHandler.post(xfadeTick)
     }
 
     /**
@@ -415,6 +438,293 @@ class PlayerService : MediaSessionService() {
         p.play()
     }
 
+    // ---- BRKN wave 2: playback prefs (crossfade seconds, autoplay) ----
+    private fun playbackPrefs() = getSharedPreferences("genesis_playback", MODE_PRIVATE)
+    private fun xfadeSeconds(): Float = playbackPrefs().getFloat("xfade_s", 0f)
+    private fun autoplayEnabled(): Boolean = playbackPrefs().getBoolean("autoplay", true)
+
+    // ---- BRKN wave 2: sleep timer (service-side countdown) ----
+    private var sleepRunnable: Runnable? = null
+    private var sleepEndOfQueue = false
+
+    fun setSleepTimer(minutes: Int) {
+        cancelSleepTimer(silent = true)
+        if (minutes <= 0) return
+        val r = Runnable {
+            sleepRunnable = null
+            abortCrossfade("sleep timer")
+            player?.pause()
+            toast("Sleep timer — playback stopped.")
+            Log.i(TAG, "SleepTimer: fired after $minutes min, stopping playback")
+        }
+        sleepRunnable = r
+        mainHandler.postDelayed(r, minutes * 60_000L)
+        toast("Sleep timer: $minutes min.")
+        // Log format is load-bearing: the CI gate greps "SleepTimer: set N min".
+        Log.i(TAG, "SleepTimer: set $minutes min")
+    }
+
+    fun setSleepEndOfQueue() {
+        cancelSleepTimer(silent = true)
+        sleepEndOfQueue = true
+        toast("Sleep timer: end of queue.")
+        Log.i(TAG, "SleepTimer: set end of queue")
+    }
+
+    fun cancelSleepTimer(silent: Boolean = false) {
+        sleepRunnable?.let { mainHandler.removeCallbacks(it) }
+        sleepRunnable = null
+        sleepEndOfQueue = false
+        if (!silent) {
+            toast("Sleep timer off.")
+            // Load-bearing for the gate: "SleepTimer: cancelled".
+            Log.i(TAG, "SleepTimer: cancelled")
+        }
+    }
+
+    // ---- BRKN wave 2: TRUE overlapping crossfade (second ExoPlayer) ----
+    //
+    // When the current track is within X s of its end, the next queue item is
+    // prepared on player2 at volume 0; player1 ramps 1->0 while player2 ramps
+    // 0->1 over X s. Both decoders render into the mixer simultaneously — a
+    // genuine overlap, not a chained fade.
+    //
+    // The MediaSession deliberately stays pinned to player1: rebuilding it
+    // mid-playback would drop every controller (destabilizing). The "handoff"
+    // is player1 seekTo(next, player2.position) with volume restored — the
+    // audible player after the overlap, same session throughout.
+    private var player2: ExoPlayer? = null
+    private var xfading = false
+    private var xfadeFromIdx = -1
+    private var xfadeFromPos = 0L
+
+    private val xfadeTick = object : Runnable {
+        override fun run() {
+            try {
+                xfadeCheck()
+            } catch (t: Throwable) {
+                Log.w(TAG, "Crossfade: tick failed (${t.message})")
+            }
+            mainHandler.postDelayed(this, 500)
+        }
+    }
+
+    private fun xfadeCheck() {
+        val p = player ?: return
+        val s = xfadeSeconds()
+        val nextIdx = p.currentMediaItemIndex + 1
+        if (!CrossfadeMath.shouldEngage(
+                positionMs = p.currentPosition,
+                durationMs = p.duration,
+                xfadeS = s,
+                hasNext = nextIdx in 0 until p.mediaItemCount,
+                isPlaying = p.isPlaying && !xfading
+            )
+        ) return
+        engageCrossfade(nextIdx, s)
+    }
+
+    private fun engageCrossfade(nextIdx: Int, s: Float) {
+        val p = player ?: return
+        xfading = true
+        xfadeFromIdx = p.currentMediaItemIndex
+        xfadeFromPos = p.currentPosition
+        try {
+            val item = p.getMediaItemAt(nextIdx)
+            val attrs = AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                .build()
+            val p2 = ExoPlayer.Builder(this)
+                .setAudioAttributes(attrs, false) // no audio-focus fights with player1
+                .setHandleAudioBecomingNoisy(false)
+                .build()
+            player2 = p2
+            p2.setMediaItem(item)
+            p2.volume = 0f
+            p2.prepare()
+            p2.play()
+            // Log format is load-bearing: the CI gate greps "Crossfade: engaged Ns".
+            Log.i(TAG, "Crossfade: engaged ${s.toInt()}s")
+            val steps = 12
+            val stepMs = (s * 1000 / steps).toLong().coerceAtLeast(50)
+            var step = 0
+            val ramp = object : Runnable {
+                override fun run() {
+                    val cur2 = player2
+                    if (!xfading || cur2 !== p2) return
+                    // Abort when the world moved: the track already advanced
+                    // naturally, or the user seeked backwards mid-ramp.
+                    if (p.currentMediaItemIndex != xfadeFromIdx ||
+                        p.currentPosition < xfadeFromPos - 2000
+                    ) {
+                        abortCrossfade("track advanced/seeked")
+                        return
+                    }
+                    step++
+                    val t = (step.toFloat() / steps).coerceIn(0f, 1f)
+                    try {
+                        p.volume = 1f - t
+                        p2.volume = t
+                    } catch (_: Exception) { /* torn down mid-ramp */ }
+                    if (step < steps) {
+                        mainHandler.postDelayed(this, stepMs)
+                    } else {
+                        xfadeHandoff(p, p2, nextIdx)
+                    }
+                }
+            }
+            mainHandler.postDelayed(ramp, stepMs)
+        } catch (t: Throwable) {
+            // Honest fallback: the overlap failed — keep the natural gap.
+            Log.w(TAG, "Crossfade: engage failed (${t.message}); keeping natural gap")
+            abortCrossfade("engage failed")
+        }
+    }
+
+    private fun xfadeHandoff(p: ExoPlayer, p2: ExoPlayer, nextIdx: Int) {
+        try {
+            val pos = p2.currentPosition
+            if (nextIdx in 0 until p.mediaItemCount) {
+                p.seekTo(nextIdx, pos)
+            }
+            p.volume = 1f
+            if (!p.isPlaying) p.play()
+            Log.i(TAG, "Crossfade: handoff complete")
+        } catch (t: Throwable) {
+            Log.w(TAG, "Crossfade: handoff issue (${t.message})")
+        } finally {
+            try { p2.stop() } catch (_: Exception) {}
+            try { p2.release() } catch (_: Exception) {}
+            if (player2 === p2) player2 = null
+            xfading = false
+        }
+    }
+
+    private fun abortCrossfade(reason: String) {
+        if (!xfading && player2 == null) return
+        xfading = false
+        try { player2?.stop() } catch (_: Exception) {}
+        try { player2?.release() } catch (_: Exception) {}
+        player2 = null
+        try { player?.volume = 1f } catch (_: Exception) {}
+        Log.i(TAG, "Crossfade: aborted ($reason)")
+    }
+
+    // ---- BRKN wave 4: autoplay ----
+    private fun seedAutoplay(lastId: String) {
+        val ctx = this@PlayerService
+        val seed = Library.track(lastId)
+        if (seed == null) {
+            Log.i(TAG, "Autoplay: last track $lastId not in catalog; stopping")
+            return
+        }
+        val plan = QueuePlanner.moreLikeThis(
+            seed = seed,
+            ids = Library.tracks.map { it.id },
+            isDisliked = { RatingsStore.isDisliked(ctx, it) },
+            likedArtists = RatingsStore.likedArtists(ctx),
+            likedGenres = RatingsStore.likedGenres(ctx),
+            trackOf = { Library.track(it) }
+        )
+        if (plan.startId == null) {
+            Log.i(TAG, "Autoplay: no candidates after $lastId; stopping")
+            return
+        }
+        // Log format is load-bearing: the gate greps "Autoplay: seeded from <id>".
+        Log.i(TAG, "Autoplay: seeded from $lastId")
+        launchQueue(plan, "autoplay")
+    }
+
+    // ---- BRKN wave 3: play snapshot tracks (direct stream_urls) ----
+    //
+    // Snapshot playlists are machine-owned and read-only; the service plays
+    // their direct stream URLs with no resolution step.
+    fun playSnapshotTracks(tracks: List<SnapshotTrack>, startIndex: Int = 0) {
+        val p = player ?: return
+        playGen.incrementAndGet() // invalidate any stale tap-to-play appends
+        val items = tracks.mapNotNull { t ->
+            if (t.streamUrl.isEmpty()) {
+                Log.w(TAG, "playSnapshot: no stream_url for ${t.id}; skipping")
+                return@mapNotNull null
+            }
+            val meta = MediaMetadata.Builder()
+                .setTitle(t.title)
+                .setArtist(t.artist)
+            if (t.artworkUrl.isNotEmpty()) meta.setArtworkUri(Uri.parse(t.artworkUrl))
+            MediaItem.Builder().setMediaId(t.id).setUri(t.streamUrl)
+                .setMediaMetadata(meta.build()).build()
+        }
+        if (items.isEmpty()) {
+            toast("That snapshot list has nothing playable.")
+            Log.w(TAG, "playSnapshot: no playable items")
+            return
+        }
+        val idx = startIndex.coerceIn(items.indices)
+        mainHandler.post {
+            val cur = player ?: return@post
+            cur.setMediaItems(items, idx, 0L)
+            cur.prepare()
+            cur.play()
+            Log.i(TAG, "playSnapshot: queue ${items.size} tracks (start=$idx)")
+        }
+    }
+
+    // ---- DEBUG-only test hooks (CI gate). Release builds ignore them. ----
+    private fun debugSleep(minutes: Int, endOfQueue: Boolean) {
+        if (!BuildConfig.DEBUG) return
+        when {
+            endOfQueue -> setSleepEndOfQueue()
+            minutes <= 0 -> cancelSleepTimer()
+            else -> setSleepTimer(minutes)
+        }
+        Log.i(TAG, "TEST_SLEEP fired minutes=$minutes endOfQueue=$endOfQueue")
+    }
+
+    private fun debugXfade(seconds: Int, prove: Boolean) {
+        if (!BuildConfig.DEBUG) return
+        val s = seconds.coerceIn(0, 8)
+        playbackPrefs().edit().putFloat("xfade_s", s.toFloat()).apply()
+        Log.i(TAG, "Crossfade: set ${s}s (debug)")
+        if (prove && s > 0) {
+            // Honest proof path: seek the CURRENT track near its end so the
+            // production watcher engages for real. Same code, no shortcuts.
+            mainHandler.post {
+                val p = player ?: return@post
+                val dur = p.duration
+                val hasNext = p.currentMediaItemIndex + 1 < p.mediaItemCount
+                if (dur > (s + 3) * 1000 && hasNext) {
+                    val to = (dur - (s + 2) * 1000).coerceAtLeast(0)
+                    p.seekTo(to)
+                    Log.i(TAG, "Crossfade: prove seek to ${to}ms (dur=${dur}ms)")
+                } else {
+                    Log.w(TAG, "Crossfade: prove skipped (duration=$dur, hasNext=$hasNext)")
+                }
+            }
+        }
+    }
+
+    private fun debugQueueDump(moveFrom: Int, moveTo: Int) {
+        if (!BuildConfig.DEBUG) return
+        val p = player ?: return
+        val n = p.mediaItemCount
+        if (moveFrom in 0 until n && moveTo in 0 until n && moveFrom != moveTo) {
+            p.moveMediaItem(moveFrom, moveTo)
+            Log.i(TAG, "QueueDump: moved $moveFrom -> $moveTo")
+            // The timeline applies async; dump after it settles.
+            mainHandler.postDelayed({ dumpQueueOrder() }, 800)
+        } else {
+            dumpQueueOrder()
+        }
+    }
+
+    private fun dumpQueueOrder() {
+        val p = player ?: return
+        val ids = (0 until p.mediaItemCount).map { p.getMediaItemAt(it).mediaId }
+        // Log format is load-bearing: the CI gate greps "QueueDump: order [...]".
+        Log.i(TAG, QueueDump.format(ids, p.currentMediaItemIndex))
+    }
+
     /**
      * Apollo `queue_up_next` (APOLLO-LIVE §2.1): insert up to 10 catalog
      * tracks directly after the current one. Resolved off the main thread;
@@ -464,6 +774,10 @@ class PlayerService : MediaSessionService() {
                 .add(SessionCommand(ACTION_SKIP_NEXT, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_SKIP_PREV, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_PLAY_FORYOU, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_PLAY_SNAPSHOT, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_SLEEP_SET, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_XFADE_SET, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_QUEUE_DUMP, Bundle.EMPTY))
                 .build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(commands)
@@ -490,6 +804,41 @@ class PlayerService : MediaSessionService() {
                 ACTION_SKIP_NEXT -> userSkip(1)
                 ACTION_SKIP_PREV -> userSkip(-1)
                 ACTION_PLAY_FORYOU -> playForYou(args.getString("id", ""))
+                ACTION_PLAY_SNAPSHOT -> {
+                    val ids = args.getStringArrayList("ids") ?: arrayListOf()
+                    val artists = args.getStringArrayList("artists") ?: arrayListOf()
+                    val titles = args.getStringArrayList("titles") ?: arrayListOf()
+                    val urls = args.getStringArrayList("stream_urls") ?: arrayListOf()
+                    val arts = args.getStringArrayList("artwork_urls") ?: arrayListOf()
+                    val genres = args.getStringArrayList("genres") ?: arrayListOf()
+                    playSnapshotTracks(
+                        ids.mapIndexed { i, id ->
+                            SnapshotTrack(
+                                id = id,
+                                artist = artists.getOrElse(i) { "" },
+                                title = titles.getOrElse(i) { "" },
+                                streamUrl = urls.getOrElse(i) { "" },
+                                artworkUrl = arts.getOrElse(i) { "" },
+                                genre = genres.getOrElse(i) { "" }
+                            )
+                        },
+                        args.getInt("index", 0)
+                    )
+                }
+                // DEBUG-only test hooks: the handlers themselves refuse on
+                // release builds, so registering the commands is harmless.
+                ACTION_SLEEP_SET -> debugSleep(
+                    args.getInt("minutes", 0),
+                    args.getBoolean("end_of_queue", false)
+                )
+                ACTION_XFADE_SET -> debugXfade(
+                    args.getInt("seconds", 0),
+                    args.getBoolean("prove", false)
+                )
+                ACTION_QUEUE_DUMP -> debugQueueDump(
+                    args.getInt("move_from", -1),
+                    args.getInt("move_to", -1)
+                )
             }
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
@@ -498,6 +847,11 @@ class PlayerService : MediaSessionService() {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
 
     override fun onDestroy() {
+        mainHandler.removeCallbacks(xfadeTick)
+        abortCrossfade("destroy")
+        try { player2?.release() } catch (_: Exception) {}
+        player2 = null
+        cancelSleepTimer(silent = true)
         fx?.release()
         fx = null
         session?.release()
@@ -514,6 +868,12 @@ class PlayerService : MediaSessionService() {
         const val ACTION_SKIP_NEXT = "GENESIS_SKIP_NEXT"
         const val ACTION_SKIP_PREV = "GENESIS_SKIP_PREV"
         const val ACTION_PLAY_FORYOU = "GENESIS_PLAY_FORYOU"
+        /** BRKN wave 3: play machine-owned snapshot tracks (direct stream URLs). */
+        const val ACTION_PLAY_SNAPSHOT = "GENESIS_PLAY_SNAPSHOT"
+        /** BRKN wave 2: DEBUG-only test hooks (service ignores on release). */
+        const val ACTION_SLEEP_SET = "GENESIS_SLEEP_SET"
+        const val ACTION_XFADE_SET = "GENESIS_XFADE_SET"
+        const val ACTION_QUEUE_DUMP = "GENESIS_QUEUE_DUMP"
 
         /** Live audio-effects controller, set when ExoPlayer's audio session attaches. */
         var fx: AudioFxController? = null
