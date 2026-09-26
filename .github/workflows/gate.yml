@@ -47,6 +47,12 @@ jobs:
           unzip -q /tmp/gradle.zip -d /tmp
           /tmp/gradle-8.7/bin/gradle assembleDebug --no-daemon
 
+      - name: JVM unit tests (fast lane, before the emulator)
+        working-directory: android
+        run: |
+          /tmp/gradle-8.7/bin/gradle testDebugUnitTest --no-daemon
+          python3 ../.github/scripts/junit_summary.py app/build/test-results/testDebugUnitTest
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

@@ -65,6 +65,10 @@ dependencies {
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
 
+    // JVM fast lane (src/test): pure-logic unit tests, no emulator.
+    // Run with `gradle testDebugUnitTest`; gated before the emulator boots.
+    testImplementation 'junit:junit:4.13.2'
+
     // API-34 instrumented tests: tap-to-play queue repair (QueuePlannerTest,
     // TapLatencyTest). Run on the emulator via connectedDebugAndroidTest.
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
