@@ -763,8 +763,7 @@ jobs:
             sleep 5
           done
           [ -n "$ORDER1" ] || { echo "NO QUEUE DUMP (pre-move)"; adb logcat -d | grep GenesisPlayer | tail -10; exit 1; }
-          echo "pre-move:  $ORDER1"
-          N0=$(adb logcat -d | grep -c "QueueDump: order" || true)
+          echo "pre-move captured (${#ORDER1} chars)"
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
             -a com.apexforge.genesisplayer.TEST_QUEUE_DUMP --ei move_from 1 --ei move_to 3
           for i in $(seq 1 12); do
@@ -773,19 +772,22 @@ jobs:
           done
           adb logcat -d | grep -q "QueueDump: moved 1 -> 3" \
             || { echo "MOVE NOT APPLIED"; exit 1; }
-          ORDER2=""
+          # The move's own delayed dump races the timeline update on a loaded
+          # emulator, so poll FRESH dumps until the order actually changes.
+          echo "move logged; polling fresh dumps until the order changes"
+          MOVED_OK=0
           for i in $(seq 1 12); do
-            N1=$(adb logcat -d | grep -c "QueueDump: order" || true)
-            if [ -n "$N1" ] && [ "$N1" -gt "$N0" ]; then
-              ORDER2=$(adb logcat -d | grep -Eo "QueueDump: order \[[^]]*\]" | tail -1 || true)
-              break
+            adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+              -a com.apexforge.genesisplayer.TEST_QUEUE_DUMP
+            sleep 6
+            ORDER2=$(adb logcat -d | grep -Eo "QueueDump: order \[[^]]*\]" | tail -1 || true)
+            if [ -n "$ORDER2" ] && [ "$ORDER2" != "$ORDER1" ]; then
+              MOVED_OK=1; break
             fi
-            sleep 5
+            echo "order unchanged so far (poll $i)"
           done
-          [ -n "$ORDER2" ] || { echo "NO QUEUE DUMP (post-move)"; exit 1; }
-          echo "post-move: $ORDER2"
-          [ "$ORDER1" != "$ORDER2" ] \
-            || { echo "REORDER NOT REFLECTED IN DUMP"; exit 1; }
+          [ "$MOVED_OK" = "1" ] \
+            || { echo "REORDER NOT REFLECTED IN DUMP after 12 fresh polls"; exit 1; }
           echo "QUEUE REORDER PROVEN via log order"
           echo "--- W5: sleep timer set + cancel ---"
           adb logcat -c
