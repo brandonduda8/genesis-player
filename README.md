@@ -1,4 +1,4 @@
-# Genesis Player
+# Aurum
 
 A real native Android music player — always-on foreground playback with genuine
 system DSP (BassBoost, multi-band Equalizer, LoudnessEnhancer) and Apollo

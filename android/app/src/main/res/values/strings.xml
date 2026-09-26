@@ -2,5 +2,5 @@
 <resources>
     <!-- Brandon's pick: the player is BRKN Vibes. The application ID stays
          com.apexforge.genesisplayer so updates stay clean. -->
-    <string name="app_name">BRKN Vibes</string>
+    <string name="app_name">Aurum</string>
 </resources>
