@@ -62,6 +62,7 @@ import com.apexforge.genesisplayer.data.ApolloNet
 import com.apexforge.genesisplayer.data.ApolloStore
 import com.apexforge.genesisplayer.data.ApolloStore.PendingDecision
 import com.apexforge.genesisplayer.data.NowPlayingSnapshot
+import com.apexforge.genesisplayer.data.SnapshotStore
 import com.apexforge.genesisplayer.data.VoiceInput
 import kotlinx.coroutines.delay
 
@@ -275,6 +276,22 @@ fun ApolloScreen(controller: MediaController?, modifier: Modifier = Modifier) {
         }
 
         // ---- pending decisions awaiting his tap ----
+        // BRKN wave 4: machine-snapshot suggestions ride the SAME outbox.
+        // ApolloDrops.approve/reject record any id through DecideSync (the one
+        // and only sync path) — the artist/title/why shown here come straight
+        // from the snapshot, nothing invented.
+        val decidedIds = remember(gateTick) {
+            ApolloStore.decisions(ctx).map { it.id }.toSet()
+        }
+        val snapSuggestions = SnapshotStore.current()?.apolloSuggestions
+            ?.filter { it.id !in decidedIds } ?: emptyList()
+        if (snapSuggestions.isNotEmpty()) {
+            Text(
+                "From the machine snapshot",
+                color = TextDim, fontSize = 12.sp,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+        }
         if (openDecisions.isNotEmpty()) {
             Text(
                 "Waiting on you",
@@ -286,6 +303,27 @@ fun ApolloScreen(controller: MediaController?, modifier: Modifier = Modifier) {
             modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp),
             state = listState
         ) {
+            items(snapSuggestions, key = { "snap-sug:${it.id}" }) { s ->
+                PendingCard(
+                    PendingDecision(
+                        id = s.id,
+                        kind = "suggest_to_library",
+                        artist = s.artist,
+                        title = s.title,
+                        why = s.why,
+                        state = ApolloStore.DecisionState.AWAITING_TAP,
+                        decidedAt = 0L
+                    ),
+                    onApprove = {
+                        ApolloDrops.approve(app, s.id)
+                        refreshDecisions()
+                    },
+                    onReject = {
+                        ApolloDrops.reject(app, s.id)
+                        refreshDecisions()
+                    }
+                )
+            }
             items(openDecisions, key = { "dec:${it.id}:${it.decidedAt}" }) { d ->
                 PendingCard(d,
                     onApprove = {
@@ -517,10 +555,10 @@ private fun PendingCard(
                     d.state == ApolloStore.DecisionState.FAILED
                 ) {
                     TextButton(onClick = onReject) {
-                        Text("Reject", color = TextDim, fontSize = 13.sp)
+                        Text("Skip", color = TextDim, fontSize = 13.sp)
                     }
                     TextButton(onClick = onApprove) {
-                        Text("Approve", color = EmberOrange, fontSize = 13.sp)
+                        Text("Keep", color = EmberOrange, fontSize = 13.sp)
                     }
                 }
             }

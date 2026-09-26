@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.RepeatOne
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
@@ -42,6 +43,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -116,6 +119,7 @@ fun NowPlayingScreen(
     var showVibe by remember(mediaId) { mutableStateOf(false) }
     var showQueue by remember { mutableStateOf(false) }
     var showSleep by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
 
     LaunchedEffect(controller) {
@@ -330,7 +334,7 @@ fun NowPlayingScreen(
                     )
                 }
             }
-            // Wave 2: queue sheet + sleep timer.
+            // Wave 2: queue sheet + sleep timer + playback settings.
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -342,12 +346,19 @@ fun NowPlayingScreen(
                     Spacer(Modifier.width(6.dp))
                     Text("Queue", color = PhoenixGold, fontSize = 14.sp)
                 }
-                Spacer(Modifier.width(24.dp))
+                Spacer(Modifier.width(16.dp))
                 TextButton(onClick = { showSleep = true }) {
                     Icon(Icons.Filled.Timer, "Sleep timer", tint = PhoenixGold,
                         modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("Sleep timer", color = PhoenixGold, fontSize = 14.sp)
+                    Text("Sleep", color = PhoenixGold, fontSize = 14.sp)
+                }
+                Spacer(Modifier.width(16.dp))
+                TextButton(onClick = { showSettings = true }) {
+                    Icon(Icons.Filled.Settings, "Playback settings", tint = PhoenixGold,
+                        modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text("Settings", color = PhoenixGold, fontSize = 14.sp)
                 }
             }
         }
@@ -358,6 +369,9 @@ fun NowPlayingScreen(
     }
     if (showSleep) {
         SleepPickerDialog(controller = controller, onDismiss = { showSleep = false })
+    }
+    if (showSettings) {
+        PlaybackSettingsDialog(controller = controller, onDismiss = { showSettings = false })
     }
 }
 
@@ -480,6 +494,88 @@ private fun SleepPickerDialog(controller: MediaController?, onDismiss: () -> Uni
                 ) {
                     Text("Cancel timer", color = EmberOrange, fontSize = 15.sp,
                         modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Start)
+                }
+            }
+        }
+    )
+}
+
+/**
+ * BRKN Vibes wave 2: playback settings. Crossfade 0–8s and the autoplay
+ * switch both persist to the same `genesis_playback` prefs the service reads
+ * live (xfade_s / autoplay), via the production custom commands — the same
+ * commands the DEBUG test intents drive. Nothing here is DEBUG-gated: these
+ * are legitimate in-app settings and release builds must honor them.
+ */
+@Composable
+private fun PlaybackSettingsDialog(controller: MediaController?, onDismiss: () -> Unit) {
+    val ctx = LocalContext.current
+    val prefs = remember {
+        ctx.getSharedPreferences("genesis_playback", android.content.Context.MODE_PRIVATE)
+    }
+    var xfade by remember { mutableStateOf(prefs.getFloat("xfade_s", 0f)) }
+    var autoplay by remember { mutableStateOf(prefs.getBoolean("autoplay", true)) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {},
+        containerColor = SurfaceDark,
+        title = { Text("Playback settings", color = PhoenixGold) },
+        text = {
+            Column {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Crossfade", color = Color(0xFFF2EFE9), fontSize = 15.sp,
+                        modifier = Modifier.weight(1f))
+                    Text("${xfade.toInt()}s", color = EmberOrange, fontSize = 15.sp)
+                }
+                Slider(
+                    value = xfade,
+                    onValueChange = { xfade = it },
+                    onValueChangeFinished = {
+                        controller?.sendGenesis(
+                            PlayerService.ACTION_XFADE_SET,
+                            Bundle().apply { putInt("seconds", xfade.toInt()) }
+                        )
+                    },
+                    valueRange = 0f..8f,
+                    steps = 7,
+                    colors = SliderDefaults.colors(
+                        thumbColor = EmberOrange, activeTrackColor = EmberOrange
+                    )
+                )
+                Text(
+                    "Overlaps the next track over the last seconds of this one.",
+                    color = TextDim, fontSize = 12.sp
+                )
+                Spacer(Modifier.height(16.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("Autoplay", color = Color(0xFFF2EFE9), fontSize = 15.sp)
+                        Text(
+                            "When the queue ends, build more from your taste.",
+                            color = TextDim, fontSize = 12.sp
+                        )
+                    }
+                    Switch(
+                        checked = autoplay,
+                        onCheckedChange = {
+                            autoplay = it
+                            controller?.sendGenesis(
+                                PlayerService.ACTION_AUTOPLAY_SET,
+                                Bundle().apply { putBoolean("enabled", it) }
+                            )
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = EmberOrange,
+                            checkedTrackColor = EmberOrange.copy(alpha = 0.5f)
+                        )
+                    )
                 }
             }
         }

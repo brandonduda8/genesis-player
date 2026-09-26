@@ -670,22 +670,26 @@ class PlayerService : MediaSessionService() {
         }
     }
 
-    // ---- DEBUG-only test hooks (CI gate). Release builds ignore them. ----
-    private fun debugSleep(minutes: Int, endOfQueue: Boolean) {
-        if (!BuildConfig.DEBUG) return
+    // ---- Playback control commands (production). ----
+    //
+    // The CI test *intents* (TEST_SLEEP / TEST_XFADE / TEST_QUEUE_DUMP) are
+    // DEBUG-gated in MainActivity; the commands below are the normal
+    // production path also used by the in-app settings UI, so they must NOT
+    // be DEBUG-gated — otherwise release builds would ignore legitimate
+    // settings. Release ignores only the special intent actions.
+    private fun cmdSetSleep(minutes: Int, endOfQueue: Boolean) {
         when {
             endOfQueue -> setSleepEndOfQueue()
             minutes <= 0 -> cancelSleepTimer()
             else -> setSleepTimer(minutes)
         }
-        Log.i(TAG, "TEST_SLEEP fired minutes=$minutes endOfQueue=$endOfQueue")
+        Log.i(TAG, "Sleep: set minutes=$minutes endOfQueue=$endOfQueue")
     }
 
-    private fun debugXfade(seconds: Int, prove: Boolean) {
-        if (!BuildConfig.DEBUG) return
+    private fun cmdSetXfade(seconds: Int, prove: Boolean) {
         val s = seconds.coerceIn(0, 8)
         playbackPrefs().edit().putFloat("xfade_s", s.toFloat()).apply()
-        Log.i(TAG, "Crossfade: set ${s}s (debug)")
+        Log.i(TAG, "Crossfade: set ${s}s")
         if (prove && s > 0) {
             // Honest proof path: seek the CURRENT track near its end so the
             // production watcher engages for real. Same code, no shortcuts.
@@ -704,8 +708,12 @@ class PlayerService : MediaSessionService() {
         }
     }
 
-    private fun debugQueueDump(moveFrom: Int, moveTo: Int) {
-        if (!BuildConfig.DEBUG) return
+    private fun cmdSetAutoplay(enabled: Boolean) {
+        playbackPrefs().edit().putBoolean("autoplay", enabled).apply()
+        Log.i(TAG, "Autoplay: ${if (enabled) "on" else "off"}")
+    }
+
+    private fun cmdQueueDump(moveFrom: Int, moveTo: Int) {
         val p = player ?: return
         val n = p.mediaItemCount
         if (moveFrom in 0 until n && moveTo in 0 until n && moveFrom != moveTo) {
@@ -777,6 +785,7 @@ class PlayerService : MediaSessionService() {
                 .add(SessionCommand(ACTION_PLAY_SNAPSHOT, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_SLEEP_SET, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_XFADE_SET, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_AUTOPLAY_SET, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_QUEUE_DUMP, Bundle.EMPTY))
                 .build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
@@ -825,17 +834,18 @@ class PlayerService : MediaSessionService() {
                         args.getInt("index", 0)
                     )
                 }
-                // DEBUG-only test hooks: the handlers themselves refuse on
-                // release builds, so registering the commands is harmless.
-                ACTION_SLEEP_SET -> debugSleep(
+                // Playback control commands: production (in-app settings UI)
+                // and the DEBUG test intents both drive these.
+                ACTION_SLEEP_SET -> cmdSetSleep(
                     args.getInt("minutes", 0),
                     args.getBoolean("end_of_queue", false)
                 )
-                ACTION_XFADE_SET -> debugXfade(
+                ACTION_XFADE_SET -> cmdSetXfade(
                     args.getInt("seconds", 0),
                     args.getBoolean("prove", false)
                 )
-                ACTION_QUEUE_DUMP -> debugQueueDump(
+                ACTION_AUTOPLAY_SET -> cmdSetAutoplay(args.getBoolean("enabled", true))
+                ACTION_QUEUE_DUMP -> cmdQueueDump(
                     args.getInt("move_from", -1),
                     args.getInt("move_to", -1)
                 )
@@ -870,9 +880,11 @@ class PlayerService : MediaSessionService() {
         const val ACTION_PLAY_FORYOU = "GENESIS_PLAY_FORYOU"
         /** BRKN wave 3: play machine-owned snapshot tracks (direct stream URLs). */
         const val ACTION_PLAY_SNAPSHOT = "GENESIS_PLAY_SNAPSHOT"
-        /** BRKN wave 2: DEBUG-only test hooks (service ignores on release). */
+        /** BRKN wave 2: playback controls — production commands (in-app
+         * settings UI + the DEBUG test intents, which MainActivity gates). */
         const val ACTION_SLEEP_SET = "GENESIS_SLEEP_SET"
         const val ACTION_XFADE_SET = "GENESIS_XFADE_SET"
+        const val ACTION_AUTOPLAY_SET = "GENESIS_AUTOPLAY_SET"
         const val ACTION_QUEUE_DUMP = "GENESIS_QUEUE_DUMP"
 
         /** Live audio-effects controller, set when ExoPlayer's audio session attaches. */
