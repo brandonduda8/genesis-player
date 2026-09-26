@@ -290,6 +290,15 @@ jobs:
           [ -n "$COUNT" ] && [ "$COUNT" -ge 351 ] \
             || { echo "REMOTE CATALOG NOT APPLIED ON LAUNCH (got: $APPLIED)"; exit 1; }
           echo "REMOTE CATALOG APPLIED ON LAUNCH ($APPLIED; >=351 incl. SoundCloud shelf)"
+          # APPLIED_V: the version the APP itself holds. Phase B's test catalog
+          # is derived from this, NOT from a fresh CDN fetch — the CDN serves
+          # stale copies per-edge, and a mid-run catalog publish would collide
+          # the test version with the applied one (gate run 36230304043 failed
+          # exactly this way: test v9 vs already-applied v9, refresh correctly
+          # no-opped and the gate blamed the app).
+          APPLIED_V=$(echo "$APPLIED" | grep -Eo "applied version [0-9]+" | grep -Eo "[0-9]+")
+          [ -n "$APPLIED_V" ] || { echo "COULD NOT PARSE APPLIED CATALOG VERSION"; exit 1; }
+          echo "app holds catalog v$APPLIED_V; test catalog will be v$((APPLIED_V + 1))"
           echo "--- PHASE A2: SoundCloud shelf plays end to end on the emulator ---"
           adb logcat -c
           # Nested quotes: the playlist name must survive adb's remote-shell
@@ -329,10 +338,14 @@ jobs:
           mkdir -p /tmp/remote_test
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" -o /tmp/remote_test/catalog.json
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/config.json" -o /tmp/remote_test/config.json
-          TEST_CAT_V=$(python3 - << 'PYEOF'
-          import json
+          TEST_CAT_V=$(APPLIED_V=$APPLIED_V python3 - << 'PYEOF'
+          import json, os
           cat = json.load(open('/tmp/remote_test/catalog.json'))
-          cat['version'] = int(cat.get('version', 0)) + 1
+          # Base the test version on what the app actually applied (APPLIED_V),
+          # not on the fetched file's version: the CDN edge serving this fetch
+          # may be stale, and the apply decision keys on version only.
+          base = int(os.environ.get('APPLIED_V') or cat.get('version', 0))
+          cat['version'] = base + 1
           json.dump(cat, open('/tmp/remote_test/catalog.json','w'))
           cfg = json.load(open('/tmp/remote_test/config.json'))
           cfg['version'] = int(cfg.get('version', 0)) + 1
