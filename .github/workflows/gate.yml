@@ -723,12 +723,28 @@ jobs:
             sleep 3
           done
           [ -n "$TAPXY" ] || { echo "QUEUE BUTTON NEVER SCROLLED INTO VIEW"; exit 1; }
-          sleep 3
-          adb shell uiautomator dump /sdcard/ui.xml > /dev/null
-          adb pull /sdcard/ui.xml /tmp/ui_queue.xml > /dev/null
-          grep -q "Up next" /tmp/ui_queue.xml \
-            || { echo "QUEUE SHEET DID NOT OPEN"; exit 1; }
-          echo "QUEUE SHEET OPEN"
+          echo "--- W3b: verify the queue sheet opened (fresh dumps, transition-tolerant) ---"
+          # Right after the tap the window is in transition; uiautomator can
+          # answer "ERROR: null root node" and adb pull then fetches a STALE
+          # ui.xml, which fails the grep even when the sheet is opening.
+          # Retry with fresh dumps: a dump ERROR is "try again", not fatal.
+          SHEET_OPEN=0
+          for t in $(seq 1 8); do
+            sleep 4
+            adb shell rm -f /sdcard/ui.xml > /dev/null 2>&1
+            DUMP_OUT=$(adb shell uiautomator dump /sdcard/ui.xml 2>&1 || true)
+            if echo "$DUMP_OUT" | grep -q "ERROR"; then
+              echo "W3 dump hit a window transition (try $t) - retrying"
+              continue
+            fi
+            rm -f /tmp/ui_queue.xml
+            adb pull /sdcard/ui.xml /tmp/ui_queue.xml > /dev/null 2>&1 || true
+            if grep -q "Up next" /tmp/ui_queue.xml 2>/dev/null; then
+              echo "QUEUE SHEET OPEN (try $t)"; SHEET_OPEN=1; break
+            fi
+            echo "sheet not yet visible (try $t)"
+          done
+          [ "$SHEET_OPEN" = "1" ] || { echo "QUEUE SHEET DID NOT OPEN"; exit 1; }
           adb shell screencap -p /sdcard/brkn_queue.png || true
           adb pull /sdcard/brkn_queue.png /tmp/brkn_queue.png || true
           [ -f /tmp/brkn_queue.png ] || { echo "QUEUE SCREENSHOT MISSING"; exit 1; }
