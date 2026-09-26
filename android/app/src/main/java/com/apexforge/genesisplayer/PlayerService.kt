@@ -425,12 +425,8 @@ class PlayerService : MediaSessionService() {
                 } ?: return@Thread
                 Handler(Looper.getMainLooper()).post {
                     val cur = player ?: return@post
-                    if (playGen.get() != gen || i >= cur.mediaItemCount) return@post
-                    if (cur.getMediaItemAt(i).mediaId != target.mediaId) return@post
-                    val isCurrent = i == cur.currentMediaItemIndex
-                    val pos = if (isCurrent) cur.currentPosition else C.TIME_UNSET
-                    cur.replaceMediaItem(i, freshItem)
-                    if (isCurrent && pos != C.TIME_UNSET) cur.seekTo(i, pos)
+                    if (playGen.get() != gen) return@post
+                    if (!SoundCloudRefresher.applyAt(cur, i, target.mediaId, freshItem)) return@post
                     Log.i(TAG, "SoundCloud URL refreshed at transition: ${t.artist} - ${t.title}")
                 }
             }.apply { isDaemon = true; name = "genesis-sc-refresh" }.start()

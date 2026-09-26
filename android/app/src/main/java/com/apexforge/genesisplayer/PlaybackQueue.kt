@@ -1,6 +1,8 @@
 package com.apexforge.genesisplayer
 
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import com.apexforge.genesisplayer.data.Track
 import kotlin.random.Random
 
@@ -233,5 +235,24 @@ object SoundCloudRefresher {
         if (freshUrl.isEmpty()) return null
         if (item.localConfiguration?.uri.toString() == freshUrl) return null
         return item.buildUpon().setUri(freshUrl).build()
+    }
+
+    /**
+     * Swap a refreshed item into the live playlist. Main thread only.
+     *
+     * The swap happens only while slot [index] still exists and still holds
+     * [expectedMediaId] (the queue may have been re-planned or reordered
+     * while the resolver was on the network). The queue keeps its length,
+     * order and current index; when the swapped slot is the current item,
+     * its playback position is restored. Returns true when swapped.
+     */
+    fun applyAt(player: Player, index: Int, expectedMediaId: String, fresh: MediaItem): Boolean {
+        if (index < 0 || index >= player.mediaItemCount) return false
+        if (player.getMediaItemAt(index).mediaId != expectedMediaId) return false
+        val isCurrent = index == player.currentMediaItemIndex
+        val pos = if (isCurrent) player.currentPosition else C.TIME_UNSET
+        player.replaceMediaItem(index, fresh)
+        if (isCurrent && pos != C.TIME_UNSET) player.seekTo(index, pos)
+        return true
     }
 }
