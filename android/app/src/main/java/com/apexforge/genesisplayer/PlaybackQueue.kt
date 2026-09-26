@@ -85,8 +85,7 @@ object QueuePlanner {
         val tappedId = ids.getOrNull(startIndex)
         val startId = when {
             tappedId != null && tappedId in ordered -> tappedId
-            else -> ids.drop(startIndex.coerceAtLeast(0)).firstOrNull { it in ordered }
-                ?: ordered.firstOrNull()
+            else -> ordered.firstOrNull() // MUTATION 1a: old queue-head bug
         }
         return QueuePlan(ordered, startId, boosted)
     }
@@ -200,7 +199,7 @@ class PlaybackQueue(
             .filter { it != firstId }
         val batch = ArrayList<MediaItem>(batchSize)
         for (id in rest) {
-            if (isStale()) return
+            // MUTATION 1b: in-loop stale check removed
             val item = resolve(id) ?: continue
             batch.add(item)
             if (batch.size >= batchSize) {
