@@ -75,7 +75,7 @@ object QueuePlanner {
                 t != null && (t.artist in likedArtists ||
                     (t.genre.isNotEmpty() && t.genre in likedGenres))
             }
-            ordered = b + rest
+            ordered = b.reversed() + rest.reversed() // MUTATION 3a
             boosted = b.size
         }
         // Map the tapped index through the filters. The tapped track itself
@@ -142,7 +142,7 @@ object QueuePlanner {
             if (t.genre.isNotEmpty() && t.genre in likedGenres) s += 1
             Triple(pos, id, s)
         }.sortedWith(compareByDescending<Triple<Int, String, Int>> { it.third }
-            .thenBy { it.first })
+            .thenByDescending { it.first }) // MUTATION 3b
         val ordered = ranked.map { it.second }
         return QueuePlan(ordered, ordered.firstOrNull(), ranked.count { it.third > 0 })
     }
