@@ -247,12 +247,12 @@ object SoundCloudRefresher {
      * its playback position is restored. Returns true when swapped.
      */
     fun applyAt(player: Player, index: Int, expectedMediaId: String, fresh: MediaItem): Boolean {
-        if (index < 0 || index >= player.mediaItemCount) return false
-        if (player.getMediaItemAt(index).mediaId != expectedMediaId) return false
+        // MUTATION 4a-1: range guard removed
+        // MUTATION 4a-2: slot guard removed
         val isCurrent = index == player.currentMediaItemIndex
         val pos = if (isCurrent) player.currentPosition else C.TIME_UNSET
         player.replaceMediaItem(index, fresh)
-        if (isCurrent && pos != C.TIME_UNSET) player.seekTo(index, pos)
+        // MUTATION 4a-3: position restore removed
         return true
     }
 }
