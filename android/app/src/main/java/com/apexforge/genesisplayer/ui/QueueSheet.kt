@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -245,7 +246,9 @@ private fun QueueRow(
 }
 
 @Composable
-private fun QueueRowContent(entry: QueueEntry, isCurrent: Boolean) {
+// RowScope receiver: Modifier.weight(1f) below only resolves inside a
+// Row/Column scope, and this content is always placed in the Row above.
+private fun RowScope.QueueRowContent(entry: QueueEntry, isCurrent: Boolean) {
     if (!isCurrent) {
         Icon(Icons.Filled.DragHandle, "Drag to reorder", tint = TextDim,
             modifier = Modifier.size(20.dp))

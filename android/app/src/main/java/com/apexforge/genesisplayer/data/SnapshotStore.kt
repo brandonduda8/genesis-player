@@ -99,11 +99,15 @@ object SnapshotStore {
 
     /**
      * Parse the snapshot JSON. Coded EXACTLY to the contracted shape:
-     * {"version": N, "generated_at": "ISO-8601",
-     *  "playlists": [{"name", "tracks": [{"id","artist","title","stream_url","artwork_url","genre"}]}],
-     *  "favorites": [track...],
-     *  "recent_plays": [{"track_id","artist","title","played_at"}],
-     *  "apollo_suggestions": [{"id","artist","title","stream_url","artwork_url","why"}]}
+     * version (int), generated_at (ISO-8601), playlists (each with a name
+     * and a tracks array of objects carrying id, artist, title,
+     * stream_url, artwork_url, genre), favorites (track objects),
+     * recent_plays (objects with track_id, artist, title, played_at),
+     * apollo_suggestions (objects with id, artist, title, stream_url,
+     * artwork_url, why).
+     *
+     * NOTE: written in prose on purpose — square-bracket array notation
+     * here trips the KDoc parser ("Closing bracket expected").
      *
      * Tolerant readers (opt*): missing sections become empty lists, never a
      * crash. Public (not private) so the instrumented tests — a separate

@@ -1,5 +1,7 @@
 package com.apexforge.genesisplayer.ui
 
+import android.graphics.RenderEffect as AndroidRenderEffect
+import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -59,8 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -399,11 +400,14 @@ private fun BlurredBackdrop(artworkUrl: String, trackId: String) {
                 artworkUrl = artworkUrl,
                 modifier = Modifier.fillMaxSize()
                     .graphicsLayer {
-                        // Compose's RenderEffect (not android.graphics): a
-                        // type mismatch here is a compile error.
-                        renderEffect = RenderEffect.createBlurEffect(
-                            56f, 56f, TileMode.Clamp
-                        )
+                        // Framework RenderEffect (API 31+, guarded above),
+                        // bridged into Compose via asComposeRenderEffect().
+                        // (Compose's own RenderEffect.createBlurEffect did not
+                        // resolve on this BOM — the framework call is the
+                        // same blur underneath.)
+                        renderEffect = AndroidRenderEffect.createBlurEffect(
+                            56f, 56f, Shader.TileMode.CLAMP
+                        ).asComposeRenderEffect()
                     }
                     .alpha(0.5f),
                 contentDescription = null,

@@ -86,7 +86,7 @@ fun EmberVisualizer(
             viz = null
             if (sid == 0) return
             viz = try {
-                Visualizer(0, sid).apply {
+                Visualizer(sid).apply {
                     val range = Visualizer.getCaptureSizeRange()
                     captureSize = range[1].coerceAtMost(1024)
                     setDataCaptureListener(
@@ -140,15 +140,11 @@ fun EmberVisualizer(
         }.apply { isDaemon = true; name = "ember-viz" }
         poll.start()
 
-        onDispose {
-            running = false
-            poll.interrupt()
-            try { viz?.release() } catch (_: Exception) {}
-            viz = null
-        }
-
         // Expose the live visualizer to the enable/disable effect below via
         // a tiny holder the effects below can read through composition state.
+        // NOTE: assigned BEFORE onDispose — a DisposableEffect body's last
+        // statement must be the onDispose registration (it returns the
+        // DisposableEffectResult); anything after it breaks compilation.
         vizHolder.value = object : VizHandle {
             override fun setEnabled(on: Boolean): Boolean {
                 return try {
@@ -160,6 +156,13 @@ fun EmberVisualizer(
                     false
                 }
             }
+        }
+
+        onDispose {
+            running = false
+            poll.interrupt()
+            try { viz?.release() } catch (_: Exception) {}
+            viz = null
         }
     }
 
