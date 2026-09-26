@@ -85,8 +85,8 @@ object QueuePlanner {
         val tappedId = ids.getOrNull(startIndex)
         val startId = when {
             tappedId != null && tappedId in ordered -> tappedId
-            else -> ids.drop(startIndex.coerceAtLeast(0)).firstOrNull { it in ordered }
-                ?: ordered.firstOrNull()
+            else -> ids.drop(startIndex) /* MUTATION 2a */.firstOrNull { it in ordered }
+                /* MUTATION 2b: fallback removed */
         }
         return QueuePlan(ordered, startId, boosted)
     }
@@ -169,14 +169,14 @@ class PlaybackQueue(
     }
 
     fun start(plan: QueuePlan, batchSize: Int = 8) {
-        val startId = plan.startId ?: return
+        val startId = plan.startId ?: plan.orderedIds.first() // MUTATION 2d
         val order = plan.orderedIds
         // 1. Resolve ONLY the tapped track first. If it is unresolvable
         //    (dead link, SC resolve failed), walk forward to the next
         //    playable track — never stall the tap on the whole playlist.
         var first: MediaItem? = null
         var firstId: String? = null
-        val startPos = order.indexOf(startId).takeIf { it >= 0 } ?: 0
+        val startPos = order.indexOf(startId).takeIf { it >= 0 } ?: return // MUTATION 2c
         for (i in startPos until order.size) {
             if (isStale()) return
             val item = resolve(order[i])
