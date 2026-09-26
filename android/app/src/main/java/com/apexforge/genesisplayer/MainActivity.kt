@@ -6,6 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -40,9 +44,11 @@ import com.apexforge.genesisplayer.ui.EqScreen
 import com.apexforge.genesisplayer.ui.ForYouScreen
 import com.apexforge.genesisplayer.ui.GenesisTheme
 import com.apexforge.genesisplayer.ui.LibraryScreen
+import com.apexforge.genesisplayer.ui.MiniPlayerBar
 import com.apexforge.genesisplayer.ui.NowPlayingScreen
 import com.apexforge.genesisplayer.ui.ApolloScreen
 import com.apexforge.genesisplayer.data.ApolloDrops
+import com.apexforge.genesisplayer.data.SnapshotStore
 import com.google.common.util.concurrent.MoreExecutors
 
 class MainActivity : ComponentActivity() {
@@ -57,9 +63,13 @@ class MainActivity : ComponentActivity() {
         RemoteCatalog.checkForUpdates(this)
         RemoteConfig.checkForUpdates(this)
         ApolloDrops.poll(this) // Phase 1: Fresh Signals poll at launch (Refresh Music re-polls).
+        SnapshotStore.fetch(this, "launch") // BRKN wave 3: machine-owned snapshot (graceful offline).
         handleTestPlay(intent)
         handleTestRefresh(intent)
         handleTestRate(intent)
+        handleTestSleep(intent)
+        handleTestXfade(intent)
+        handleTestQueueDump(intent)
         setContent { GenesisTheme { GenesisApp() } }
     }
 
@@ -69,6 +79,9 @@ class MainActivity : ComponentActivity() {
         handleTestPlay(intent)
         handleTestRefresh(intent)
         handleTestRate(intent)
+        handleTestSleep(intent)
+        handleTestXfade(intent)
+        handleTestQueueDump(intent)
     }
 
     private var testController: MediaController? = null
@@ -126,6 +139,9 @@ class MainActivity : ComponentActivity() {
         const val TEST_PLAY_ACTION = "com.apexforge.genesisplayer.TEST_PLAY"
         const val TEST_REFRESH_ACTION = "com.apexforge.genesisplayer.TEST_REFRESH"
         const val TEST_RATE_ACTION = "com.apexforge.genesisplayer.TEST_RATE"
+        const val TEST_SLEEP_ACTION = "com.apexforge.genesisplayer.TEST_SLEEP"
+        const val TEST_XFADE_ACTION = "com.apexforge.genesisplayer.TEST_XFADE"
+        const val TEST_QUEUE_DUMP_ACTION = "com.apexforge.genesisplayer.TEST_QUEUE_DUMP"
     }
 
     /**
@@ -167,7 +183,89 @@ class MainActivity : ComponentActivity() {
         if (intent?.action != TEST_REFRESH_ACTION) return
         RemoteCatalog.checkForUpdates(this, intent.getStringExtra("catalog_url"))
         RemoteConfig.checkForUpdates(this, intent.getStringExtra("config_url"))
+        SnapshotStore.fetch(this, "test-refresh")
         Log.i("GenesisPlayer", "TEST_REFRESH fired")
+    }
+
+    /**
+     * DEBUG-ONLY hook for the CI emulator gate: drives the service-side sleep
+     * timer through the real custom-command path. Extras: "minutes" (int;
+     * 0 = cancel), "end_of_queue" (boolean). Release builds ignore it.
+     */
+    private fun handleTestSleep(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_SLEEP_ACTION) return
+        val minutes = intent.getIntExtra("minutes", 0)
+        val endOfQueue = intent.getBooleanExtra("end_of_queue", false)
+        sendTestCommand(
+            PlayerService.ACTION_SLEEP_SET,
+            Bundle().apply {
+                putInt("minutes", minutes)
+                putBoolean("end_of_queue", endOfQueue)
+            },
+            "TEST_SLEEP fired minutes=$minutes endOfQueue=$endOfQueue"
+        )
+    }
+
+    /**
+     * DEBUG-ONLY hook for the CI emulator gate: sets the crossfade seconds
+     * through the real custom-command path. Extras: "seconds" (int, 0-8),
+     * "prove" (boolean — seek the current track near its end so the
+     * production watcher engages for real). Release builds ignore it.
+     */
+    private fun handleTestXfade(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_XFADE_ACTION) return
+        val seconds = intent.getIntExtra("seconds", 0)
+        val prove = intent.getBooleanExtra("prove", false)
+        sendTestCommand(
+            PlayerService.ACTION_XFADE_SET,
+            Bundle().apply {
+                putInt("seconds", seconds)
+                putBoolean("prove", prove)
+            },
+            "TEST_XFADE fired seconds=$seconds prove=$prove"
+        )
+    }
+
+    /**
+     * DEBUG-ONLY hook for the CI emulator gate: dumps the live queue order to
+     * logcat through the real custom-command path. Optional extras
+     * "move_from" / "move_to" (ints) reorder via player.moveMediaItem first,
+     * then dump — the gate proves reorder by diffing dumps. Release builds
+     * ignore it.
+     */
+    private fun handleTestQueueDump(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_QUEUE_DUMP_ACTION) return
+        val from = intent.getIntExtra("move_from", -1)
+        val to = intent.getIntExtra("move_to", -1)
+        sendTestCommand(
+            PlayerService.ACTION_QUEUE_DUMP,
+            Bundle().apply {
+                putInt("move_from", from)
+                putInt("move_to", to)
+            },
+            "TEST_QUEUE_DUMP fired move=$from->$to"
+        )
+    }
+
+    /** Shared DEBUG-hook plumbing: build a controller, send one custom command. */
+    private fun sendTestCommand(action: String, args: Bundle, logLine: String) {
+        val token = SessionToken(this, ComponentName(this, PlayerService::class.java))
+        val future = MediaController.Builder(this, token).buildAsync()
+        future.addListener({
+            try {
+                val c = future.get()
+                testController = c // held until onDestroy so the command is delivered
+                c.sendGenesis(action, args)
+                Log.i("GenesisPlayer", logLine)
+            } catch (e: Exception) {
+                Log.e("GenesisPlayer", "$action failed", e)
+            } finally {
+                MediaController.releaseFuture(future)
+            }
+        }, MoreExecutors.directExecutor())
     }
 }
 
@@ -198,6 +296,10 @@ private data class Tab(val id: String, val name: String, val icon: ImageVector)
 fun GenesisApp() {
     val controller = rememberPlayerController()
     var tab by remember { mutableStateOf(0) }
+    // BRKN wave 1: full-screen Now Playing overlay (mini-player tap opens it;
+    // swipe down on it collapses back). The "Now Playing" tab still exists for
+    // direct access and the CI gate's visualizer proof.
+    var showNowPlaying by remember { mutableStateOf(false) }
     // Tabs are driven by the remote config's sections; hidden sections vanish.
     val sections = com.apexforge.genesisplayer.ui.RemoteTheme.sections.value.filter { it.visible }
     val icons = mapOf(
@@ -221,32 +323,47 @@ fun GenesisApp() {
     else baseTabs + Tab("apollo", "Apollo", Icons.Filled.Psychology)
     val safeTab = tab.coerceIn(tabs.indices)
     if (safeTab != tab) tab = safeTab
-    Scaffold(
-        bottomBar = {
-            NavigationBar(containerColor = com.apexforge.genesisplayer.ui.SurfaceDark) {
-                tabs.forEachIndexed { i, t ->
-                    NavigationBarItem(
-                        selected = tab == i,
-                        onClick = { tab = i },
-                        icon = { Icon(t.icon, contentDescription = t.name) },
-                        label = { Text(t.name) },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = com.apexforge.genesisplayer.ui.EmberOrange,
-                            selectedTextColor = com.apexforge.genesisplayer.ui.EmberOrange,
-                            indicatorColor = com.apexforge.genesisplayer.ui.CardDark
-                        )
-                    )
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            bottomBar = {
+                // BRKN wave 1: persistent mini-player above the nav bar on
+                // every tab. Hidden until something has actually played.
+                Column {
+                    MiniPlayerBar(controller = controller, onOpen = { showNowPlaying = true })
+                    NavigationBar(containerColor = com.apexforge.genesisplayer.ui.SurfaceDark) {
+                        tabs.forEachIndexed { i, t ->
+                            NavigationBarItem(
+                                selected = tab == i,
+                                onClick = { tab = i },
+                                icon = { Icon(t.icon, contentDescription = t.name) },
+                                label = { Text(t.name) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = com.apexforge.genesisplayer.ui.EmberOrange,
+                                    selectedTextColor = com.apexforge.genesisplayer.ui.EmberOrange,
+                                    indicatorColor = com.apexforge.genesisplayer.ui.CardDark
+                                )
+                            )
+                        }
+                    }
                 }
             }
+        ) { pad ->
+            when (tabs[tab].id) {
+                "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
+                "library" -> LibraryScreen(controller, Modifier.padding(pad))
+                "foryou" -> ForYouScreen(controller, Modifier.padding(pad))
+                "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
+                "eq" -> EqScreen(Modifier.padding(pad))
+            }
         }
-    ) { pad ->
-        Modifier.padding(pad)
-        when (tabs[tab].id) {
-            "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
-            "library" -> LibraryScreen(controller, Modifier.padding(pad))
-            "foryou" -> ForYouScreen(controller, Modifier.padding(pad))
-            "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
-            "eq" -> EqScreen(Modifier.padding(pad))
+        // Full-screen overlay above everything; swipe down collapses it.
+        if (showNowPlaying) {
+            Box(Modifier.fillMaxSize()) {
+                NowPlayingScreen(
+                    controller = controller,
+                    onCollapse = { showNowPlaying = false }
+                )
+            }
         }
     }
 }
