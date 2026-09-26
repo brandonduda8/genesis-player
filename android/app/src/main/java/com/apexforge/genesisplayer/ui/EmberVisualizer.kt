@@ -1,7 +1,6 @@
 package com.apexforge.genesisplayer.ui
 
 import android.media.audiofx.Visualizer
-import android.os.Build
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas

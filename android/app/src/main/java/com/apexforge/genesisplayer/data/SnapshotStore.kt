@@ -78,8 +78,10 @@ object SnapshotStore {
                     val snap = parseSnapshot(JSONObject(payload))
                     saveCache(app, payload)
                     state.value = snap
-                    val t = snap.playlists.sumOf { it.tracks.size } +
-                        snap.favorites.size + snap.apolloSuggestions.size
+                    // "tracks" = playable tracks (playlists + favorites), the
+                    // same definition loadCache uses below. Apollo
+                    // suggestions are pending picks, not tracks.
+                    val t = snap.playlists.sumOf { it.tracks.size } + snap.favorites.size
                     Log.i(
                         TAG,
                         "SnapshotStore: applied version ${snap.version} " +
@@ -104,9 +106,10 @@ object SnapshotStore {
      *  "apollo_suggestions": [{"id","artist","title","stream_url","artwork_url","why"}]}
      *
      * Tolerant readers (opt*): missing sections become empty lists, never a
-     * crash. Internal (not private) so the instrumented tests pin the shape.
+     * crash. Public (not private) so the instrumented tests — a separate
+     * compilation module, where Kotlin `internal` is invisible — pin the shape.
      */
-    internal fun parseSnapshot(root: JSONObject): LibrarySnapshot {
+    fun parseSnapshot(root: JSONObject): LibrarySnapshot {
         fun track(o: JSONObject) = SnapshotTrack(
             id = o.optString("id", ""),
             artist = o.optString("artist", "Unknown"),

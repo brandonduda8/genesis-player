@@ -1,6 +1,5 @@
 package com.apexforge.genesisplayer
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.apexforge.genesisplayer.data.CrossfadeMath
 import com.apexforge.genesisplayer.data.HistoryStore
@@ -148,22 +147,18 @@ class BrknWavesTest {
         assertEquals("Unknown", s.favorites[0].artist) // parser default, never invented content
     }
 
-    // ---- HistoryStore recents: dedup + cap ----
+    // ---- HistoryStore recents: dedup + cap (pure helper; no I/O, no sync) ----
 
     @Test
     fun recentsDedupeAndCap() {
-        val ctx = ApplicationProvider.getApplicationContext<android.content.Context>()
-        ctx.getSharedPreferences("genesis_history", android.content.Context.MODE_PRIVATE)
-            .edit().clear().apply()
+        var recents = emptyList<HistoryStore.RecentPlay>()
         // 25 distinct tracks: cap is 20, oldest 5 drop off.
-        repeat(25) { HistoryStore.recordPlay(ctx, "track-$it") }
-        var recents = HistoryStore.recentPlays(ctx)
+        repeat(25) { recents = HistoryStore.pushRecent(recents, "track-$it", now = it.toLong()) }
         assertEquals(20, recents.size)
         assertEquals("track-24", recents.first().trackId)
         assertFalse(recents.any { it.trackId == "track-0" })
         // Re-play an old track: it moves to the head, no duplicate.
-        HistoryStore.recordPlay(ctx, "track-10")
-        recents = HistoryStore.recentPlays(ctx)
+        recents = HistoryStore.pushRecent(recents, "track-10", now = 100L)
         assertEquals(20, recents.size)
         assertEquals("track-10", recents.first().trackId)
         assertEquals(1, recents.count { it.trackId == "track-10" })

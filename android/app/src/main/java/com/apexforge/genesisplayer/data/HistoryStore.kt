@@ -44,19 +44,31 @@ object HistoryStore {
     private fun recordRecent(context: Context, trackId: String) {
         try {
             val p = prefs(context)
-            val arr = JSONArray(p.getString(K_RECENT, "[]") ?: "[]")
+            val updated = pushRecent(recentPlays(context), trackId)
             val out = JSONArray()
-            out.put(JSONObject().put("id", trackId).put("ts", System.currentTimeMillis()))
-            // De-dupe: the track moves to the head instead of doubling up.
-            for (i in 0 until arr.length()) {
-                val o = arr.getJSONObject(i)
-                if (o.optString("id") != trackId) out.put(o)
-                if (out.length() >= RECENT_CAP) break
-            }
+            for (r in updated) out.put(JSONObject().put("id", r.trackId).put("ts", r.playedAt))
             p.edit().putString(K_RECENT, out.toString()).apply()
         } catch (e: Exception) {
             // Best-effort; the counters above already recorded the play.
         }
+    }
+
+    /**
+     * Pure recent-list update: newest-first, de-duplicated, capped.
+     * No I/O, no network — this is what the instrumented tests pin, so the
+     * test path never spawns HistorySync flush threads.
+     */
+    fun pushRecent(
+        existing: List<RecentPlay>,
+        trackId: String,
+        now: Long = System.currentTimeMillis()
+    ): List<RecentPlay> {
+        val out = mutableListOf(RecentPlay(trackId, now))
+        for (r in existing) {
+            if (r.trackId != trackId) out.add(r)
+            if (out.size >= RECENT_CAP) break
+        }
+        return out
     }
 
     fun recordSkip(context: Context, trackId: String) {

@@ -173,6 +173,10 @@ class PlayerService : MediaSessionService() {
                     // BRKN wave 2: end-of-queue sleep timer wins over autoplay.
                     if (sleepEndOfQueue) {
                         sleepEndOfQueue = false
+                        // Explicit stop: STATE_ENDED already halted rendering,
+                        // but stop() is the honest sleep-timer end state (no
+                        // accidental resume into the last track).
+                        p.stop()
                         toast("Sleep timer — end of queue.")
                         Log.i(TAG, "SleepTimer: fired at end of queue, stopping")
                     } else if (autoplayEnabled() && p.repeatMode == Player.REPEAT_MODE_OFF) {
@@ -239,6 +243,9 @@ class PlayerService : MediaSessionService() {
     /** User pressed next/prev before half the track played: count a skip. */
     fun userSkip(direction: Int) {
         val p = player ?: return
+        // A user skip during a crossfade ramp aborts the overlap first: the
+        // user chose the next track from its start, not from the ramp point.
+        abortCrossfade("user skip")
         val id = currentId ?: p.currentMediaItem?.mediaId
         if (id != null) {
             val dur = p.duration.takeIf { it > 0 }
@@ -553,12 +560,25 @@ class PlayerService : MediaSessionService() {
                 override fun run() {
                     val cur2 = player2
                     if (!xfading || cur2 !== p2) return
-                    // Abort when the world moved: the track already advanced
-                    // naturally, or the user seeked backwards mid-ramp.
-                    if (p.currentMediaItemIndex != xfadeFromIdx ||
-                        p.currentPosition < xfadeFromPos - 2000
-                    ) {
-                        abortCrossfade("track advanced/seeked")
+                    val curIdx = p.currentMediaItemIndex
+                    if (curIdx != xfadeFromIdx) {
+                        // The world moved mid-ramp. Natural end-of-track is
+                        // the common case (the ramp is sized to the remaining
+                        // time): player1 is already on the next item, so
+                        // complete the handoff — jump it to player2's
+                        // position instead of restarting the intro. Anything
+                        // else (can't happen after userSkip aborts, but be
+                        // safe) aborts honestly.
+                        if (curIdx == xfadeFromIdx + 1) {
+                            xfadeHandoff(p, p2, curIdx)
+                        } else {
+                            abortCrossfade("unexpected index $curIdx")
+                        }
+                        return
+                    }
+                    // User seeked backwards mid-ramp: give up honestly.
+                    if (p.currentPosition < xfadeFromPos - 2000) {
+                        abortCrossfade("seeked backwards")
                         return
                     }
                     step++
@@ -676,7 +696,9 @@ class PlayerService : MediaSessionService() {
     // DEBUG-gated in MainActivity; the commands below are the normal
     // production path also used by the in-app settings UI, so they must NOT
     // be DEBUG-gated — otherwise release builds would ignore legitimate
-    // settings. Release ignores only the special intent actions.
+    // settings. Release accepts every production setting here; only the
+    // proof extras are DEBUG-gated: the crossfade prove seek, and the
+    // ACTION_QUEUE_DUMP command (not even registered in release).
     private fun cmdSetSleep(minutes: Int, endOfQueue: Boolean) {
         when {
             endOfQueue -> setSleepEndOfQueue()
@@ -690,7 +712,10 @@ class PlayerService : MediaSessionService() {
         val s = seconds.coerceIn(0, 8)
         playbackPrefs().edit().putFloat("xfade_s", s.toFloat()).apply()
         Log.i(TAG, "Crossfade: set ${s}s")
-        if (prove && s > 0) {
+        // The prove seek is a DEBUG-only proof path (CI gate): it seeks the
+        // current track near its end so the production watcher engages for
+        // real. Release builds accept the setting but never the seek.
+        if (prove && BuildConfig.DEBUG && s > 0) {
             // Honest proof path: seek the CURRENT track near its end so the
             // production watcher engages for real. Same code, no shortcuts.
             mainHandler.post {
@@ -774,7 +799,7 @@ class PlayerService : MediaSessionService() {
             controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
             // Custom commands are dropped by default — explicitly accept ours.
-            val commands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+            val builder = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                 .add(SessionCommand(ACTION_PLAY_IDS, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_SHUFFLE_ALL, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_MORE_LIKE_THIS, Bundle.EMPTY))
@@ -786,8 +811,11 @@ class PlayerService : MediaSessionService() {
                 .add(SessionCommand(ACTION_SLEEP_SET, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_XFADE_SET, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_AUTOPLAY_SET, Bundle.EMPTY))
-                .add(SessionCommand(ACTION_QUEUE_DUMP, Bundle.EMPTY))
-                .build()
+            // QueueDump is a DEBUG-only proof hook (CI gate log scraping);
+            // it is not a production command and stays unregistered in
+            // release builds.
+            if (BuildConfig.DEBUG) builder.add(SessionCommand(ACTION_QUEUE_DUMP, Bundle.EMPTY))
+            val commands = builder.build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(commands)
                 .build()
@@ -845,7 +873,9 @@ class PlayerService : MediaSessionService() {
                     args.getBoolean("prove", false)
                 )
                 ACTION_AUTOPLAY_SET -> cmdSetAutoplay(args.getBoolean("enabled", true))
-                ACTION_QUEUE_DUMP -> cmdQueueDump(
+                // DEBUG-only proof hook; ignored in release builds (the
+                // command isn't even registered there).
+                ACTION_QUEUE_DUMP -> if (BuildConfig.DEBUG) cmdQueueDump(
                     args.getInt("move_from", -1),
                     args.getInt("move_to", -1)
                 )

@@ -315,11 +315,13 @@ fun ApolloScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                         decidedAt = 0L
                     ),
                     onApprove = {
-                        ApolloDrops.approve(app, s.id)
+                        // Snapshot metadata rides the existing outbox —
+                        // recorded with its real artist/title/why.
+                        ApolloDrops.approve(app, s.id, artist = s.artist, title = s.title, why = s.why)
                         refreshDecisions()
                     },
                     onReject = {
-                        ApolloDrops.reject(app, s.id)
+                        ApolloDrops.reject(app, s.id, artist = s.artist, title = s.title, why = s.why)
                         refreshDecisions()
                     }
                 )

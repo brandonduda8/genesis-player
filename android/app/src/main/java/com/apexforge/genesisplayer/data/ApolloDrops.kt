@@ -190,7 +190,16 @@ object ApolloDrops {
      * (RECORDED) and kicks the sync; the machine's verified publish runs
      * after. Never claims "added".
      */
-    fun approve(context: Context, id: String) {
+    /**
+     * BRKN wave 4: snapshot suggestions are not live drops, so their real
+     * metadata (artist/title/why from the machine snapshot) is passed in by
+     * the caller and preserved in the recorded decision — never invented,
+     * never blanked. The sync path is unchanged (DecideSync, one route).
+     */
+    fun approve(
+        context: Context, id: String,
+        artist: String = "", title: String = "", why: String = ""
+    ) {
         val app = context.applicationContext
         val drop = drops.value.find { it.id == id }
         // Approved leaves the Fresh Signals rail immediately (pending-only);
@@ -201,9 +210,9 @@ object ApolloDrops {
             ?: PendingDecision(
                 id = id,
                 kind = "suggest_to_library",
-                artist = drop?.artist ?: "",
-                title = drop?.title ?: id,
-                why = drop?.why ?: "",
+                artist = drop?.artist ?: artist,
+                title = drop?.title ?: title.ifEmpty { id },
+                why = drop?.why ?: why,
                 state = DecisionState.RECORDED,
                 decidedAt = System.currentTimeMillis()
             )
@@ -212,7 +221,10 @@ object ApolloDrops {
         Log.i(TAG, "ApolloDrops: approved $id (recorded; awaiting verified publish)")
     }
 
-    fun reject(context: Context, id: String) {
+    fun reject(
+        context: Context, id: String,
+        artist: String = "", title: String = "", why: String = ""
+    ) {
         val app = context.applicationContext
         // Reject removes the card immediately; the decision still syncs so
         // the machine stops suggesting it.
@@ -226,7 +238,7 @@ object ApolloDrops {
                 PendingDecision(
                     id = id,
                     kind = "reject",
-                    artist = "", title = id, why = "",
+                    artist = artist, title = title.ifEmpty { id }, why = why,
                     state = DecisionState.RECORDED,
                     decidedAt = System.currentTimeMillis()
                 )

@@ -134,7 +134,7 @@ fun QueueSheet(controller: MediaController?, onDismiss: () -> Unit) {
             )
         }
         LazyColumn(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-            itemsIndexed(order, key = { _, e -> e.mediaId }) { idx, e ->
+            itemsIndexed(order, key = { idx, e -> "${e.mediaId}#$idx" }) { idx, e ->
                 val isCurrent = idx == 0
                 QueueRow(
                     entry = e,

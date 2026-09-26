@@ -1,12 +1,12 @@
 package com.apexforge.genesisplayer.ui
 
-import android.graphics.RenderEffect
-import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -59,6 +59,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -73,6 +75,7 @@ import com.apexforge.genesisplayer.data.ApolloDrops
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.Ratings
 import com.apexforge.genesisplayer.data.RatingsStore
+import com.apexforge.genesisplayer.data.SnapshotStore
 import com.apexforge.genesisplayer.sendGenesis
 import kotlinx.coroutines.delay
 
@@ -152,11 +155,13 @@ fun NowPlayingScreen(
     }
 
     // Vibe data: REAL only. Genre from the catalog; the Apollo "why" when the
-    // track id matches a live suggestion or a For You pick.
+    // track id matches a live suggestion, a For You pick, or a snapshot
+    // Apollo suggestion (wave 3); otherwise the honest empty note.
     val genre = mediaId?.let { Library.track(it)?.genre } ?: ""
     val whyNote = mediaId?.let { id ->
         ApolloDrops.current().find { it.id == id }?.why
             ?: Library.forYou.find { it.id == id }?.why
+            ?: SnapshotStore.current()?.apolloSuggestions?.find { it.id == id }?.why
     }
 
     Box(
@@ -172,7 +177,12 @@ fun NowPlayingScreen(
     ) {
         BlurredBackdrop(artworkUrl = artwork, trackId = mediaId ?: "none")
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+            // Phone-safe: the column scrolls on short screens so the Queue /
+            // Sleep / Settings row is always reachable. A downward swipe at
+            // the scroll top still reaches the outer collapse detector.
+            modifier = Modifier.fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -389,8 +399,10 @@ private fun BlurredBackdrop(artworkUrl: String, trackId: String) {
                 artworkUrl = artworkUrl,
                 modifier = Modifier.fillMaxSize()
                     .graphicsLayer {
+                        // Compose's RenderEffect (not android.graphics): a
+                        // type mismatch here is a compile error.
                         renderEffect = RenderEffect.createBlurEffect(
-                            56f, 56f, Shader.TileMode.CLAMP
+                            56f, 56f, TileMode.Clamp
                         )
                     }
                     .alpha(0.5f),
