@@ -55,7 +55,7 @@ object RemoteCatalog {
         "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json"
     const val BUNDLED_VERSION = 0
 
-    /** Subtle UI note; set ONLY when a version actually advanced. Observed by LibraryScreen. */
+    /** Subtle UI note; set ONLY when a version actually advanced. Observed by CrateScreen. */
     val note = mutableStateOf<String?>(null)
 
     fun activeVersion(context: Context): Int =
@@ -153,7 +153,8 @@ object RemoteCatalog {
                             .ifEmpty { bundled?.artworkUrl ?: "" },
                         durationS = bundled?.durationS ?: 0,
                         genre = o.optString("genre", ""),
-                        soundcloudUrl = scUrl
+                        soundcloudUrl = scUrl,
+                        mood = o.optString("mood", "")
                     ) to names
                 )
                 continue
@@ -176,7 +177,8 @@ object RemoteCatalog {
                     artworkUrl = o.optString("artwork_url", "")
                         .ifEmpty { bundled?.artworkUrl ?: "" },
                     durationS = bundled?.durationS ?: 0,
-                    genre = o.optString("genre", "")
+                    genre = o.optString("genre", ""),
+                    mood = o.optString("mood", "")
                 ) to names
             )
         }

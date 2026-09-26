@@ -17,7 +17,9 @@ data class Track(
      * When non-empty, [streamUrl] is ignored and the playable URL is resolved
      * at play time via [SoundCloudResolver] — never catalogued, never stored.
      */
-    val soundcloudUrl: String = ""
+    val soundcloudUrl: String = "",
+    /** Mood tag from the remote catalog (empty when unknown). Feeds [EnergyRules]. */
+    val mood: String = ""
 )
 
 data class Playlist(val name: String, val trackIds: List<String>)
@@ -65,7 +67,8 @@ object Library {
                     artworkUrl = o.optString("artwork_url", ""),
                     durationS = o.optLong("duration_s", 0),
                     genre = o.optString("genre", ""),
-                    soundcloudUrl = o.optString("soundcloud_url", "")
+                    soundcloudUrl = o.optString("soundcloud_url", ""),
+                    mood = o.optString("mood", "")
                 )
             }
         }

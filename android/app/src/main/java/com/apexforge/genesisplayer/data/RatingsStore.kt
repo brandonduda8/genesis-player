@@ -57,6 +57,19 @@ object RatingsStore {
     fun isDisliked(context: Context, trackId: String): Boolean =
         get(context, trackId) == "dislike"
 
+    /** Every liked track id, in one read (crate hearts render from this). */
+    fun likedIds(context: Context): Set<String> {
+        return try {
+            val root = JSONObject(prefs(context).getString(K_RATINGS, "{}") ?: "{}")
+            root.keys().asSequence()
+                .filter { root.optJSONObject(it)?.optString("r") == "like" }
+                .toSet()
+        } catch (e: Exception) {
+            Log.w(TAG, "RatingsStore: read failed (${e.message})")
+            emptySet()
+        }
+    }
+
     /**
      * Record a rating (null clears it). Persists immediately, enqueues a sync
      * event, and kicks the fire-and-forget sender. Returns the stored value.

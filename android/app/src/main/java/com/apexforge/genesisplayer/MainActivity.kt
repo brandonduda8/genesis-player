@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.automirrored.filled.QueueMusic
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayCircle
@@ -40,13 +40,14 @@ import com.apexforge.genesisplayer.data.Ratings
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RemoteCatalog
 import com.apexforge.genesisplayer.data.RemoteConfig
+import com.apexforge.genesisplayer.ui.CrateScreen
 import com.apexforge.genesisplayer.ui.EqScreen
-import com.apexforge.genesisplayer.ui.ForYouScreen
 import com.apexforge.genesisplayer.ui.GenesisTheme
-import com.apexforge.genesisplayer.ui.LibraryScreen
 import com.apexforge.genesisplayer.ui.MiniPlayerBar
 import com.apexforge.genesisplayer.ui.NowPlayingScreen
+import com.apexforge.genesisplayer.ui.PlaylistsScreen
 import com.apexforge.genesisplayer.ui.ApolloScreen
+import com.apexforge.genesisplayer.ui.rememberPlayerPulse
 import com.apexforge.genesisplayer.data.ApolloDrops
 import com.apexforge.genesisplayer.data.SnapshotStore
 import com.google.common.util.concurrent.MoreExecutors
@@ -295,32 +296,31 @@ private data class Tab(val id: String, val name: String, val icon: ImageVector)
 @Composable
 fun GenesisApp() {
     val controller = rememberPlayerController()
+    val pulse = rememberPlayerPulse(controller)
+    // Golden Phase 1: the app opens on the Crate (tab 0).
     var tab by remember { mutableStateOf(0) }
     // BRKN wave 1: full-screen Now Playing overlay (mini-player tap opens it;
     // swipe down on it collapses back). The "Now Playing" tab still exists for
     // direct access and the CI gate's visualizer proof.
     var showNowPlaying by remember { mutableStateOf(false) }
-    // Tabs are driven by the remote config's sections; hidden sections vanish.
-    val sections = com.apexforge.genesisplayer.ui.RemoteTheme.sections.value.filter { it.visible }
-    val icons = mapOf(
-        "nowplaying" to Icons.Filled.PlayCircle,
-        "library" to Icons.Filled.LibraryMusic,
-        "foryou" to Icons.Filled.AutoAwesome,
-        "eq" to Icons.Filled.GraphicEq
-    )
-    val baseTabs = sections.mapNotNull { s ->
-        icons[s.id]?.let { Tab(s.id, s.label, it) }
-    }.ifEmpty {
-        listOf(
-            Tab("nowplaying", "Now Playing", Icons.Filled.PlayCircle),
-            Tab("library", "Library", Icons.Filled.LibraryMusic),
-            Tab("foryou", "For You", Icons.Filled.AutoAwesome),
-            Tab("eq", "EQ", Icons.Filled.GraphicEq)
-        )
+    // Golden Phase 1 nav (GOLDEN_PLAN §9): Crate / Playlists / Apollo are
+    // pinned (like Apollo was, APOLLO-LIVE §1.1), then Now Playing and EQ.
+    // The remote config still drives the rest: any section id may rename its
+    // tab, and "nowplaying"/"eq" vanish when the config hides or omits them.
+    // Legacy "library"/"foryou" sections are absorbed — their content lives
+    // on in the Crate (For You cards) and Playlists (full library + drops).
+    val sections = com.apexforge.genesisplayer.ui.RemoteTheme.sections.value
+    val byId = sections.associateBy { it.id }
+    fun label(id: String, fallback: String) = byId[id]?.label?.takeIf { it.isNotBlank() } ?: fallback
+    val tabs = buildList {
+        add(Tab("crate", label("crate", "Crate"), Icons.Filled.LibraryMusic))
+        add(Tab("playlists", label("playlists", "Playlists"), Icons.AutoMirrored.Filled.QueueMusic))
+        add(Tab("apollo", label("apollo", "Apollo"), Icons.Filled.Psychology))
+        if (byId["nowplaying"]?.visible == true) {
+            add(Tab("nowplaying", label("nowplaying", "Now Playing"), Icons.Filled.PlayCircle))
+        }
+        if (byId["eq"]?.visible == true) add(Tab("eq", label("eq", "EQ"), Icons.Filled.GraphicEq))
     }
-    // Apollo is a pinned tab, independent of stale remote config (APOLLO-LIVE §1.1).
-    val tabs = if (baseTabs.any { it.id == "apollo" }) baseTabs
-    else baseTabs + Tab("apollo", "Apollo", Icons.Filled.Psychology)
     val safeTab = tab.coerceIn(tabs.indices)
     if (safeTab != tab) tab = safeTab
     Box(Modifier.fillMaxSize()) {
@@ -349,9 +349,13 @@ fun GenesisApp() {
             }
         ) { pad ->
             when (tabs[tab].id) {
+                "crate" -> CrateScreen(
+                    controller, pulse,
+                    onAskApollo = { tab = tabs.indexOfFirst { it.id == "apollo" } },
+                    modifier = Modifier.padding(pad)
+                )
+                "playlists" -> PlaylistsScreen(controller, pulse, Modifier.padding(pad))
                 "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
-                "library" -> LibraryScreen(controller, Modifier.padding(pad))
-                "foryou" -> ForYouScreen(controller, Modifier.padding(pad))
                 "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
                 "eq" -> EqScreen(Modifier.padding(pad))
             }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.session.MediaController
+import com.apexforge.genesisplayer.PlayerService
+import com.apexforge.genesisplayer.sendGenesis
 import kotlinx.coroutines.delay
 
 /**
@@ -83,10 +86,16 @@ fun MiniPlayerBar(controller: MediaController?, onOpen: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 14.sp
                 )
-                Text(
-                    artist, color = TextDim,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Golden Phase 1: NATIVE / SOUNDCLOUD badge (hidden for
+                    // snapshot ids, whose source the catalog can't vouch for).
+                    SourceBadgeFor(mediaId.takeIf { it != "none" })
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        artist, color = TextDim,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis, fontSize = 12.sp
+                    )
+                }
             }
             IconButton(onClick = { if (isPlaying) controller?.pause() else controller?.play() }) {
                 Icon(
@@ -94,6 +103,11 @@ fun MiniPlayerBar(controller: MediaController?, onOpen: () -> Unit) {
                     if (isPlaying) "Pause" else "Play",
                     tint = EmberOrange, modifier = Modifier.size(30.dp)
                 )
+            }
+            // Golden Phase 1: next (the web's × close is deliberately omitted —
+            // it would stop playback, which this bar never does).
+            IconButton(onClick = { controller?.sendGenesis(PlayerService.ACTION_SKIP_NEXT) }) {
+                Icon(Icons.Filled.SkipNext, "Next track", tint = TextDim, modifier = Modifier.size(26.dp))
             }
         }
     }

@@ -22,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,9 @@ fun EqScreen(modifier: Modifier = Modifier) {
 
     // Probe band metadata once from the live EQ, else fall back to a standard 5-band layout.
     val probe = remember(fx) { fx?.let { Probe(it) } }
+    // Bumped whenever the 4-stage panel writes, so the raw controls below
+    // re-read the real DSP state instead of showing stale positions.
+    var rev by remember { mutableIntStateOf(0) }
 
     LazyColumn(modifier = modifier.fillMaxSize().padding(16.dp)) {
         item {
@@ -65,10 +69,19 @@ fun EqScreen(modifier: Modifier = Modifier) {
             Spacer(Modifier.height(12.dp))
         }
 
+        // ---- Golden Phase 1: AMPLIFIER — 4-stage EQ (drives the same chain) ----
+        item {
+            FourStageEqPanel(fx) { rev++ }
+            Spacer(Modifier.height(16.dp))
+            Text("Fine controls", color = PhoenixGold, fontSize = 16.sp)
+            Text("Every device band and effect, individually", color = TextDim, fontSize = 12.sp)
+            Spacer(Modifier.height(8.dp))
+        }
+
         // ---- Bass boost ----
         item {
-            var on by remember(fx) { mutableStateOf(fx?.isBassEnabled() ?: true) }
-            var strength by remember(fx) { mutableIntStateOf(savedBass(context)) }
+            var on by remember(fx, rev) { mutableStateOf(fx?.isBassEnabled() ?: savedBassOn(context)) }
+            var strength by remember(fx, rev) { mutableIntStateOf(savedBass(context)) }
             SettingRow("Bass Boost", if (fx?.bassAvailable == false) "unavailable on this device" else "low-end punch",
                 on, { on = it; fx?.setBassEnabled(it); saveBassOn(context, it) })
             if (fx?.bassAvailable != false) {
@@ -81,17 +94,17 @@ fun EqScreen(modifier: Modifier = Modifier) {
 
         // ---- Equalizer ----
         item {
-            var on by remember(fx) { mutableStateOf(fx?.isEqEnabled() ?: true) }
+            var on by remember(fx, rev) { mutableStateOf(fx?.isEqEnabled() ?: savedEqOn(context)) }
             SettingRow("Equalizer", bandSummary(probe), on,
                 { on = it; fx?.setEqEnabled(it); saveEqOn(context, it) })
             if (fx?.eqAvailable == false) {
                 Text("Equalizer unavailable on this device", color = TextDim, fontSize = 12.sp)
             } else {
-                PresetPicker(fx)
+                key(rev) { PresetPicker(fx) }
                 val bands = probe?.bandCount ?: 5
                 for (b in 0 until bands) {
                     val label = probe?.bandLabel(b) ?: "${60 * (1 shl b)} Hz"
-                    var lvl by remember(fx, b) { mutableIntStateOf(fx?.bandLevel(b) ?: savedBand(context, b)) }
+                    var lvl by remember(fx, b, rev) { mutableIntStateOf(fx?.bandLevel(b) ?: savedBand(context, b)) }
                     Text("$label  ${lvl / 100} dB", color = TextDim, fontSize = 12.sp)
                     Slider(lvl.toFloat(), {
                         lvl = it.toInt()
@@ -199,6 +212,8 @@ private fun prefs(c: android.content.Context) =
     c.getSharedPreferences("genesis_audiofx", android.content.Context.MODE_PRIVATE)
 
 private fun savedBass(c: android.content.Context) = prefs(c).getInt("bass_strength", 800)
+private fun savedBassOn(c: android.content.Context) = prefs(c).getBoolean("bass_on", true)
+private fun savedEqOn(c: android.content.Context) = prefs(c).getBoolean("eq_on", true)
 private fun saveBass(c: android.content.Context, v: Int) = prefs(c).edit().putInt("bass_strength", v).apply()
 private fun saveBassOn(c: android.content.Context, v: Boolean) = prefs(c).edit().putBoolean("bass_on", v).apply()
 private fun savedBand(c: android.content.Context, b: Int) = prefs(c).getInt("eq_band_$b", 0)
