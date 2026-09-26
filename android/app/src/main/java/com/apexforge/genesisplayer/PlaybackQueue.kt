@@ -251,8 +251,8 @@ object SoundCloudRefresher {
         if (player.getMediaItemAt(index).mediaId != expectedMediaId) return false
         val isCurrent = index == player.currentMediaItemIndex
         val pos = if (isCurrent) player.currentPosition else C.TIME_UNSET
-        player.replaceMediaItem(index, fresh)
-        if (isCurrent && pos != C.TIME_UNSET) player.seekTo(index, pos)
+        player.addMediaItems(listOf(fresh)) // MUTATION 4b-1: append instead of replace
+        player.seekTo(index, player.currentPosition) // MUTATION 4b-2: always seek
         return true
     }
 }
