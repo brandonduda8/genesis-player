@@ -18,6 +18,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,14 +34,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apexforge.genesisplayer.AudioFxController
 import com.apexforge.genesisplayer.FourStageEq
+import com.apexforge.genesisplayer.audio.DspController
+import com.apexforge.genesisplayer.dsp.EasyMapping
+import com.apexforge.genesisplayer.dsp.RouteLimits
 import kotlin.math.roundToInt
 
 /**
- * Golden Player Phase 1 — the web deck's "AMPLIFIER · 4-stage EQ", driving the
- * real audiofx chain through [FourStageEq]. Boost is BassBoost strength, which
- * has no dB scale, so it reads as a percentage. Low / Mid / High are real
- * Equalizer band levels, and their slider range is clamped to what the live
- * device EQ actually supports (±12 dB at most) so the dB label never lies.
+ * Golden Player Phase 1 — the web deck's "AMPLIFIER · 4-stage EQ", Easy mode of the
+ * DSP engine: each commit calls DspController.applyEasy (real biquads) and also keeps the
+ * legacy audiofx chain in sync via [FourStageEq] as the fail-closed fallback. Boost shows
+ * the engine's real low-shelf gain in dB (after route limits); the legacy BassBoost strength
+ * (a percentage, no dB scale) is never shown as dB. Low / Mid / High slider range is clamped
+ * to what the live device EQ supports (±12 dB at most).
  *
  * [onApplied] fires after each write so sibling raw controls can re-read.
  */
@@ -55,9 +60,25 @@ fun FourStageEqPanel(fx: AudioFxController?, onApplied: () -> Unit = {}) {
         minOf(12, lo, hi).coerceAtLeast(1)
     }
 
+    val dsp by DspController.state.collectAsState()
+    // Real engine values for the current Easy settings (shelf gain is real dB on a real biquad).
+    val easyParams = remember(s.bassOn, s.bass, s.low, s.mid, s.high) {
+        EasyMapping.toParams(s.bassOn, s.bass, s.low, s.mid, s.high)
+    }
+    // What the engine will actually hold for this route (per-route sub-bass caps applied).
+    val routeParams = remember(easyParams, dsp.outputClass) {
+        RouteLimits.applyRouteLimits(easyParams, dsp.outputClass)
+    }
+    val shelfDb = routeParams.bands[0].gainDb
+    val differs = routeParams != dsp.params
+
     fun commit(next: State4) {
         s = next
+        // Legacy device effects are still written (saved prefs + fail-closed fallback), then the
+        // engine is driven, then the gate is enforced at once so both never run together.
         FourStageEq.apply(ctx, fx, next)
+        DspController.applyEasy(next.bassOn, next.bass, next.low, next.mid, next.high)
+        DspController.enforceLegacyGate()
         onApplied()
     }
 
@@ -83,7 +104,7 @@ fun FourStageEqPanel(fx: AudioFxController?, onApplied: () -> Unit = {}) {
             Column(Modifier.weight(1f)) {
                 Text("Bass", color = Golden.text, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 Text(
-                    if (fx?.bassAvailable == false) "BassBoost unavailable on this device" else "System BassBoost",
+                    "DSP low shelf at ${EasyMapping.BASS_SHELF_HZ.toInt()} Hz (device BassBoost is only the fallback)",
                     color = Golden.dim, fontSize = 12.sp
                 )
             }
@@ -93,7 +114,7 @@ fun FourStageEqPanel(fx: AudioFxController?, onApplied: () -> Unit = {}) {
                 modifier = Modifier.semantics { contentDescription = "Bass on/off" }
             )
         }
-        StageSlider("Boost", "${FourStageEq.boostPercent(s.bass)}%", s.bass, 0, 12,
+        StageSlider("Boost", if (s.bassOn) shelfDbText(shelfDb) + " shelf" else "off", s.bass, 0, 12,
             onMove = { s = s.copy(bass = it, preset = "Custom") }, onDone = { commit(s) })
         StageSlider("Low", db(s.low), s.low, -maxDb, maxDb,
             onMove = { s = s.copy(low = it, preset = "Custom") }, onDone = { commit(s) })
@@ -102,13 +123,36 @@ fun FourStageEqPanel(fx: AudioFxController?, onApplied: () -> Unit = {}) {
         StageSlider("High", db(s.high), s.high, -maxDb, maxDb,
             onMove = { s = s.copy(high = it, preset = "Custom") }, onDone = { commit(s) })
         Text(
-            if (fx != null) "Live on the audio session." else "Saved — applies when playback starts.",
+            EasyMapping.describe(s.bassOn, s.bass, s.low, s.mid, s.high),
+            color = Golden.dim, fontSize = 11.sp, modifier = Modifier.padding(top = 6.dp)
+        )
+        if (dsp.failedClosed) {
+            Text(
+                "DSP engine unavailable (failed closed): these settings are saved but the legacy device effects are playing.",
+                color = Golden.ember, fontSize = 11.sp, modifier = Modifier.padding(top = 4.dp)
+            )
+        } else if (dsp.bypass) {
+            Text("DSP bypass is on: Easy settings are saved but not applied.",
+                color = Golden.ember, fontSize = 11.sp, modifier = Modifier.padding(top = 4.dp))
+        } else if (differs) {
+            Text(
+                "The engine is currently using a different curve (Advanced edit, preset, or route limit). Moving a slider replaces it.",
+                color = Golden.dim, fontSize = 11.sp, modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+        Text(
+            if (fx != null) "Legacy device effects attached." else "Saved — applies when playback starts.",
             color = Golden.dim, fontSize = 11.sp, modifier = Modifier.padding(top = 4.dp)
         )
     }
 }
 
 private typealias State4 = FourStageEq.State
+
+private fun shelfDbText(v: Float): String {
+    val r = Math.round((if (v.isNaN()) 0f else v) * 10f) / 10f
+    return (if (r > 0f) "+" else "") + r.toString() + " dB"
+}
 
 private fun db(v: Int) = if (v > 0) "+$v dB" else "$v dB"
 

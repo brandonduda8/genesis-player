@@ -20,6 +20,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -34,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apexforge.genesisplayer.AudioFxController
 import com.apexforge.genesisplayer.PlayerService
+import com.apexforge.genesisplayer.audio.DspController
+import com.apexforge.genesisplayer.audio.DspMode
 
 /**
  * Real system audio effects — BassBoost, multi-band Equalizer with presets,
@@ -61,20 +64,30 @@ fun EqScreen(modifier: Modifier = Modifier) {
     // re-read the real DSP state instead of showing stale positions.
     var rev by remember { mutableIntStateOf(0) }
 
+    val dspState by DspController.state.collectAsState()
+
     LazyColumn(modifier = modifier.fillMaxSize().padding(16.dp)) {
         item {
             Text("Amplify", style = MaterialTheme.typography.headlineMedium, color = PhoenixGold)
             Text("Real system DSP — bass, EQ and loudness on the live audio session",
                 color = TextDim, fontSize = 13.sp)
             Spacer(Modifier.height(12.dp))
+            EqModeSwitch()
+            Spacer(Modifier.height(12.dp))
+            EngineStatusBanner()
+            Spacer(Modifier.height(4.dp))
         }
 
-        // ---- Golden Phase 1: AMPLIFIER — 4-stage EQ (drives the same chain) ----
+        // ---- Easy (4-stage, drives the DSP engine) or Advanced (8-band parametric) ----
         item {
-            FourStageEqPanel(fx) { rev++ }
+            if (dspState.mode == DspMode.ADVANCED) {
+                AdvancedEqPanel()
+            } else {
+                FourStageEqPanel(fx) { rev++ }
+            }
             Spacer(Modifier.height(16.dp))
             Text("Fine controls", color = PhoenixGold, fontSize = 16.sp)
-            Text("Every device band and effect, individually", color = TextDim, fontSize = 12.sp)
+            Text("Legacy device effects (paused while the DSP engine is active)", color = TextDim, fontSize = 12.sp)
             Spacer(Modifier.height(8.dp))
         }
 

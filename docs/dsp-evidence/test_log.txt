@@ -1,0 +1,109 @@
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.clampsApply
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.coefficientsIntoMatchesCoefficients
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.garbageInputsGiveFiniteStableFilters
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.impulseResponseAtEdgeSettingsIsFiniteAndDecays
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.isStableRejectsBadFilters
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.magnitudeMatchesIndependentCookbookEvaluation
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.peakingGainAtCentreEqualsGainAndShelfCentreIsHalf
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.shelfPlateausAreExact
+PASS com.apexforge.genesisplayer.dsp.BiquadTest.zeroGainIsExactIdentity
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.allZeroIsExactlyFlat
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.bandLayoutUsesStatedFrequencies
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.bassHeavyLegacyAddsLowEnd
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.bassShelfIsRealDbAndOnlyWhenOn
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.describeMentionsDb
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.flatLegacyPresetHasFlatResponse
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.legacyPresetsStageResponseMatchesStageValue
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.lowIsMonotonicAt160Hz
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.midAndHighAreMonotonicToo
+PASS com.apexforge.genesisplayer.dsp.EasyMappingTest.outputAlwaysLegalEvenForWildInputs
+HEADROOM worst output peak over all stress runs = 0.9676332 (limit 1.0; margin 0.3 dB)
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.autoHeadroomNeverClipsOnStressSignals
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.effectivePreampRules
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.flatHasNoBoostAndNoMargin
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.gridIsDenseAndNeverNegative
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.preampCountsAndBypassAndDisabledAreHandled
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.singlePeakMatchesItsGainPlusMargin
+HEADROOM minimum slack (worstCase - measured max sine gain) = 0.2999997301271353 dB
+PASS com.apexforge.genesisplayer.dsp.HeadroomTest.worstCaseIsAtLeastMeasuredMaxSineGain
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.ceilingHoldsForNanInfAndStereoLinked
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.disabledKeepsDelayAndDoesNotLimit
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.latencyIsFixedAndAboutOnePointFiveMs
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.linkedChannelsGetIdenticalGain
+LIMITER max overshoot above ceiling over fixtures (negative = under) = 0.0
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.neverExceedsCeilingOnStressFixtures
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.releasesBackToExactUnityAfterOvers
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.resetClearsState
+PASS com.apexforge.genesisplayer.dsp.LimiterTest.transparentExactlyBelowCeilingAfterLatencyAlignment
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.bassBoostPresetsGivePositiveMatch
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.boostCapRespected
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.boostCappedAtZeroByDefault
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.cutCapRespected
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.cutIsTargetMinusMeasured
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.cutsGiveNegativeAndBypassZero
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.flatMatchIsExactlyZero
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.hugeBoostIsClampedToSixDb
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.matchWithinClampAndScalesWithGain
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.nonFiniteMeasurementGivesNull
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.pinkModelIsEqualEnergyPerOctave
+PASS com.apexforge.genesisplayer.dsp.LoudnessTest.unknownReturnsNull
+BYPASS toggle: max jump / wet steady reference max jump = 1.0000000748009192
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.bypassCrossfadesWithoutDiscontinuityAndIsBitExactWhenBypassed
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.disablingABandEndsExactlyTransparent
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.flatParamsAreTransparentOnNoise
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.garbageParamsAndInputStayFinite
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.latencyIsConstantWhetherLimiterOnOffOrBypassed
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.limiterLastInChainBoundsOutput
+SMOOTHING low-shelf +12 dB @100 Hz: max jump / steady-reference max jump = 1.0003331505062674 ; peak / expected envelope = 1.002269984194028
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.lowShelfSwitchMidStreamHasNoClick
+ENGINE max |measured - responseDb| over 14 freqs = 2.607118156916499E-7 dB
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.measuredSineGainMatchesResponseDb
+SMOOTHING peak -12/Q10 -> +12/Q0.3 @1 kHz: jump ratio = 1.0000115904021007 ; envelope ratio = 1.0000598151961761
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.peakAndFrequencyAndQChangesHaveNoClick
+SMOOTHING preamp -12 -> +6 dB @300 Hz: jump ratio = 1.0 ; envelope ratio = 1.0
+SMOOTHING negative control (hard splice) jump ratio = 7.000661513868361
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.preampStepHasNoClick
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.setParamsFromAnotherThreadWhileProcessing
+PASS com.apexforge.genesisplayer.dsp.ParametricEqTest.zeroGainBandsAndDisabledBandsAreExactIdentity
+CLIP Reference       unprotected peak=1.000 (0.00 dBFS)  protected peak=0.966 (-0.30 dBFS)
+CLIP FEEL IT         unprotected peak=1.953 (5.82 dBFS)  protected peak=0.944 (-0.50 dBFS)
+CLIP Night Drive     unprotected peak=1.570 (3.92 dBFS)  protected peak=0.957 (-0.39 dBFS)
+CLIP Emo/Vocal       unprotected peak=1.539 (3.74 dBFS)  protected peak=0.965 (-0.31 dBFS)
+CLIP Trap-Rock/Rage  unprotected peak=2.674 (8.54 dBFS)  protected peak=0.913 (-0.79 dBFS)
+CLIP Dark Cinematic  unprotected peak=2.080 (6.36 dBFS)  protected peak=0.896 (-0.95 dBFS)
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.beforeAfterClippingEvidence
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.dumpEvidenceWhenRequested
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.everyPresetHasFiniteStableImpulseResponse
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.exactlySixPresetsWithExpectedNames
+PRESETS worst protected peak over all presets x stress signals = 0.9660508632659912
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.noPresetClipsAnyStressSignalWithProtection
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.presetIntentShowsInTheResponse
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.referenceIsTrulyFlat
+PASS com.apexforge.genesisplayer.dsp.PresetsTest.responseCheckpointsMatchMeasuredSineGain
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.bluetoothTypes
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.carExternalTypes
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.documentedAndroidConstantValues
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.emptyIsDefault
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.orderIndependent
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.priorityBluetoothBeatsCarAndSpeaker
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.priorityCarBeatsSpeaker
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.priorityWiredBeatsEverything
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.speakerAlone
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.unknownAndEarpieceAreDefault
+PASS com.apexforge.genesisplayer.dsp.RouteDetectorTest.wiredTypes
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.awkwardFloatsRoundTripExactly
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.bluetoothAndCarCapsApplyWhenExceeded
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.corruptClassProfileFallsBackToDefault
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.corruptedStringsReturnNullAndNeverThrow
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.everyPresetAndClassStaysLegal
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.headphonesAndFullRangeClassesUntouched
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.highShelfNeverTouched
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.loadOrDefaultFallbackOrder
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.nanAndInfinityRejected
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.neverSavedIsNull
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.outOfRangeValuesAreClampedOnLoad
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.perClassIndependence
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.roundTripBitExactAllPresetsAllClasses
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.speakerCapsPunchRegionAtSix
+PASS com.apexforge.genesisplayer.dsp.RouteProfilesTest.speakerCapsSubGain
+RESULT pass=92 fail=0

@@ -1,6 +1,7 @@
 package com.apexforge.genesisplayer
 
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,16 +10,25 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.RenderersFactory
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import com.apexforge.genesisplayer.audio.DspController
+import com.apexforge.genesisplayer.audio.EqAudioProcessor
+import com.apexforge.genesisplayer.audio.RouteDetector
 import com.apexforge.genesisplayer.data.ApolloStore
 import com.apexforge.genesisplayer.data.AudioSessionHub
 import com.apexforge.genesisplayer.data.CrossfadeMath
@@ -56,6 +66,36 @@ class PlayerService : MediaSessionService() {
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    /** WO-AURUM-008: AudioDeviceCallback-based output-route detection -> DspController.setOutputClass. */
+    private var routeDetector: RouteDetector? = null
+
+    /**
+     * WO-AURUM-008: RenderersFactory that puts [proc] first in the DefaultAudioSink processor
+     * chain. Each ExoPlayer needs its OWN processor instance (main = DspController.processor,
+     * crossfade player2 = DspController.newSecondaryProcessor()). Any failure building the DSP
+     * sink falls back to the stock sink, so playback never depends on the DSP.
+     */
+    @androidx.annotation.OptIn(UnstableApi::class)
+    private fun dspRenderersFactory(ctx: Context, proc: EqAudioProcessor): RenderersFactory =
+        object : DefaultRenderersFactory(ctx) {
+            override fun buildAudioSink(
+                context: Context,
+                enableFloatOutput: Boolean,
+                enableAudioTrackPlaybackParams: Boolean
+            ): AudioSink? {
+                return try {
+                    DefaultAudioSink.Builder(context)
+                        .setEnableFloatOutput(enableFloatOutput)
+                        .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
+                        .setAudioProcessors(arrayOf<AudioProcessor>(proc))
+                        .build()
+                } catch (t: Throwable) {
+                    Log.w(TAG, "DSP audio sink failed, using stock sink: ${t.message}")
+                    super.buildAudioSink(context, enableFloatOutput, enableAudioTrackPlaybackParams)
+                }
+            }
+        }
+
     private fun toast(msg: String) {
         mainHandler.post {
             try {
@@ -69,11 +109,22 @@ class PlayerService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
         Library.load(this)
+        // WO-AURUM-008: DspController is fail-closed; never let it break service start.
+        try { DspController.init(applicationContext) } catch (t: Throwable) { Log.w(TAG, "DspController.init failed: ${t.message}") }
+        try {
+            routeDetector = RouteDetector(applicationContext).also { it.start() }
+        } catch (t: Throwable) { Log.w(TAG, "RouteDetector start failed: ${t.message}") }
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(C.USAGE_MEDIA)
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
-        val p = ExoPlayer.Builder(this)
+        val mainBuilder = try {
+            ExoPlayer.Builder(this, dspRenderersFactory(this, DspController.processor))
+        } catch (t: Throwable) {
+            Log.w(TAG, "DSP renderers factory failed, stock pipeline: ${t.message}")
+            ExoPlayer.Builder(this)
+        }
+        val p = mainBuilder
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .build()
@@ -87,6 +138,7 @@ class PlayerService : MediaSessionService() {
                 if (audioSessionId != C.AUDIO_SESSION_ID_UNSET && audioSessionId != 0) {
                     fx?.release()
                     fx = AudioFxController(this@PlayerService, audioSessionId)
+                    try { DspController.onLegacyFxAttached(fx) } catch (_: Throwable) {}
                 }
             }
 
@@ -155,6 +207,7 @@ class PlayerService : MediaSessionService() {
                     AudioSessionHub.audioSessionId = sid
                     if (sid != C.AUDIO_SESSION_ID_UNSET && sid != 0) {
                         fx = AudioFxController(this@PlayerService, sid)
+                        try { DspController.onLegacyFxAttached(fx) } catch (_: Throwable) {}
                     }
                 }
                 val id = currentId ?: p.currentMediaItem?.mediaId
@@ -538,7 +591,14 @@ class PlayerService : MediaSessionService() {
                 .setUsage(C.USAGE_MEDIA)
                 .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                 .build()
-            val p2 = ExoPlayer.Builder(this)
+            // WO-AURUM-008: player2 gets its own processor (never shared with player1's sink).
+            val b2 = try {
+                ExoPlayer.Builder(this, dspRenderersFactory(this, DspController.newSecondaryProcessor()))
+            } catch (t: Throwable) {
+                Log.w(TAG, "DSP renderers factory (player2) failed, stock pipeline: ${t.message}")
+                ExoPlayer.Builder(this)
+            }
+            val p2 = b2
                 .setAudioAttributes(attrs, false) // no audio-focus fights with player1
                 .setHandleAudioBecomingNoisy(false)
                 .build()
@@ -888,10 +948,15 @@ class PlayerService : MediaSessionService() {
         try { player2?.release() } catch (_: Exception) {}
         player2 = null
         cancelSleepTimer(silent = true)
+        try { routeDetector?.stop() } catch (_: Throwable) {}
+        routeDetector = null
+        // Detach the gate before releasing the effects it may touch.
+        try { DspController.onLegacyFxAttached(null) } catch (_: Throwable) {}
         fx?.release()
         fx = null
         session?.release()
         player?.release()
+        try { DspController.shutdown() } catch (_: Throwable) {}
         super.onDestroy()
     }
 
