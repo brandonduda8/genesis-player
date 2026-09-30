@@ -1,0 +1,49 @@
+name: catalog-validate
+
+# Deterministic checks on the bundled catalog (tracks.json): no network, no stream probes.
+# The self-test is a hard gate so the validator itself stays honest.
+# The catalog check is REPORT-ONLY for now (continue-on-error): it flags duplicate
+# artist+title pairs without blocking merges. Flip to blocking by deleting the
+# continue-on-error line in the same PR that lands the duplicate cleanup.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "android/app/src/main/assets/tracks.json"
+      - "tools/catalog_validate.py"
+      - ".github/workflows/catalog-validate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "android/app/src/main/assets/tracks.json"
+      - "tools/catalog_validate.py"
+      - ".github/workflows/catalog-validate.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validator self-test (hard gate)
+        run: python3 tools/catalog_validate.py selftest
+
+      - name: Validate bundled catalog (report-only)
+        continue-on-error: true
+        run: |
+          set +e
+          python3 tools/catalog_validate.py bundled android/app/src/main/assets/tracks.json > catalog-validate-report.json
+          rc=$?
+          cat catalog-validate-report.json
+          exit $rc
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalog-validate-report
+          path: catalog-validate-report.json
+          if-no-files-found: ignore
