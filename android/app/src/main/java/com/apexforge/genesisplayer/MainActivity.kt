@@ -251,22 +251,40 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    /** Shared DEBUG-hook plumbing: build a controller, send one custom command. */
+    /** Shared DEBUG-hook plumbing: reuse the cached controller, send one custom command.
+     * The controller build is bounded at 15s: on a loaded emulator the session
+     * bind can hang, and an unbounded future.get() drops the command SILENTLY
+     * (gate run 36673297471: W4 never saw "QueueDump: order [" because the
+     * "TEST_QUEUE_DUMP fired" listener never ran). Now a hang logs a distinct
+     * line so the gate can tell a dead bind from a dead app. */
     private fun sendTestCommand(action: String, args: Bundle, logLine: String) {
+        val existing = testController
+        if (existing != null) {
+            deliverTestCommand(existing, action, args, logLine)
+            return
+        }
         val token = SessionToken(this, ComponentName(this, PlayerService::class.java))
         val future = MediaController.Builder(this, token).buildAsync()
         future.addListener({
             try {
-                val c = future.get()
+                val c = future.get(15, java.util.concurrent.TimeUnit.SECONDS)
                 testController = c // held until onDestroy so the command is delivered
-                c.sendGenesis(action, args)
-                Log.i("GenesisPlayer", logLine)
+                deliverTestCommand(c, action, args, logLine)
             } catch (e: Exception) {
-                Log.e("GenesisPlayer", "$action failed", e)
+                Log.e("GenesisPlayer", "$action controller-timeout (bind hung >15s)", e)
             } finally {
                 MediaController.releaseFuture(future)
             }
         }, MoreExecutors.directExecutor())
+    }
+
+    private fun deliverTestCommand(c: MediaController, action: String, args: Bundle, logLine: String) {
+        try {
+            c.sendGenesis(action, args)
+            Log.i("GenesisPlayer", logLine)
+        } catch (e: Exception) {
+            Log.e("GenesisPlayer", "$action failed", e)
+        }
     }
 }
 
