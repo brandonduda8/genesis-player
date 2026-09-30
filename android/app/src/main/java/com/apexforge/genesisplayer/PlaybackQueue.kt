@@ -44,8 +44,27 @@ data class QueuePlan(
  * format has exactly one home. Pure — pinned by BrknWavesTest.
  */
 object QueueDump {
-    fun format(ids: List<String>, currentIndex: Int): String =
-        "QueueDump: order [${ids.joinToString(",")}] (current=$currentIndex)"
+    /**
+     * logcat truncates a single log line at about 4 KB. A full-library queue (899 tracks in
+     * gate run 36715393531) is about 7 KB, so the closing "]" was cut off and the gate's
+     * `QueueDump: order \[[^]]*\]` grep never matched ("NO QUEUE DUMP"). Long queues now log
+     * only the first [MAX_IDS] ids (still enough to prove a reorder near the front) plus the
+     * total count and a short hash of the FULL order, always within one log line.
+     */
+    const val MAX_IDS = 40
+
+    fun format(ids: List<String>, currentIndex: Int): String {
+        val shown = if (ids.size <= MAX_IDS) ids else ids.take(MAX_IDS)
+        val tail = if (ids.size > MAX_IDS) " n=${ids.size} sha=${fullOrderHash(ids)}" else ""
+        return "QueueDump: order [${shown.joinToString(",")}] (current=$currentIndex)$tail"
+    }
+
+    /** First 8 hex chars of SHA-1 over the full id order; changes when any position changes. */
+    fun fullOrderHash(ids: List<String>): String {
+        val md = java.security.MessageDigest.getInstance("SHA-1")
+        md.update(ids.joinToString(",").toByteArray(Charsets.UTF_8))
+        return md.digest().joinToString("") { "%02x".format(it) }.take(8)
+    }
 }
 
 object QueuePlanner {

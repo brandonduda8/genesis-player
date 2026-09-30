@@ -4,6 +4,7 @@ import com.apexforge.genesisplayer.data.Track
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -136,6 +137,42 @@ class QueuePlannerUnitTest {
         ) { tracks[it] }
         assertEquals(listOf("y", "x"), p.orderedIds)
         assertEquals(1, p.boostedCount)
+    }
+
+    // ---- QueueDump: bounded line for huge queues (gate run 36715393531) ----
+    private fun bigIds(n: Int) = List(n) { if (it % 7 == 0) "sc_%010d".format(1000000000L + it) else "id%05d".format(it) }
+
+    @Test
+    fun queueDumpLineStaysUnderLogcatLimitForHugeQueues() {
+        val line = QueueDump.format(bigIds(899), 0)
+        assertTrue("line is ${line.length} bytes", line.toByteArray().size < 1500)
+        // the gate's exact grep must match the bracketed part
+        val m = Regex("QueueDump: order \\[[^]]*\\]").find(line)
+        assertTrue(m != null)
+        assertTrue(line.contains(" n=899 "))
+    }
+
+    @Test
+    fun queueDumpSmallQueueFormatUnchanged() {
+        assertEquals("QueueDump: order [a,b] (current=0)", QueueDump.format(listOf("a", "b"), 0))
+        val exactlyMax = bigIds(QueueDump.MAX_IDS)
+        assertEquals(false, QueueDump.format(exactlyMax, 0).contains(" n="))
+    }
+
+    @Test
+    fun queueDumpReorderNearFrontChangesTheGateGrepMatch() {
+        val before = bigIds(899)
+        val after = before.toMutableList().also { val x = it.removeAt(1); it.add(3, x) }
+        val re = Regex("QueueDump: order \\[[^]]*\\]")
+        assertTrue(re.find(QueueDump.format(before, 0))!!.value != re.find(QueueDump.format(after, 0))!!.value)
+    }
+
+    @Test
+    fun queueDumpHashCoversTheWholeOrderEvenOutsideTheWindow() {
+        val a = bigIds(899)
+        val b = a.toMutableList().also { java.util.Collections.swap(it, 500, 501) }
+        assertTrue(QueueDump.fullOrderHash(a) != QueueDump.fullOrderHash(b))
+        assertTrue(QueueDump.format(a, 0) != QueueDump.format(b, 0))
     }
 
     // ---- QueueDump ----
