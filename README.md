@@ -21,10 +21,8 @@ orange, phoenix gold.
   2026-09-30 from `android/app/src/main/assets/tracks.json`): 365 with a direct
   Audius stream URL and 62 SoundCloud tracks (ids start with `sc_`) resolved to
   signed streams at play time via the SoundCloud adapter (stream-only, nothing
-  ripped or stored; see SOUNDCLOUD_ADAPTER.md). Earlier versions of this README
-  described 220 tracks across 6 playlists; that count is out of date. Stream
-  availability varies and is not asserted here; the remote catalog carries a
-  `verified_206` flag, and `tools/catalog_validate.py` checks the catalog's
+  ripped or stored; see SOUNDCLOUD_ADAPTER.md). Stream availability varies and is not asserted
+  here; the remote catalog carries a `verified_206` flag, and `tools/catalog_validate.py` checks the catalog's
   structure.
 - **For You (Apollo v1)** — 8 curated underground picks, each with a
   plain-language why-reason. On-device play/skip/completion counters are

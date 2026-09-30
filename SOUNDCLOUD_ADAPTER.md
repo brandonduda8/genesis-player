@@ -43,7 +43,7 @@ No user action needed.
   string extra so the CI gate can play the "Tha Aadity" shelf by name.
 - `assets/tracks.json` — 50 SC tracks appended (ids `sc_<soundcloud_id>`,
   artwork baked from the SoundCloud CDN, durations from the API), plus the
-  "Tha Aadity" playlist first in the playlist order. The 170 Audius tracks
+  "Tha Aadity" playlist first in the playlist order. The existing Audius tracks
   keep their exact order (index 0 stays a direct Audius stream for the gate).
 
 ## Verification (CI gate, `.github/workflows/gate.yml`)

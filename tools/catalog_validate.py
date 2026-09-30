@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Deterministic catalog validator (staged dry run for WO-AURUM-007 Phase 3).
+"""Deterministic catalog validator (WO-AURUM-007 Phase 3).
 
 Stdlib only. No network. Never prints stream URLs (they may carry client ids).
-Exit code 0 = clean, 1 = failures. Network health probes are a separate concern
-and are deliberately NOT part of this script.
+Exit code: 0 = clean, 1 = failures, 2 = bad usage or unreadable input.
+Network health probes are a separate concern and are deliberately NOT part of
+this script.
 
 Usage:
-  catalog_validate.py remote <catalog.json> [--allowlist FILE] [--base-version N] [--base-file BASE.json] [--json]
-  catalog_validate.py bundled <tracks.json> [--allowlist FILE] [--json]
+  catalog_validate.py remote <catalog.json> [--allowlist FILE] [--base-version N] [--base-file BASE.json]
+  catalog_validate.py bundled <tracks.json> [--allowlist FILE]
   catalog_validate.py selftest
 """
 import json, re, sys, unicodedata
@@ -41,12 +42,20 @@ def url_problem(u):
     """Deterministic shape check only. Returns a short reason or None."""
     if not isinstance(u, str) or not u.strip():
         return "missing"
+    if u.startswith("//"):
+        return "malformed"
     if u.startswith("/"):
         return None  # relative app path, resolved by the app
     p = urlparse(u)
     if p.scheme not in ("http", "https") or not p.netloc:
         return "malformed"
     return None
+
+
+def is_soundcloud_permalink(u):
+    p = urlparse(str(u or "").strip())
+    h = (p.hostname or "").lower()
+    return p.scheme in ("http", "https") and (h == "soundcloud.com" or h.endswith(".soundcloud.com"))
 
 
 def load_allow(path):
@@ -69,10 +78,14 @@ def load_allow(path):
 
 def validate_remote(doc, allow=frozenset(), base_version=None, base_doc=None):
     f, w, info = [], [], {}
+    if not isinstance(doc, dict):
+        return ["top level is not an object"], w, info
     if not isinstance(doc.get("tracks"), list):
         return ["tracks missing or not a list"], w, info
     tracks = doc["tracks"]
-    if base_doc is not None and isinstance(base_doc.get("tracks"), list):
+    if not all(isinstance(t, dict) for t in tracks):
+        return ["track entries must be objects"], w, info
+    if isinstance(base_doc, dict) and isinstance(base_doc.get("tracks"), list):
         changed = json.dumps(base_doc["tracks"], sort_keys=True) != json.dumps(tracks, sort_keys=True)
         info["tracks_changed_vs_base"] = changed
         bumped = isinstance(doc.get("version"), int) and isinstance(base_doc.get("version"), int) \
@@ -95,8 +108,7 @@ def validate_remote(doc, allow=frozenset(), base_version=None, base_doc=None):
                 miss[k] += 1
         r = url_problem(t.get("audius_stream_url"))
         if r == "missing" and str(t.get("soundcloud_url") or "").strip():
-            sc = urlparse(str(t.get("soundcloud_url")).strip())
-            if sc.scheme in ("http", "https") and (sc.hostname or "").endswith("soundcloud.com"):
+            if is_soundcloud_permalink(t.get("soundcloud_url")):
                 info["runtime_resolved_soundcloud"] = info.get("runtime_resolved_soundcloud", 0) + 1
             else:
                 bad_url["bad_soundcloud_url"] += 1
@@ -117,7 +129,7 @@ def validate_remote(doc, allow=frozenset(), base_version=None, base_doc=None):
     info["dup_surplus_rows_near"] = sum(len(v) - 1 for v in nr.values())
     if ex:
         f.append(f"{len(ex)} duplicate normalized artist+title pairs (not allowlisted)")
-    if len(nr) > len(ex):
+    if len(nr) > len(ex) + len(allow):
         w.append("near-duplicate pairs exceed exact ones; review, not auto-fail (versions and remixes can differ)")
     fb_missing = sum(1 for t in tracks if not (isinstance(t.get("playlists"), list) and "Full Blend" in t["playlists"]))
     info["not_in_full_blend"] = fb_missing
@@ -132,8 +144,15 @@ def validate_remote(doc, allow=frozenset(), base_version=None, base_doc=None):
 
 def validate_bundled(doc, allow=frozenset()):
     f, w, info = [], [], {}
-    tracks = doc.get("tracks", [])
-    playlists = doc.get("playlists", [])
+    if not isinstance(doc, dict):
+        return ["top level is not an object"], w, info
+    if not isinstance(doc.get("tracks"), list):
+        return ["tracks missing or not a list"], w, info
+    if not isinstance(doc.get("playlists"), list):
+        return ["playlists missing or not a list"], w, info
+    tracks, playlists = doc["tracks"], doc["playlists"]
+    if not all(isinstance(t, dict) for t in tracks) or not all(isinstance(p, dict) for p in playlists):
+        return ["track and playlist entries must be objects"], w, info
     info["tracks"], info["playlists"] = len(tracks), len(playlists)
     ids = [t.get("id") for t in tracks]
     dup_ids = [k for k, v in Counter(ids).items() if v > 1]
@@ -154,12 +173,18 @@ def validate_bundled(doc, allow=frozenset()):
             info["runtime_resolved_soundcloud_id"] = info.get("runtime_resolved_soundcloud_id", 0) + 1
         elif r:
             bad_url[r] += 1
+        su = str(t.get("stream_url") or "")
+        if su.startswith(("http://", "https://")) and not (urlparse(su).hostname or "").lower().endswith("audius.co"):
+            info["non_audius_stream_hosts"] = info.get("non_audius_stream_hosts", 0) + 1
     info.setdefault("runtime_resolved_soundcloud_id", 0)
+    info.setdefault("non_audius_stream_hosts", 0)
     info["missing_required"], info["bad_stream_url_shape"] = dict(miss), dict(bad_url)
     if miss:
         f.append(f"missing required metadata: {dict(miss)}")
     if bad_url:
         f.append(f"stream url shape problems: {dict(bad_url)}")
+    if info["non_audius_stream_hosts"]:
+        w.append(f"{info['non_audius_stream_hosts']} tracks stream from a non-Audius host; confirm this is intended")
     dangling = []
     for pl in playlists:
         ids_ = pl.get("track_ids", [])
@@ -202,63 +227,117 @@ def validate_bundled(doc, allow=frozenset()):
 
 
 def selftest():
-    good = {"version": 2, "track_count": 2, "tracks": [
-        {"artist": "A", "title": "One", "audius_stream_url": "https://x.test/a", "playlists": ["Full Blend"]},
-        {"artist": "B", "title": "Two", "audius_stream_url": "/api/x?u=1", "playlists": ["Full Blend"]}]}
+    def has(res, needle):
+        return any(needle in x for x in res[0])
+
+    FB = ["Full Blend"]
+
+    def rt(a, t, url="https://x.test/a", **kw):
+        return {"artist": a, "title": t, "audius_stream_url": url, "playlists": FB, **kw}
+
+    good = {"version": 2, "track_count": 2, "tracks": [rt("A", "One"), rt("B", "Two", "/api/x?u=1")]}
+
+    def remote(tracks, **top):
+        return {**good, "track_count": len(tracks), "tracks": tracks, **top}
+
     assert validate_remote(good, base_version=1)[0] == [], "clean remote must pass"
-    cases = {
-        "dup pair": {**good, "track_count": 3, "tracks": good["tracks"] + [{"artist": " a ", "title": "ONE", "audius_stream_url": "https://x.test/z", "playlists": ["Full Blend"]}]},
-        "count mismatch": {**good, "track_count": 5},
-        "missing title": {**good, "tracks": [{"artist": "A", "title": "", "audius_stream_url": "https://x.test/a"}, good["tracks"][1]]},
-        "bad url": {**good, "tracks": [{"artist": "A", "title": "One", "audius_stream_url": "ftp//nope"}, good["tracks"][1]]},
-    }
-    for name, doc in cases.items():
-        assert validate_remote(doc)[0], f"remote case must fail: {name}"
-    assert validate_remote(good, base_version=2)[0], "no version bump must fail"
-    sc_ok = {**good, "tracks": good["tracks"] + [{"artist": "C", "title": "Three", "audius_stream_url": "", "soundcloud_url": "https://soundcloud.com/x/y", "playlists": ["Full Blend"]}], "track_count": 3}
-    assert validate_remote(sc_ok)[0] == [], "empty stream url with a soundcloud permalink must pass"
-    sc_bad = {**good, "tracks": good["tracks"] + [{"artist": "C", "title": "Three", "audius_stream_url": "", "soundcloud_url": ""}], "track_count": 3}
-    assert validate_remote(sc_bad)[0], "empty stream url and no permalink must fail"
-    sc_host = {**good, "tracks": good["tracks"] + [{"artist": "C", "title": "Three", "audius_stream_url": "", "soundcloud_url": "https://evil.test/x"}], "track_count": 3}
-    assert validate_remote(sc_host)[0], "non-soundcloud permalink host must fail"
-    assert validate_remote({"version": 1, "track_count": 0})[0], "missing tracks list must fail"
-    changed = {**good, "tracks": [{**good["tracks"][0], "title": "Changed"}, good["tracks"][1]]}
-    assert validate_remote(changed, base_doc=good)[0], "tracks changed with same version must fail"
+    extra = good["tracks"]
+    cases = [
+        ("duplicate pair", remote(extra + [rt(" a ", "ONE", "https://x.test/z")]), "duplicate normalized"),
+        ("count mismatch", {**good, "track_count": 5}, "track_count"),
+        ("missing title", remote([rt("A", ""), extra[1]]), "missing required"),
+        ("malformed url", remote([rt("A", "One", "ftp//nope"), extra[1]]), "stream url shape"),
+        ("protocol-relative url", remote([rt("A", "One", "//evil.test/x"), extra[1]]), "stream url shape"),
+        ("no permalink", remote(extra + [rt("C", "Three", "", soundcloud_url="")]), "stream url shape"),
+        ("non-soundcloud permalink", remote(extra + [rt("C", "Three", "", soundcloud_url="https://evil.test/x")]), "stream url shape"),
+        ("lookalike soundcloud host", remote(extra + [rt("C", "Three", "", soundcloud_url="https://evilsoundcloud.com/x")]), "stream url shape"),
+        ("missing from Full Blend", remote([rt("A", "One", playlists=["Other"]), extra[1]]), "Full Blend"),
+        ("non-object track", remote([extra[0], "oops"]), "must be objects"),
+        ("top level not an object", [], "not an object"),
+        ("missing tracks list", {"version": 1, "track_count": 0}, "tracks missing"),
+    ]
+    for name, doc, needle in cases:
+        res = validate_remote(doc)
+        assert has(res, needle), f"remote case '{name}' must fail with '{needle}', got {res[0]}"
+    assert has(validate_remote(good, base_version=2), "not greater"), "no version bump must fail"
+    for host in ("https://soundcloud.com/x/y", "https://m.soundcloud.com/x"):
+        ok = remote(extra + [rt("C", "Three", "", soundcloud_url=host)])
+        assert validate_remote(ok)[0] == [], f"empty stream url with permalink {host} must pass"
+    changed = remote([rt("A", "Changed"), extra[1]])
+    assert has(validate_remote(changed, base_doc=good), "not bumped"), "tracks changed with same version must fail"
     assert validate_remote({**changed, "version": 3}, base_doc=good)[0] == [], "bumped version must pass"
     assert validate_remote(good, base_doc=good)[0] == [], "unchanged tracks with unchanged version must pass"
-    nofb = {**good, "tracks": [{**good["tracks"][0], "playlists": ["Other"]}, good["tracks"][1]]}
-    assert validate_remote(nofb)[0], "track missing from Full Blend must fail"
-    b = {"tracks": [{"id": "1", "artist": "A", "title": "One", "stream_url": "https://x.test/1"},
-                    {"id": "2", "artist": "B", "title": "Two", "stream_url": "https://x.test/2"}],
+    dupdoc = remote(extra + [rt(" a ", "ONE", "https://x.test/z")])
+    assert not has(validate_remote(dupdoc, {("a", "one")}), "duplicate normalized"), "allowlist must suppress the listed pair"
+    assert has(validate_remote(dupdoc, {("b", "two")}), "duplicate normalized"), "allowlist must not suppress other pairs"
+
+    def bt(i, a, t, url="https://x.audius.co/1"):
+        return {"id": i, "artist": a, "title": t, "stream_url": url}
+
+    b = {"tracks": [bt("1", "A", "One"), bt("2", "B", "Two")],
          "playlists": [{"name": "p", "track_ids": ["1", "2"]}], "for_you": {"x": ["1"]}}
     assert validate_bundled(b)[0] == [], "clean bundled must pass"
-    dupid = {**b, "tracks": b["tracks"] + [{"id": "1", "artist": "C", "title": "Three", "stream_url": "https://x.test/3"}]}
-    assert validate_bundled(dupid)[0], "duplicate id must fail"
-    badref = {**b, "playlists": [{"name": "p", "track_ids": ["1", "999"]}]}
-    assert validate_bundled(badref)[0], "dangling playlist ref must fail"
-    fy_bad = {**b, "for_you": [{"id": "7", "artist": "", "title": "x", "stream_url": "https://x.test/7"}]}
-    assert validate_bundled(fy_bad)[0], "for_you entry with missing artist must fail"
-    fy_ok = {**b, "for_you": [{"id": "7", "artist": "Z", "title": "x", "stream_url": "https://x.test/7"}]}
-    fr = validate_bundled(fy_ok)
-    assert fr[0] == [] and fr[1], "self-contained for_you entry passes but warns"
-    badlist = {**b, "playlists": [{"name": "p", "track_ids": "1"}]}
-    assert validate_bundled(badlist)[0], "track_ids that is not a list must fail"
-    allow = {("a", "one")}
-    dp = {**b, "tracks": b["tracks"] + [{"id": "9", "artist": "a", "title": "one", "stream_url": "https://x.test/9"}]}
-    assert validate_bundled(dp)[0] and not validate_bundled(dp, allow)[0], "allowlist must suppress only the listed pair"
+    bcases = [
+        ("duplicate id", {**b, "tracks": b["tracks"] + [bt("1", "C", "Three")]}, "duplicate track ids"),
+        ("missing id", {**b, "tracks": b["tracks"] + [bt("", "C", "Three")]}, "missing id"),
+        ("missing artist", {**b, "tracks": [bt("1", "", "One"), b["tracks"][1]]}, "missing required"),
+        ("malformed url", {**b, "tracks": [bt("1", "A", "One", "ftp//x"), b["tracks"][1]]}, "stream url shape"),
+        ("empty url on non-sc id", {**b, "tracks": [bt("1", "A", "One", ""), b["tracks"][1]]}, "stream url shape"),
+        ("dangling ref", {**b, "playlists": [{"name": "p", "track_ids": ["1", "999"]}]}, "missing tracks"),
+        ("track_ids not a list", {**b, "playlists": [{"name": "p", "track_ids": "1"}]}, "not a list"),
+        ("for_you missing artist", {**b, "for_you": [{"id": "7", "artist": "", "title": "x", "stream_url": "https://x.audius.co/7"}]}, "for_you"),
+        ("duplicate pair", {**b, "tracks": b["tracks"] + [bt("9", " a ", "ONE")]}, "duplicate normalized"),
+        ("tracks missing", {"playlists": []}, "tracks missing"),
+        ("playlists missing", {"tracks": b["tracks"]}, "playlists missing"),
+        ("non-object track", {**b, "tracks": [b["tracks"][0], 5]}, "must be objects"),
+    ]
+    for name, doc, needle in bcases:
+        res = validate_bundled(doc)
+        assert has(res, needle), f"bundled case '{name}' must fail with '{needle}', got {res[0]}"
+    sc = {**b, "tracks": b["tracks"] + [bt("sc_5", "D", "Four", "")]}
+    assert validate_bundled(sc)[0] == [], "empty stream url on an sc_ id must pass"
+    other = validate_bundled({**b, "tracks": [bt("1", "A", "One", "https://other.test/1"), b["tracks"][1]]})
+    assert other[0] == [] and any("non-audius" in x.lower() for x in other[1]), "non-Audius host passes but warns"
+    fy_ok = validate_bundled({**b, "for_you": [{"id": "7", "artist": "Z", "title": "x", "stream_url": "https://x.audius.co/7"}]})
+    assert fy_ok[0] == [] and fy_ok[1], "self-contained for_you entry passes but warns"
+    dp = {**b, "tracks": b["tracks"] + [bt("9", "a", "one")]}
+    assert validate_bundled(dp)[0] and not validate_bundled(dp, {("a", "one")})[0], "allowlist must suppress the listed pair"
     print("selftest: all cases behaved as expected")
+
+
+def opt(argv, name):
+    if name in argv:
+        i = argv.index(name)
+        if i + 1 >= len(argv):
+            sys.exit(f"{name} needs a value")
+        return argv[i + 1]
+    return None
+
+
+def read_json(path):
+    try:
+        return json.load(open(path, encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        sys.exit(f"cannot read JSON from {path}: {type(e).__name__}")
 
 
 def main(argv):
     if len(argv) >= 2 and argv[1] == "selftest":
-        selftest(); return 0
+        selftest()
+        return 0
     if len(argv) < 3 or argv[1] not in ("remote", "bundled"):
-        print(__doc__); return 2
+        print(__doc__)
+        return 2
     mode, path = argv[1], argv[2]
-    allow = load_allow(argv[argv.index("--allowlist") + 1]) if "--allowlist" in argv else set()
-    base = int(argv[argv.index("--base-version") + 1]) if "--base-version" in argv else None
-    base_doc = json.load(open(argv[argv.index("--base-file") + 1], encoding="utf-8")) if "--base-file" in argv else None
-    doc = json.load(open(path, encoding="utf-8"))
+    allow = load_allow(opt(argv, "--allowlist"))
+    bv = opt(argv, "--base-version")
+    try:
+        base = int(bv) if bv is not None else None
+    except ValueError:
+        sys.exit("--base-version must be an integer")
+    bf = opt(argv, "--base-file")
+    base_doc = read_json(bf) if bf else None
+    doc = read_json(path)
     f, w, info = validate_remote(doc, allow, base, base_doc) if mode == "remote" else validate_bundled(doc, allow)
     out = {"file": path.split("/")[-1], "mode": mode, "failures": f, "warnings": w, "measured": info}
     print(json.dumps(out, indent=2, ensure_ascii=False))
