@@ -4,7 +4,7 @@
    "id": "85l3W",
    "title": "Star Shopping",
    "artist": "Lil Peep",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/85l3W/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/85l3W/stream?app_name=aurum_player",
    "artwork_url": "https://validator.stuffisup.com/content/QmYjLqTHNbxWRnwATNaP4u8cTAigE53rk99Zh4MM",
    "playlists": [
     "Peep Forever",
@@ -15,7 +15,7 @@
    "id": "y5kk7",
    "title": "Awful Things",
    "artist": "Lil Peep (feat. Lil Tracy)",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y5kk7/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y5kk7/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmeWxcWN63mix8fASriEhHszTg6aMRBxwDEdTjHVqae",
    "playlists": [
     "Peep Forever",
@@ -26,7 +26,7 @@
    "id": "4jpz10y",
    "title": "crybaby",
    "artist": "Lil Peep",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/4jpz10y/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/4jpz10y/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01J61CABV07Y46X2Y6JFHJJ30Q/1000x1000.jpg",
    "playlists": [
     "Peep Forever",
@@ -37,7 +37,7 @@
    "id": "QVy6v",
    "title": "white wine",
    "artist": "Lil Peep & Lil Tracy",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/QVy6v/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/QVy6v/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-14.figment.io/content/QmYHVYq868EVZSNmmYL1RNPh6zEgahnpKLS",
    "playlists": [
     "Peep Forever",
@@ -48,7 +48,7 @@
    "id": "8ZbXqJa",
    "title": "ghost girl",
    "artist": "Lil Peep",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/8ZbXqJa/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/8ZbXqJa/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-1.altego.net/content/01J61CAC87ET48J3DYD3WNSWAY/1000x10",
    "playlists": [
     "Peep Forever",
@@ -59,7 +59,7 @@
    "id": "zEYyO",
    "title": "Avoid",
    "artist": "Lil Peep (feat. Wicca Phase Springs Eternal & Døves)",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/zEYyO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/zEYyO/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-13.theblueprint.xyz/content/QmfE7Y197Jd8mWVbDBx7woDZvzMLw",
    "playlists": [
     "Cloud Nine",
@@ -70,7 +70,7 @@
    "id": "dRW7P",
    "title": "HDMI",
    "artist": "BONES",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/dRW7P/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/dRW7P/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmPip4HqUvvUH8XZ7PNbhAqNH9Q6tm",
    "playlists": [
     "Deep Poetry Trap",
@@ -81,7 +81,7 @@
    "id": "872xP",
    "title": "WeatherMan",
    "artist": "BONES & Xavier Wulf",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/872xP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/872xP/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmdXPAnn5Qni3KS7yZsUBm2qKj2anRTCVmuy5jJ24VZ",
    "playlists": [
     "Deep Poetry Trap",
@@ -92,7 +92,7 @@
    "id": "wy19k",
    "title": "Psycho Pass",
    "artist": "Xavier Wulf",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/wy19k/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/wy19k/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-2.altego.net/content/QmdB9BPDWcVdW4qV31r1c3Y6Sy9k3zsFVX",
    "playlists": [
     "Deep Poetry Trap",
@@ -103,7 +103,7 @@
    "id": "9O3EkRG",
    "title": "Contraband",
    "artist": "Night Lovell",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/9O3EkRG/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/9O3EkRG/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-7.theblueprint.xyz/content/baeaaaiqseaiz7nxzdelmujbfvl4s5",
    "playlists": [
     "Deep Poetry Trap",
@@ -114,7 +114,7 @@
    "id": "b5vMO",
    "title": "Mercury: Retrograde",
    "artist": "Ghostemane",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/b5vMO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/b5vMO/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-5.theblueprint.xyz/content/QmX4ETv8Rc4TFgmui6teQYSTHCLJ95",
    "playlists": [
     "Deep Poetry Trap",
@@ -125,7 +125,7 @@
    "id": "wY2ab",
    "title": "DECAY",
    "artist": "KXLLSWXTCH",
-   "stream_url": "https://api.audius.co/v1/tracks/wY2ab/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/wY2ab/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -136,7 +136,7 @@
    "id": "mlw7wPp",
    "title": "numb",
    "artist": "ellipse",
-   "stream_url": "https://api.audius.co/v1/tracks/mlw7wPp/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mlw7wPp/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -147,7 +147,7 @@
    "id": "8Z7mW",
    "title": "Confetti - Ghost",
    "artist": "CloudKid",
-   "stream_url": "https://api.audius.co/v1/tracks/8Z7mW/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/8Z7mW/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -158,7 +158,7 @@
    "id": "lapNA",
    "title": "Bad Valentine",
    "artist": "Smith The Mister",
-   "stream_url": "https://api.audius.co/v1/tracks/lapNA/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/lapNA/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -169,7 +169,7 @@
    "id": "apxyo",
    "title": "Drinkin' Whiskey and Fadin' Away",
    "artist": "Brady Redding",
-   "stream_url": "https://api.audius.co/v1/tracks/apxyo/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/apxyo/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -180,7 +180,7 @@
    "id": "vZWBR",
    "title": "MARC SHDW - House Away The Pain",
    "artist": "MARC SHDW",
-   "stream_url": "https://api.audius.co/v1/tracks/vZWBR/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/vZWBR/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -191,7 +191,7 @@
    "id": "mR2QKY5",
    "title": "Lonely Looking",
    "artist": "Bailey Baum",
-   "stream_url": "https://api.audius.co/v1/tracks/mR2QKY5/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mR2QKY5/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -202,7 +202,7 @@
    "id": "wzEq6Kk",
    "title": "Cant Remember",
    "artist": "Find The Joy",
-   "stream_url": "https://api.audius.co/v1/tracks/wzEq6Kk/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/wzEq6Kk/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -213,7 +213,7 @@
    "id": "mgbQA",
    "title": "boywithahalo - love language 140bpm",
    "artist": "boywithahalo",
-   "stream_url": "https://api.audius.co/v1/tracks/mgbQA/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mgbQA/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -224,7 +224,7 @@
    "id": "Q45KG",
    "title": "cold rain",
    "artist": "Beaumont",
-   "stream_url": "https://api.audius.co/v1/tracks/Q45KG/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Q45KG/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -235,7 +235,7 @@
    "id": "nV9A6",
    "title": "Love Letter",
    "artist": "Rijan Archer",
-   "stream_url": "https://api.audius.co/v1/tracks/nV9A6/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/nV9A6/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -246,7 +246,7 @@
    "id": "rW6bg",
    "title": "LoFi Jazzhop Winter",
    "artist": "thegaritomusic",
-   "stream_url": "https://api.audius.co/v1/tracks/rW6bg/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/rW6bg/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -257,7 +257,7 @@
    "id": "PJ9MX",
    "title": "Heartbreak Hotel",
    "artist": "trulythesound.eth",
-   "stream_url": "https://api.audius.co/v1/tracks/PJ9MX/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/PJ9MX/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -268,7 +268,7 @@
    "id": "9N3jA",
    "title": "Tears in the Shower",
    "artist": "Blythelyبب",
-   "stream_url": "https://api.audius.co/v1/tracks/9N3jA/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/9N3jA/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -279,7 +279,7 @@
    "id": "dYkO6Jy",
    "title": "I Miss You, But It’s Okay",
    "artist": "Ehab Bou Fakhr",
-   "stream_url": "https://api.audius.co/v1/tracks/dYkO6Jy/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/dYkO6Jy/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -290,7 +290,7 @@
    "id": "JBJoEG6",
    "title": "Fresh Outta Heaven",
    "artist": "Smiz The Cryptokid",
-   "stream_url": "https://api.audius.co/v1/tracks/JBJoEG6/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/JBJoEG6/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -301,7 +301,7 @@
    "id": "m737w",
    "title": "Heartbreak 💔 (Prod. Lucas Quinn)",
    "artist": "B.I.G. Spitta Larenz",
-   "stream_url": "https://api.audius.co/v1/tracks/m737w/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/m737w/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -312,7 +312,7 @@
    "id": "mQBkr",
    "title": "The Lost Ft. Specctheillest",
    "artist": "trulythesound.eth",
-   "stream_url": "https://api.audius.co/v1/tracks/mQBkr/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mQBkr/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -323,7 +323,7 @@
    "id": "1Vygd",
    "title": "Ashes",
    "artist": "Rayray The Poet",
-   "stream_url": "https://api.audius.co/v1/tracks/1Vygd/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/1Vygd/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -334,7 +334,7 @@
    "id": "ezYZP",
    "title": "Im Broken But I Can Fix You",
    "artist": "loafboy",
-   "stream_url": "https://api.audius.co/v1/tracks/ezYZP/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ezYZP/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -345,7 +345,7 @@
    "id": "EaZ84",
    "title": "Numb Numb Juice",
    "artist": "David Lee Louthan",
-   "stream_url": "https://api.audius.co/v1/tracks/EaZ84/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/EaZ84/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -356,7 +356,7 @@
    "id": "zKpX5",
    "title": "November Nightz (Prod. Be Franky)",
    "artist": "B.I.G. Spitta Larenz",
-   "stream_url": "https://api.audius.co/v1/tracks/zKpX5/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/zKpX5/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -367,7 +367,7 @@
    "id": "ZZW1x1E",
    "title": "Ignominious Nightmare Love",
    "artist": "The Worship Network",
-   "stream_url": "https://api.audius.co/v1/tracks/ZZW1x1E/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ZZW1x1E/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -378,7 +378,7 @@
    "id": "6Nv5E",
    "title": "I Pray God Forgive Me",
    "artist": "RaPStAGe The Dream 👑",
-   "stream_url": "https://api.audius.co/v1/tracks/6Nv5E/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/6Nv5E/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -389,7 +389,7 @@
    "id": "zOZax",
    "title": "Voicemails - Ace Boogie feat. ShyDaGr8t",
    "artist": "ACE BOOGIE",
-   "stream_url": "https://api.audius.co/v1/tracks/zOZax/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/zOZax/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -400,7 +400,7 @@
    "id": "QR9aYdB",
    "title": "november 2023  set",
    "artist": "leafboi",
-   "stream_url": "https://api.audius.co/v1/tracks/QR9aYdB/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/QR9aYdB/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -411,7 +411,7 @@
    "id": "aBqRZOE",
    "title": "Bye Hater",
    "artist": "🔥Shini🔥",
-   "stream_url": "https://api.audius.co/v1/tracks/aBqRZOE/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/aBqRZOE/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -422,7 +422,7 @@
    "id": "WYmAgy9",
    "title": "MiMOSA SUNRiSE - DO WHATEVA",
    "artist": "InFamous Alchemist",
-   "stream_url": "https://api.audius.co/v1/tracks/WYmAgy9/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/WYmAgy9/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -433,7 +433,7 @@
    "id": "P5vW8wm",
    "title": "Felling Love",
    "artist": "Bodybag",
-   "stream_url": "https://api.audius.co/v1/tracks/P5vW8wm/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/P5vW8wm/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -444,7 +444,7 @@
    "id": "KE3dX0w",
    "title": "AI Text Cleaner",
    "artist": "AI Text Watermark Remover",
-   "stream_url": "https://api.audius.co/v1/tracks/KE3dX0w/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/KE3dX0w/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -455,7 +455,7 @@
    "id": "LWJVZ",
    "title": "Big Deal Though (Freestyle) - PaydayLA",
    "artist": "Ryck Jane",
-   "stream_url": "https://api.audius.co/v1/tracks/LWJVZ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/LWJVZ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -466,7 +466,7 @@
    "id": "mR6Ej",
    "title": ".xxxxxxxxx",
    "artist": "Powfu",
-   "stream_url": "https://api.audius.co/v1/tracks/mR6Ej/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mR6Ej/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -477,7 +477,7 @@
    "id": "y77Aw",
    "title": "Diamonds",
    "artist": "The Pontiac Bandit",
-   "stream_url": "https://api.audius.co/v1/tracks/y77Aw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/y77Aw/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -488,7 +488,7 @@
    "id": "8ZWRv",
    "title": ".xxx.xxx.xxxx.xxx.xxx.xx",
    "artist": "Powfu",
-   "stream_url": "https://api.audius.co/v1/tracks/8ZWRv/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/8ZWRv/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -499,7 +499,7 @@
    "id": "bp3mo2P",
    "title": "I Can Do Better - DreamEater x Broken Blythe",
    "artist": "Blythelyبب",
-   "stream_url": "https://api.audius.co/v1/tracks/bp3mo2P/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/bp3mo2P/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -510,7 +510,7 @@
    "id": "dYXK2",
    "title": "Byzl & Broken Blythe - Untitled",
    "artist": "Blythelyبب",
-   "stream_url": "https://api.audius.co/v1/tracks/dYXK2/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/dYXK2/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -521,7 +521,7 @@
    "id": "z8q1O",
    "title": "Cheater (goodbye)",
    "artist": "riyu biti",
-   "stream_url": "https://api.audius.co/v1/tracks/z8q1O/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/z8q1O/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -532,7 +532,7 @@
    "id": "LRpjj",
    "title": "Cryptolith Rite (Cloud Rap 4Ever)",
    "artist": "planet Jane",
-   "stream_url": "https://api.audius.co/v1/tracks/LRpjj/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/LRpjj/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -543,7 +543,7 @@
    "id": "ZkqEy",
    "title": "Overdose",
    "artist": "MSR Diabolo",
-   "stream_url": "https://api.audius.co/v1/tracks/ZkqEy/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ZkqEy/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -554,7 +554,7 @@
    "id": "GQakm",
    "title": "Crazy Love on the Line",
    "artist": "TWITCHY BONES",
-   "stream_url": "https://api.audius.co/v1/tracks/GQakm/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/GQakm/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -565,7 +565,7 @@
    "id": "jNlEG",
    "title": "Mama Don't Cry (Bedroom Demo)",
    "artist": "The Priest King",
-   "stream_url": "https://api.audius.co/v1/tracks/jNlEG/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/jNlEG/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -576,7 +576,7 @@
    "id": "PkyqVo0",
    "title": "FOREVER",
    "artist": "Brennan Savage",
-   "stream_url": "https://api.audius.co/v1/tracks/PkyqVo0/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/PkyqVo0/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -587,7 +587,7 @@
    "id": "bb8l6Q",
    "title": "Whiskey on the Wires",
    "artist": "AfroXpress",
-   "stream_url": "https://api.audius.co/v1/tracks/bb8l6Q/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/bb8l6Q/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -598,7 +598,7 @@
    "id": "b9XMWK",
    "title": "Remember",
    "artist": "The NIche",
-   "stream_url": "https://api.audius.co/v1/tracks/b9XMWK/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/b9XMWK/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -609,7 +609,7 @@
    "id": "AKOYJqK",
    "title": "TEARS",
    "artist": "Brennan Savage",
-   "stream_url": "https://api.audius.co/v1/tracks/AKOYJqK/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/AKOYJqK/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -620,7 +620,7 @@
    "id": "yNXlwJZ",
    "title": "I Don't Need to Covet the Entropic Hold on Me",
    "artist": "Blythelyبب",
-   "stream_url": "https://api.audius.co/v1/tracks/yNXlwJZ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/yNXlwJZ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -631,7 +631,7 @@
    "id": "b4w0b",
    "title": "LYING LOVEA LETTER TO ROSE",
    "artist": "JPTHEKING",
-   "stream_url": "https://api.audius.co/v1/tracks/b4w0b/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/b4w0b/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -642,7 +642,7 @@
    "id": "PbKP57p",
    "title": "No Scars (feat. sagun)",
    "artist": "AKTHESAVIOR",
-   "stream_url": "https://api.audius.co/v1/tracks/PbKP57p/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/PbKP57p/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -653,7 +653,7 @@
    "id": "ZYO0pq",
    "title": "Night Lovell - Polozhenie",
    "artist": "PaShA",
-   "stream_url": "https://api.audius.co/v1/tracks/ZYO0pq/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ZYO0pq/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -664,7 +664,7 @@
    "id": "ZPOQQ",
    "title": "Star crossed lovers (Original Mix) Feat. DJ Toxic & Tuks",
    "artist": "Mr Bougx",
-   "stream_url": "https://api.audius.co/v1/tracks/ZPOQQ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ZPOQQ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -675,7 +675,7 @@
    "id": "LjAMo",
    "title": "Xanax",
    "artist": "YB Ghost Boy",
-   "stream_url": "https://api.audius.co/v1/tracks/LjAMo/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/LjAMo/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -686,7 +686,7 @@
    "id": "rk4do9G",
    "title": "Odd Flavored Scars",
    "artist": "Blythelyبب",
-   "stream_url": "https://api.audius.co/v1/tracks/rk4do9G/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/rk4do9G/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -697,7 +697,7 @@
    "id": "lr6Zqw",
    "title": "Whiskey and Broken Promises",
    "artist": "AfroXpress",
-   "stream_url": "https://api.audius.co/v1/tracks/lr6Zqw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/lr6Zqw/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -708,7 +708,7 @@
    "id": "LROBz",
    "title": "02 Scars",
    "artist": "The West View",
-   "stream_url": "https://api.audius.co/v1/tracks/LROBz/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/LROBz/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -719,7 +719,7 @@
    "id": "Q6M33",
    "title": "Ain Goin To Heaven Prod Gxupo",
    "artist": "Kankan",
-   "stream_url": "https://api.audius.co/v1/tracks/Q6M33/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Q6M33/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -730,7 +730,7 @@
    "id": "aZ2l1",
    "title": "Butterfly Chrysalis Coffin",
    "artist": "TR Sun the Terminator 🦾",
-   "stream_url": "https://api.audius.co/v1/tracks/aZ2l1/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/aZ2l1/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -741,7 +741,7 @@
    "id": "Z4qaJ",
    "title": "4. Therapy",
    "artist": "Dashboard Danny",
-   "stream_url": "https://api.audius.co/v1/tracks/Z4qaJ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Z4qaJ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -752,7 +752,7 @@
    "id": "qy5xY",
    "title": "pray for me",
    "artist": "Rayray The Poet",
-   "stream_url": "https://api.audius.co/v1/tracks/qy5xY/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/qy5xY/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -763,7 +763,7 @@
    "id": "pV0GZxo",
    "title": "Shocked In Regret",
    "artist": "The Worship Network",
-   "stream_url": "https://api.audius.co/v1/tracks/pV0GZxo/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/pV0GZxo/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -774,7 +774,7 @@
    "id": "5Q7Vz1V",
    "title": "Sophia's Song",
    "artist": "NickT",
-   "stream_url": "https://api.audius.co/v1/tracks/5Q7Vz1V/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/5Q7Vz1V/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -785,7 +785,7 @@
    "id": "9dq30",
    "title": "goodbye",
    "artist": "Samson",
-   "stream_url": "https://api.audius.co/v1/tracks/9dq30/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/9dq30/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -796,7 +796,7 @@
    "id": "ryz5m1Z",
    "title": "Club Heaven",
    "artist": "THE ZAVARA",
-   "stream_url": "https://api.audius.co/v1/tracks/ryz5m1Z/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ryz5m1Z/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -807,7 +807,7 @@
    "id": "bGWxjX",
    "title": "Laundromat (Belinda)",
    "artist": "Bovine Productions",
-   "stream_url": "https://api.audius.co/v1/tracks/bGWxjX/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/bGWxjX/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -818,7 +818,7 @@
    "id": "2RYvNQy",
    "title": "Letter to Heaven",
    "artist": "The Don",
-   "stream_url": "https://api.audius.co/v1/tracks/2RYvNQy/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/2RYvNQy/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -829,7 +829,7 @@
    "id": "87l5m",
    "title": "Forgive me",
    "artist": "nobody",
-   "stream_url": "https://api.audius.co/v1/tracks/87l5m/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/87l5m/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -840,7 +840,7 @@
    "id": "x4K7Mj",
    "title": "angeldust",
    "artist": "Lil Peep",
-   "stream_url": "https://api.audius.co/v1/tracks/x4K7Mj/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/x4K7Mj/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -851,7 +851,7 @@
    "id": "NzY7g24",
    "title": "Lean Diet",
    "artist": "osamason",
-   "stream_url": "https://api.audius.co/v1/tracks/NzY7g24/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/NzY7g24/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -862,7 +862,7 @@
    "id": "8OOR4OO",
    "title": "live forever",
    "artist": "Lil Peep",
-   "stream_url": "https://api.audius.co/v1/tracks/8OOR4OO/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/8OOR4OO/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -873,7 +873,7 @@
    "id": "YJA2y",
    "title": "TIMELOST",
    "artist": "TWITCHY BONES",
-   "stream_url": "https://api.audius.co/v1/tracks/YJA2y/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/YJA2y/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -884,7 +884,7 @@
    "id": "lWXq97Z",
    "title": "OUR LOVE",
    "artist": "YUNGXANAX",
-   "stream_url": "https://api.audius.co/v1/tracks/lWXq97Z/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/lWXq97Z/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -895,7 +895,7 @@
    "id": "Q73XoOG",
    "title": "Lost Cause",
    "artist": "THE ZAVARA",
-   "stream_url": "https://api.audius.co/v1/tracks/Q73XoOG/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Q73XoOG/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -906,7 +906,7 @@
    "id": "3RkaJ",
    "title": "Demon Time",
    "artist": "Kankan",
-   "stream_url": "https://api.audius.co/v1/tracks/3RkaJ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/3RkaJ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -917,7 +917,7 @@
    "id": "7lBrW",
    "title": "Xotix - Cranial Therapy",
    "artist": "Above and Below",
-   "stream_url": "https://api.audius.co/v1/tracks/7lBrW/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/7lBrW/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -928,7 +928,7 @@
    "id": "M6KYo",
    "title": "love is pain",
    "artist": "nickyxplicit",
-   "stream_url": "https://api.audius.co/v1/tracks/M6KYo/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/M6KYo/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -939,7 +939,7 @@
    "id": "NlAM4",
    "title": "VΛCΛNCY",
    "artist": "THE VAGUS CO.",
-   "stream_url": "https://api.audius.co/v1/tracks/NlAM4/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/NlAM4/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -950,7 +950,7 @@
    "id": "j43v1",
    "title": "Reborn",
    "artist": "Needraw",
-   "stream_url": "https://api.audius.co/v1/tracks/j43v1/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/j43v1/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -961,7 +961,7 @@
    "id": "P61Pk",
    "title": "Crow in a Coffin",
    "artist": "Lil Doom Boy",
-   "stream_url": "https://api.audius.co/v1/tracks/P61Pk/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/P61Pk/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -972,7 +972,7 @@
    "id": "la3z6",
    "title": "the letter i & Blaxqout - Drip Forever [Tribal Trap]",
    "artist": "the letter i",
-   "stream_url": "https://api.audius.co/v1/tracks/la3z6/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/la3z6/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -983,7 +983,7 @@
    "id": "OPAK4",
    "title": "BROKEN PiAno",
    "artist": "BOY-etchko",
-   "stream_url": "https://api.audius.co/v1/tracks/OPAK4/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/OPAK4/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -994,7 +994,7 @@
    "id": "jbWbo",
    "title": "When The Demons Come",
    "artist": "David James Allen",
-   "stream_url": "https://api.audius.co/v1/tracks/jbWbo/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/jbWbo/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1005,7 +1005,7 @@
    "id": "xQ6m2",
    "title": "Hold On",
    "artist": "Midnight Phone Carl",
-   "stream_url": "https://api.audius.co/v1/tracks/xQ6m2/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/xQ6m2/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1016,7 +1016,7 @@
    "id": "8zG8l",
    "title": "ALEX & TOKYO ROSE - 3AM",
    "artist": "ALEX",
-   "stream_url": "https://api.audius.co/v1/tracks/8zG8l/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/8zG8l/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1027,7 +1027,7 @@
    "id": "NzBxzyN",
    "title": "ViCKY [++ 916]",
    "artist": "Yoduh",
-   "stream_url": "https://api.audius.co/v1/tracks/NzBxzyN/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/NzBxzyN/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1038,7 +1038,7 @@
    "id": "PkAGR",
    "title": "Winter dub",
    "artist": "Turbo prod.",
-   "stream_url": "https://api.audius.co/v1/tracks/PkAGR/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/PkAGR/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1049,7 +1049,7 @@
    "id": "A9BWK",
    "title": "I KNOW",
    "artist": "2hollis",
-   "stream_url": "https://api.audius.co/v1/tracks/A9BWK/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/A9BWK/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1060,7 +1060,7 @@
    "id": "2lN33",
    "title": "Valentine",
    "artist": "Abøn",
-   "stream_url": "https://api.audius.co/v1/tracks/2lN33/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/2lN33/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1071,7 +1071,7 @@
    "id": "5O0j75g",
    "title": "NOISYBOY - DEMONS",
    "artist": "NoisyBoy",
-   "stream_url": "https://api.audius.co/v1/tracks/5O0j75g/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/5O0j75g/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1082,7 +1082,7 @@
    "id": "y6R6X",
    "title": "My lonely wooden house",
    "artist": "Among The Vanity",
-   "stream_url": "https://api.audius.co/v1/tracks/y6R6X/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/y6R6X/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1093,7 +1093,7 @@
    "id": "wyj0g61",
    "title": "Summer Was Forever",
    "artist": "The Jazzliners",
-   "stream_url": "https://api.audius.co/v1/tracks/wyj0g61/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/wyj0g61/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1104,7 +1104,7 @@
    "id": "nVogQ",
    "title": "Therapy",
    "artist": "Yonny On The Beat",
-   "stream_url": "https://api.audius.co/v1/tracks/nVogQ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/nVogQ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1115,7 +1115,7 @@
    "id": "KKRjl",
    "title": "Tattoo",
    "artist": "bobby_di",
-   "stream_url": "https://api.audius.co/v1/tracks/KKRjl/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/KKRjl/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1126,7 +1126,7 @@
    "id": "4AvXZ",
    "title": "Niky Nine - 909 & heartbreak",
    "artist": "NIKY NINE",
-   "stream_url": "https://api.audius.co/v1/tracks/4AvXZ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/4AvXZ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1137,7 +1137,7 @@
    "id": "YmN6BMq",
    "title": "The Voicemail",
    "artist": "Bo Scott",
-   "stream_url": "https://api.audius.co/v1/tracks/YmN6BMq/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/YmN6BMq/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1148,7 +1148,7 @@
    "id": "gmavx",
    "title": "Whiskey (I Don't Want You Back)",
    "artist": "The Beat Worx",
-   "stream_url": "https://api.audius.co/v1/tracks/gmavx/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/gmavx/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1159,7 +1159,7 @@
    "id": "kPwaP",
    "title": "Neurofunk Therapy",
    "artist": "The Hell Walker",
-   "stream_url": "https://api.audius.co/v1/tracks/kPwaP/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/kPwaP/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1170,7 +1170,7 @@
    "id": "b9x2b",
    "title": "Wicked Pain",
    "artist": "The Hell Walker",
-   "stream_url": "https://api.audius.co/v1/tracks/b9x2b/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/b9x2b/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1181,7 +1181,7 @@
    "id": "PQ5p7",
    "title": "goodbye. (feat. Harbi)",
    "artist": "SGRKANE",
-   "stream_url": "https://api.audius.co/v1/tracks/PQ5p7/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/PQ5p7/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1192,7 +1192,7 @@
    "id": "Jb4YOr7",
    "title": "VOICEMAIL",
    "artist": "REPHASE",
-   "stream_url": "https://api.audius.co/v1/tracks/Jb4YOr7/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Jb4YOr7/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1203,7 +1203,7 @@
    "id": "DN847",
    "title": "My Funny Valentine",
    "artist": "The Singularity",
-   "stream_url": "https://api.audius.co/v1/tracks/DN847/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/DN847/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1214,7 +1214,7 @@
    "id": "eJlB6",
    "title": "whiteapology",
    "artist": "Sadboy Mike",
-   "stream_url": "https://api.audius.co/v1/tracks/eJlB6/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/eJlB6/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1225,7 +1225,7 @@
    "id": "BNPPbk9",
    "title": "Bloody Tears of Eternity",
    "artist": "Dragonborn",
-   "stream_url": "https://api.audius.co/v1/tracks/BNPPbk9/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/BNPPbk9/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1236,7 +1236,7 @@
    "id": "NoAQVkw",
    "title": "Off The Market - BOGProductions",
    "artist": "BOG Production'$",
-   "stream_url": "https://api.audius.co/v1/tracks/NoAQVkw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/NoAQVkw/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1247,7 +1247,7 @@
    "id": "ZPkag",
    "title": "This Heaven",
    "artist": "Turbo prod.",
-   "stream_url": "https://api.audius.co/v1/tracks/ZPkag/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ZPkag/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1258,7 +1258,7 @@
    "id": "eJBgd",
    "title": "CELESTIAL MIX",
    "artist": "Weathermayn",
-   "stream_url": "https://api.audius.co/v1/tracks/eJBgd/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/eJBgd/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1269,7 +1269,7 @@
    "id": "bpzQp7Q",
    "title": "A World Reborn",
    "artist": "davidohnee",
-   "stream_url": "https://api.audius.co/v1/tracks/bpzQp7Q/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/bpzQp7Q/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1280,7 +1280,7 @@
    "id": "P9MA7MX",
    "title": "We All See",
    "artist": "Smiz The Cryptokid",
-   "stream_url": "https://api.audius.co/v1/tracks/P9MA7MX/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/P9MA7MX/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1291,7 +1291,7 @@
    "id": "Nlo2mMw",
    "title": "Bloody Tears of Eternity",
    "artist": "Dragonborn",
-   "stream_url": "https://api.audius.co/v1/tracks/Nlo2mMw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Nlo2mMw/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1302,7 +1302,7 @@
    "id": "dKOjlWy",
    "title": "I Swore I’d Show Up",
    "artist": "iamcelso",
-   "stream_url": "https://api.audius.co/v1/tracks/dKOjlWy/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/dKOjlWy/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1313,7 +1313,7 @@
    "id": "MYzjYWo",
    "title": "Rain on the Window",
    "artist": "The Jazzliners",
-   "stream_url": "https://api.audius.co/v1/tracks/MYzjYWo/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/MYzjYWo/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1324,7 +1324,7 @@
    "id": "zzzGj",
    "title": "Crystal Eyes",
    "artist": "TURBO GOTH",
-   "stream_url": "https://api.audius.co/v1/tracks/zzzGj/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/zzzGj/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1335,7 +1335,7 @@
    "id": "Gl5oow",
    "title": "Demon Mode",
    "artist": "AfroXpress",
-   "stream_url": "https://api.audius.co/v1/tracks/Gl5oow/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Gl5oow/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1346,7 +1346,7 @@
    "id": "mzlO3rp",
    "title": "Overdose - Nigel",
    "artist": "Themansnigel",
-   "stream_url": "https://api.audius.co/v1/tracks/mzlO3rp/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mzlO3rp/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1357,7 +1357,7 @@
    "id": "abWZ1dw",
    "title": "Softkushens",
    "artist": "Lawrence Rodriguez",
-   "stream_url": "https://api.audius.co/v1/tracks/abWZ1dw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/abWZ1dw/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1368,7 +1368,7 @@
    "id": "B0gPpa1",
    "title": "強くなる手",
    "artist": "bowtera",
-   "stream_url": "https://api.audius.co/v1/tracks/B0gPpa1/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/B0gPpa1/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1379,7 +1379,7 @@
    "id": "Nzo5VYY",
    "title": "Audioslave - Like a Stone",
    "artist": "Javier Leandro",
-   "stream_url": "https://api.audius.co/v1/tracks/Nzo5VYY/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Nzo5VYY/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1390,7 +1390,7 @@
    "id": "7d5ywGW",
    "title": "ここまで来た",
    "artist": "bowtera",
-   "stream_url": "https://api.audius.co/v1/tracks/7d5ywGW/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/7d5ywGW/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1401,7 +1401,7 @@
    "id": "PgAOw1R",
    "title": "Therapy",
    "artist": "MikeBone",
-   "stream_url": "https://api.audius.co/v1/tracks/PgAOw1R/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/PgAOw1R/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1412,7 +1412,7 @@
    "id": "6NWmJ9Z",
    "title": "FREDO VDJ (19)",
    "artist": "AnT",
-   "stream_url": "https://api.audius.co/v1/tracks/6NWmJ9Z/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/6NWmJ9Z/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1423,7 +1423,7 @@
    "id": "XNgZR",
    "title": "Fern - DREAMWALKER Album (FULL MIX)",
    "artist": "Zald Nielsen",
-   "stream_url": "https://api.audius.co/v1/tracks/XNgZR/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/XNgZR/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1434,7 +1434,7 @@
    "id": "aAOA2gr",
    "title": "ATTITUDE",
    "artist": "AnT",
-   "stream_url": "https://api.audius.co/v1/tracks/aAOA2gr/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/aAOA2gr/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1445,7 +1445,7 @@
    "id": "NkWJ0Ep",
    "title": "Keezy Ak X Cej - Osapa London",
    "artist": "Keezyboiwonda",
-   "stream_url": "https://api.audius.co/v1/tracks/NkWJ0Ep/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/NkWJ0Ep/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1456,7 +1456,7 @@
    "id": "gbqPlWk",
    "title": "Time To Go",
    "artist": "Lily Rhodes",
-   "stream_url": "https://api.audius.co/v1/tracks/gbqPlWk/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/gbqPlWk/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1467,7 +1467,7 @@
    "id": "lWAPb",
    "title": "Blood Cemetery",
    "artist": "BogStomp",
-   "stream_url": "https://api.audius.co/v1/tracks/lWAPb/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/lWAPb/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1478,7 +1478,7 @@
    "id": "QRENAgW",
    "title": "ここまで来た",
    "artist": "bowtera",
-   "stream_url": "https://api.audius.co/v1/tracks/QRENAgW/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/QRENAgW/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1489,7 +1489,7 @@
    "id": "ogZk2kJ",
    "title": "A Perfect Circle - Weak And Powerless",
    "artist": "Javier Leandro",
-   "stream_url": "https://api.audius.co/v1/tracks/ogZk2kJ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/ogZk2kJ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1500,7 +1500,7 @@
    "id": "31gozYZ",
    "title": "Audioslave -  Be Yourself",
    "artist": "Javier Leandro",
-   "stream_url": "https://api.audius.co/v1/tracks/31gozYZ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/31gozYZ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1511,7 +1511,7 @@
    "id": "xd72owX",
    "title": "Sgurd coldhart",
    "artist": "ColdHART",
-   "stream_url": "https://api.audius.co/v1/tracks/xd72owX/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/xd72owX/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1522,7 +1522,7 @@
    "id": "B91v1",
    "title": "StreetLight",
    "artist": "Rich.Ones",
-   "stream_url": "https://api.audius.co/v1/tracks/B91v1/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/B91v1/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1533,7 +1533,7 @@
    "id": "Xkx0a",
    "title": "Streetlight Rain",
    "artist": "Rain David Sleep Dragon",
-   "stream_url": "https://api.audius.co/v1/tracks/Xkx0a/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/Xkx0a/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1544,7 +1544,7 @@
    "id": "naQ9A",
    "title": "Pray For Me Ft Daylyt",
    "artist": "Jay Kasai",
-   "stream_url": "https://api.audius.co/v1/tracks/naQ9A/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/naQ9A/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1555,7 +1555,7 @@
    "id": "KEgvY",
    "title": "supalonely",
    "artist": "Drake Campana",
-   "stream_url": "https://api.audius.co/v1/tracks/KEgvY/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/KEgvY/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1566,7 +1566,7 @@
    "id": "BqmKQ",
    "title": "shortfatty & needraw - Whitetail (feat. midnight alpha.)",
    "artist": "Radio Juicy",
-   "stream_url": "https://api.audius.co/v1/tracks/BqmKQ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/BqmKQ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1577,7 +1577,7 @@
    "id": "E7vrJ",
    "title": "What Your Love Means To Me",
    "artist": "Brian Amorello",
-   "stream_url": "https://api.audius.co/v1/tracks/E7vrJ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/E7vrJ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1588,7 +1588,7 @@
    "id": "4gyGj",
    "title": "Broken",
    "artist": "Losi",
-   "stream_url": "https://api.audius.co/v1/tracks/4gyGj/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/4gyGj/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1599,7 +1599,7 @@
    "id": "mVy3v",
    "title": "NIGHTMARE - Daisy Guttridge",
    "artist": "DaisyGuttridge",
-   "stream_url": "https://api.audius.co/v1/tracks/mVy3v/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mVy3v/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1610,7 +1610,7 @@
    "id": "9Pq3M",
    "title": "Cocktail Party",
    "artist": "Among The Vanity",
-   "stream_url": "https://api.audius.co/v1/tracks/9Pq3M/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/9Pq3M/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1621,7 +1621,7 @@
    "id": "emo9Q",
    "title": "What Cha Wanna Do (Prod By. Local Astronauts)",
    "artist": "Dreebo",
-   "stream_url": "https://api.audius.co/v1/tracks/emo9Q/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/emo9Q/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1632,7 +1632,7 @@
    "id": "LWzYB",
    "title": "Testimony [Explicit]",
    "artist": "HOLLAND IZZ",
-   "stream_url": "https://api.audius.co/v1/tracks/LWzYB/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/LWzYB/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1643,7 +1643,7 @@
    "id": "6EaPqWZ",
    "title": "Can't Let Go",
    "artist": "TRIBE MAFIA ⛺️",
-   "stream_url": "https://api.audius.co/v1/tracks/6EaPqWZ/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/6EaPqWZ/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1654,7 +1654,7 @@
    "id": "QVYKZ2w",
    "title": "Pray feat ZXRA, Kayla Parr",
    "artist": "CRXLL",
-   "stream_url": "https://api.audius.co/v1/tracks/QVYKZ2w/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/QVYKZ2w/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1665,7 +1665,7 @@
    "id": "q5g5M",
    "title": "Saint John",
    "artist": "David James Allen",
-   "stream_url": "https://api.audius.co/v1/tracks/q5g5M/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/q5g5M/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1676,18 +1676,19 @@
    "id": "agzvA",
    "title": "Behind Clouds x David Redding - Last Night the Rain Spoke to Me",
    "artist": "Behind Clouds",
-   "stream_url": "https://api.audius.co/v1/tracks/agzvA/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/agzvA/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
-    "Full Blend"
+    "Full Blend",
+    "Cloud Nine"
    ]
   },
   {
    "id": "2Rxjzmp",
    "title": "Dwyer - Demons (feat. Kieron Boothe)",
    "artist": "College Music",
-   "stream_url": "https://api.audius.co/v1/tracks/2Rxjzmp/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/2Rxjzmp/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1698,7 +1699,7 @@
    "id": "v71wO",
    "title": "dragon tales",
    "artist": "coldbrew",
-   "stream_url": "https://api.audius.co/v1/tracks/v71wO/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/v71wO/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1709,7 +1710,7 @@
    "id": "G24BNr7",
    "title": "No Pain no Gain",
    "artist": "Ray Litty",
-   "stream_url": "https://api.audius.co/v1/tracks/G24BNr7/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/G24BNr7/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1720,7 +1721,7 @@
    "id": "mlo7v",
    "title": "Trust Issues",
    "artist": "LaVoyce",
-   "stream_url": "https://api.audius.co/v1/tracks/mlo7v/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/mlo7v/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1731,7 +1732,7 @@
    "id": "yy8pw",
    "title": "Dabow & Good Times Ahead - Rapido",
    "artist": "Dabow",
-   "stream_url": "https://api.audius.co/v1/tracks/yy8pw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/yy8pw/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1742,7 +1743,7 @@
    "id": "pzMdlEX",
    "title": "Goodbye",
    "artist": "Norad",
-   "stream_url": "https://api.audius.co/v1/tracks/pzMdlEX/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/pzMdlEX/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1753,7 +1754,7 @@
    "id": "b9NpGqP",
    "title": "115 SECONDS OF CLAMS",
    "artist": "TRICK CHENEY.",
-   "stream_url": "https://api.audius.co/v1/tracks/b9NpGqP/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/b9NpGqP/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1764,7 +1765,7 @@
    "id": "P9rM5",
    "title": "SPARK UP THE PHILLIES",
    "artist": "OddKidOut",
-   "stream_url": "https://api.audius.co/v1/tracks/P9rM5/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/P9rM5/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1775,7 +1776,7 @@
    "id": "KxdXkM9",
    "title": "Pain",
    "artist": "DE BRAINIACS",
-   "stream_url": "https://api.audius.co/v1/tracks/KxdXkM9/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/KxdXkM9/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1786,7 +1787,7 @@
    "id": "xWdAz",
    "title": "SAFETY",
    "artist": "2hollis",
-   "stream_url": "https://api.audius.co/v1/tracks/xWdAz/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/xWdAz/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1797,7 +1798,7 @@
    "id": "oE48X",
    "title": "Happy Birthday Thomas (2020)",
    "artist": "Jonathan Asiamah-Acheampong",
-   "stream_url": "https://api.audius.co/v1/tracks/oE48X/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/oE48X/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1808,7 +1809,7 @@
    "id": "1A9m3",
    "title": "YUNG LEAN x BLADEE - KAIZEN | Chinese TRAP ⛩️ | Prod.Laimon",
    "artist": "LAIMON 👨🏻‍🚀",
-   "stream_url": "https://api.audius.co/v1/tracks/1A9m3/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/1A9m3/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1819,7 +1820,7 @@
    "id": "lajx0jO",
    "title": "QGR-038S1 | UZ X SoloSam - Pray",
    "artist": "Quality Goods Records",
-   "stream_url": "https://api.audius.co/v1/tracks/lajx0jO/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/lajx0jO/stream?app_name=aurum_player",
    "artwork_url": "",
    "playlists": [
     "Apollo Hunt",
@@ -1830,7 +1831,7 @@
    "id": "NPPrOaw",
    "title": "left on read ~ Demo",
    "artist": "悲 Cry bb 悲",
-   "stream_url": "https://api.audius.co/v1/tracks/NPPrOaw/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/NPPrOaw/stream?app_name=aurum_player",
    "artwork_url": "",
    "genre": "Punk",
    "mood": "Melancholy",
@@ -1845,7 +1846,7 @@
    "id": "3AEx370",
    "title": "Lost Souls",
    "artist": "HannibalBeatz",
-   "stream_url": "https://api.audius.co/v1/tracks/3AEx370/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/3AEx370/stream?app_name=aurum_player",
    "artwork_url": "",
    "genre": "Hip-Hop/Rap",
    "mood": "Sentimental",
@@ -1860,7 +1861,7 @@
    "id": "9OKNAqa",
    "title": "Geezer",
    "artist": "Aarr Kellz",
-   "stream_url": "https://api.audius.co/v1/tracks/9OKNAqa/stream?app_name=APOLLOHUNT",
+   "stream_url": "https://api.audius.co/v1/tracks/9OKNAqa/stream?app_name=aurum_player",
    "artwork_url": "",
    "genre": "Alternative",
    "mood": "Yearning",
@@ -1875,670 +1876,721 @@
    "id": "sc_1878351321",
    "title": "Damned If You Do (Feat. LGDaGawd)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1878351321%2F6fe4b609-12ca-41e4-9b07-7da00f2f470f%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/damned-if-you-do-feat-lgdagawd",
    "artwork_url": "https://i1.sndcdn.com/artworks-XoWeY8Di4Z0XFZNZ-nCkIDA-t500x500.jpg",
    "duration_s": 144,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1878351306",
    "title": "Questions (Feat. Vin Raps)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1878351306%2F7c8ad33e-81ce-4ad8-abbc-62990d8c45c5%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/questions-feat-vin-raps",
    "artwork_url": "https://i1.sndcdn.com/artworks-XoWeY8Di4Z0XFZNZ-nCkIDA-t500x500.jpg",
    "duration_s": 203,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1878351291",
    "title": "LightWork (Feat. Double OnTenDre)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1878351291%2F097c2662-a752-42fa-b125-f46283058f3e%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/lightwork-feat-double-ontendre",
    "artwork_url": "https://i1.sndcdn.com/artworks-XoWeY8Di4Z0XFZNZ-nCkIDA-t500x500.jpg",
    "duration_s": 126,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859977698",
    "title": "Lands Of Forever",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859977698%2F571f6ed6-c0e0-41b0-9220-8c9b71f0e09f%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/lands-of-forever",
    "artwork_url": "https://i1.sndcdn.com/artworks-tiydA6Nbb02a2Cpv-WkpyEw-t500x500.jpg",
    "duration_s": 140,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859977668",
    "title": "Stargate",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859977668%2F5c8591ce-98bc-477b-9b11-62b845540801%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/stargate",
    "artwork_url": "https://i1.sndcdn.com/artworks-tiydA6Nbb02a2Cpv-WkpyEw-t500x500.jpg",
    "duration_s": 91,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859977641",
    "title": "Time Looped On Garden Grove Freestyle",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859977641%2Ffbd28c6b-f7ed-4ef4-aed7-4becdacd48d2%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/time-looped-on-garden-grove",
    "artwork_url": "https://i1.sndcdn.com/artworks-tiydA6Nbb02a2Cpv-WkpyEw-t500x500.jpg",
    "duration_s": 172,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859977632",
    "title": "Rose Around My Wrist",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859977632%2F0260f177-b807-4362-88bd-a323fabe7a49%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/rose-around-my-wrist",
    "artwork_url": "https://i1.sndcdn.com/artworks-tiydA6Nbb02a2Cpv-WkpyEw-t500x500.jpg",
    "duration_s": 96,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859977620",
    "title": "Phoenix",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859977620%2F4b9933f6-5a69-464f-8b94-38a54253446f%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/phoenix",
    "artwork_url": "https://i1.sndcdn.com/artworks-tiydA6Nbb02a2Cpv-WkpyEw-t500x500.jpg",
    "duration_s": 175,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859971020",
    "title": "All I Have Is All I Need (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859971020%2F7a56234e-73d8-47d2-8b4d-085556493b46%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/3-all-i-have-is-all-i-need",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 83,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859970993",
    "title": "Fly (Prod. By Tha AADity XUV KillingEm)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859970993%2F5cabc782-ab3d-494e-bd61-646b9ec9ff6a%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/4-fly-prod-by-tha-aadity-xuv",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 210,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859970951",
    "title": "In Between 2 Worlds",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859970951%2F25a797a6-a1db-44a0-ba99-d8f318d92ba4%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/5-in-between-2-worlds",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 97,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859970927",
    "title": "Where Do I Go (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859970927%2F57143eae-6fd0-4d70-8181-c8e152938d0c%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/6-where-do-i-go-prod-by-tha",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 100,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859970870",
    "title": "Around (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859970870%2Fea1efb25-58e5-4bf9-a139-b1ceb4ee7a11%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/7-around-prod-by-tha-aadity",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 93,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859970837",
    "title": "Simulated Slopes (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859970837%2F1fa0251d-1654-4235-8d1f-7cbb9e1295d8%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/8-simulated-slopes-prod-by-tha",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 62,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859970813",
    "title": "Mixed In (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859970813%2Feadc2ade-4825-4a7d-a698-1d6dd46a73ee%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/9-mixed-in-prod-by-tha-aadity",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 187,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859969307",
    "title": "Cant Complain (Prod. By Tha AADity X RJ Pasin )",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859969307%2F9bb1d977-bd86-4b6c-989e-cc3d583d9534%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/12-cant-complain-feat-lil-t",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 220,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859937411",
    "title": "HiLo (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859937411%2Fc9c85010-9a77-4365-8e8d-37f55c04b055%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/hilo-prod-by-tha-aadity",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 244,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859937393",
    "title": "Barely Scratched The Surface (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859937393%2Fa5e9651b-a46c-4be0-a1c3-953d5073c300%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/barely-scratched-the-surface",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 151,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859937372",
    "title": "Undefined (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859937372%2F7390c4c1-5bd0-4b87-8b08-362833683184%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/undefined-prod-by-tha-aadity",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 91,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859937363",
    "title": "Feel Too Much (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859937363%2F9ef6d159-d9ad-42ee-9a02-618399049aab%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/feel-too-much-prod-by-tha",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 255,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1859937339",
    "title": "Lifes A GaMe (Prod. By Tha AADity)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1859937339%2F4e168902-c25c-4cfd-84c7-b4e645b2577d%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/lifes-a-game-prod-by-tha",
    "artwork_url": "https://i1.sndcdn.com/artworks-nkyMtNWQ1SqYxWRw-yTOi8A-t500x500.jpg",
    "duration_s": 294,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_949108195",
    "title": "Blck Knight x Tha AADity - Deep in Mind",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A949108195%2F87a0f8c9-9ccc-47a7-8f23-1230feb15935%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/blck-knight-x-tha-aadity-deep-in-mind",
    "artwork_url": "https://i1.sndcdn.com/artworks-pocZNLaz0Dcez6wG-zco30w-t500x500.jpg",
    "duration_s": 188,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_706264570",
    "title": "Karma",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A706264570%2Ff3ad1c8d-cd29-43b7-a1bb-18063f763cec%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/karma",
    "artwork_url": "https://i1.sndcdn.com/artworks-000627885199-mqmc9b-t500x500.jpg",
    "duration_s": 124,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_706264561",
    "title": "Social Anxiety",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A706264561%2Fdceae5af-448a-4bf6-b038-79e0d1c52942%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/social-anxiety",
    "artwork_url": "https://i1.sndcdn.com/artworks-000627885190-frl03f-t500x500.jpg",
    "duration_s": 64,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_706264552",
    "title": "From The Grave",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A706264552%2F28c4ae43-2976-471f-9c2a-3a3011785e65%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/from-the-grave",
    "artwork_url": "https://i1.sndcdn.com/artworks-000627885181-4rzanx-t500x500.jpg",
    "duration_s": 96,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_686455537",
    "title": "Dream Travel",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A686455537%2Feb06268a-fc51-4f9b-91a9-9d623dadf70d%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/dream-travel",
    "artwork_url": "https://i1.sndcdn.com/artworks-000602919109-sxko3g-t500x500.jpg",
    "duration_s": 138,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_686455534",
    "title": "ASTRAL BIRD",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A686455534%2Fbf187dc6-dc6d-44d1-b9f2-380a5b3db930%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/astral-bird",
    "artwork_url": "https://i1.sndcdn.com/artworks-000602919091-diakib-t500x500.jpg",
    "duration_s": 345,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_686455522",
    "title": "Matrix",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A686455522%2Fa9c2dbb5-25c3-4efa-9fb4-5eb5d8688ac9%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/matrix",
    "artwork_url": "https://i1.sndcdn.com/artworks-000602919049-679lc8-t500x500.jpg",
    "duration_s": 493,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_685622671",
    "title": "FarAwaY V2",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A685622671%2Fef209279-3479-4565-83a4-04d34fe8b209%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/faraway-v2",
    "artwork_url": "https://i1.sndcdn.com/artworks-000644909884-vb3tsu-t500x500.jpg",
    "duration_s": 158,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_685237726",
    "title": "Dreamer",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A685237726%2F7f058bb1-6c78-48e8-b2be-f59a1fe140fe%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/dreamer",
    "artwork_url": "https://i1.sndcdn.com/artworks-000601585267-uxoz6g-t500x500.jpg",
    "duration_s": 488,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_685237690",
    "title": "Alchemical Gold Vision",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A685237690%2F01f57eec-a73c-4061-b253-289f46df394a%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/alchemical-gold-vision",
    "artwork_url": "https://i1.sndcdn.com/artworks-000601585249-y77i1x-t500x500.jpg",
    "duration_s": 121,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_685237669",
    "title": "As Simple As They Seem",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A685237669%2Fddb6cd48-8058-4853-a319-778db382808a%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/as-simple-as-they-seem",
    "artwork_url": "https://i1.sndcdn.com/artworks-000601585234-hf03gc-t500x500.jpg",
    "duration_s": 174,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_685237651",
    "title": "All About Perspective",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A685237651%2F35047ade-f51a-4455-ab4a-974fb9c61cee%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/all-about-perspective",
    "artwork_url": "https://i1.sndcdn.com/artworks-000601585222-ksaxmi-t500x500.jpg",
    "duration_s": 215,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_685237636",
    "title": "LUCID",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A685237636%2F08a167cc-e8f7-49dd-b60c-0404dd457902%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/lucid",
    "artwork_url": "https://i1.sndcdn.com/artworks-000601585207-qvjao4-t500x500.jpg",
    "duration_s": 226,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680717267",
    "title": "SEA",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680717267%2Fe028c3b4-784f-4b60-8247-37c7df482620%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/sea",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597257435-3im73a-t500x500.jpg",
    "duration_s": 154,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680717021",
    "title": "Shine Bright",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680717021%2Fce8ffea6-543f-4805-bdc0-49810a5705ea%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/shine-bright",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597257309-0379mj-t500x500.jpg",
    "duration_s": 92,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680716547",
    "title": "System Submission 1 (Feat Imminent)(I DIDNT PRODUCE THIS ONE SONG LOL)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680716547%2Ff59fed3c-65b4-42cd-908e-31c32f7fea92%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/system-submission-1-feat-imminent",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597256901-iu3nme-t500x500.jpg",
    "duration_s": 210,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680714309",
    "title": "Phased",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680714309%2F4daca7ac-58e5-4b66-ac3e-5115d6b43ed7%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/phased",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597254972-8ismcz-t500x500.jpg",
    "duration_s": 58,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680713691",
    "title": "Out Of Body",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680713691%2Faec9afc0-cde9-4c82-9384-03769c39d3d1%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/out-of-body",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597254453-8mv66e-t500x500.jpg",
    "duration_s": 81,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680713388",
    "title": "LOST IN my EYEdeas",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680713388%2F7ffdd0a5-b0e9-4243-ae4d-97ebdba59c2a%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/lost-in-my-eyedeas",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597254231-zgeqai-t500x500.jpg",
    "duration_s": 182,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680712947",
    "title": "Frieds With Death",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680712947%2Feaa773da-d4c6-4a5a-87b2-96fc4dd199dd%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/frieds-with-death",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597253850-1jbkvk-t500x500.jpg",
    "duration_s": 153,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680712026",
    "title": "Break Resistace",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680712026%2Fd2248013-e485-4c00-848c-5474519c351e%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/break-resistace",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597253142-zc0044-t500x500.jpg",
    "duration_s": 81,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680710082",
    "title": "Can I Come With Yeu",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680710082%2Fae2d7c6b-45ae-4f61-b3b6-fd4e18db4f54%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/can-i-come-with-yeu",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597251492-094g7b-t500x500.jpg",
    "duration_s": 136,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680708288",
    "title": "Elements",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680708288%2Fdff3bb6f-7f00-461b-bc2b-345cbedc40d6%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/elements",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597249878-679crp-t500x500.jpg",
    "duration_s": 168,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680708012",
    "title": "Destiny",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680708012%2F423c47e4-f4db-413d-afc4-5f72f4cde938%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/destiny",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597249638-dxw6pg-t500x500.jpg",
    "duration_s": 87,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680707640",
    "title": "Fear",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680707640%2F1bc89056-4dae-4011-9750-3c83382d2d28%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/fear",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597249353-z6dmy0-t500x500.jpg",
    "duration_s": 89,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680707412",
    "title": "Babylon",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680707412%2Fd2c286a3-5ecd-4265-9c89-11b61e48e633%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/babylon",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597249167-ytgvtq-t500x500.jpg",
    "duration_s": 110,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680706881",
    "title": "WONDRER WHERE I WANDER",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680706881%2F07069ebb-b03b-45fc-8424-df000acd3752%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/wondrer-where-i-wander",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597248762-7ybkmn-t500x500.jpg",
    "duration_s": 177,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680706311",
    "title": "Its Time",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680706311%2F9de1936d-e36d-4438-bbc6-3a69bf08e446%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/2-its-tie",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597248363-8p8t7j-t500x500.jpg",
    "duration_s": 92,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_680705684",
    "title": "This Is Me",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A680705684%2Fd5957796-f1d3-40fe-a540-1c8c98c6229a%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/tha-aadity/1-this-is-me",
    "artwork_url": "https://i1.sndcdn.com/artworks-000597247838-w27ei6-t500x500.jpg",
    "duration_s": 75,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1956324711",
    "title": "Money Fountains (Feat. DBM Eclipze)",
    "artist": "Tha Aadity",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1956324711%2Fb3b7f360-9064-4d55-a38d-6031a3c61a49%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "soundcloud_url": "https://soundcloud.com/you4earecordsofficial/money-fountains-feat-dbm",
    "artwork_url": "https://i1.sndcdn.com/artworks-INyr5NSNz1JYw7jk-YpRxYw-t500x500.jpg",
    "duration_s": 147,
    "playlists": [
     "Tha Aadity",
     "Full Blend"
-   ]
+   ],
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100734769",
    "title": "INTO THE HUNT",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100734769%2Fa7c51094-43a9-45df-ae87-825f1c926c6f%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 135,
    "soundcloud_url": "https://soundcloud.com/hell_usa/into-the-hunt",
@@ -2553,13 +2605,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 13095
+   "playback_count": 13095,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100737115",
    "title": "THE SCAVENGER",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100737115%2F23c0c4ec-11e7-41f4-a151-7555128a06ba%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 212,
    "soundcloud_url": "https://soundcloud.com/hell_usa/the-scavenger",
@@ -2574,13 +2627,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 18421
+   "playback_count": 18421,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100737868",
    "title": "HOGTIED",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100737868%2Fad0781df-96eb-4c35-9def-0c79d44118ba%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 163,
    "soundcloud_url": "https://soundcloud.com/hell_usa/hogtied",
@@ -2595,13 +2649,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 35741
+   "playback_count": 35741,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100738300",
    "title": "IRONHEADS",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100738300%2F04ea0187-5918-4b98-8f75-79dd1a72549f%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 268,
    "soundcloud_url": "https://soundcloud.com/hell_usa/ironheads",
@@ -2616,13 +2671,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 17239
+   "playback_count": 17239,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_1969684663",
    "title": "DEVIL ON MY SHOULDER",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A1969684663%2Faa857930-5fca-4efc-a7c5-1e99df2af087%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-qST1UgLMnHfAyn79-wZdLvQ-t500x500.jpg",
    "duration_s": 291,
    "soundcloud_url": "https://soundcloud.com/hell_usa/devil-on-my-shoulder-prod-nightrdd-x-skinnydrag-x-marrow",
@@ -2637,13 +2693,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 96466
+   "playback_count": 96466,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100738705",
    "title": "BLOODSOAKED",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100738705%2Fe2d923e8-79b0-46a9-b1dc-7bc21bd24c14%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 179,
    "soundcloud_url": "https://soundcloud.com/hell_usa/bloodsoaked",
@@ -2658,13 +2715,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 22636
+   "playback_count": 22636,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100739197",
    "title": "VULTURES (feat. MOSSBACK)",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100739197%2F43feca5a-d909-447c-90f7-01782d11f49a%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 168,
    "soundcloud_url": "https://soundcloud.com/hell_usa/vultures-feat-mossback",
@@ -2679,13 +2737,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 31887
+   "playback_count": 31887,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100739665",
    "title": "SNAKESKIN (feat. GRIM SALVO)",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100739665%2F9d9a0555-1987-4b81-8861-80bbac303fbc%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 188,
    "soundcloud_url": "https://soundcloud.com/hell_usa/snakeskin-feat-grim-salvo",
@@ -2700,13 +2759,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 27888
+   "playback_count": 27888,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100739923",
    "title": "COFFINYARD",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100739923%2F1b5a30b3-825c-403b-90b4-2fa5189ae40e%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 247,
    "soundcloud_url": "https://soundcloud.com/hell_usa/coffinyard",
@@ -2721,13 +2781,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 19211
+   "playback_count": 19211,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "sc_2100740202",
    "title": "O' DEATH",
    "artist": "Witchouse 40k",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2100740202%2F549b1f1c-33e8-44a9-b68c-d8b6ef2d0979%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-iVo0TyXLfFp0BQPT-g7ygzw-t500x500.png",
    "duration_s": 183,
    "soundcloud_url": "https://soundcloud.com/hell_usa/o-death",
@@ -2742,13 +2803,14 @@
    "album_artist": "Witchouse 40k",
    "label": "Haunted House Records",
    "discovery": true,
-   "playback_count": 13432
+   "playback_count": 13432,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "GQX6j",
    "title": "01. DANTE feat Dissipé (prod R$KP)",
    "artist": "Maeki Maii",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/GQX6j/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/GQX6j/stream?app_name=aurum_player",
    "artwork_url": "https://val014.open-audio-validator.com/content/QmUV6BKuHfQSYDX4W4iNyq4UEAE4QZ6JXG8f1m1hzTV1v2/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2769,7 +2831,7 @@
    "id": "lJ81yqZ",
    "title": "BET!",
    "artist": "Matt OX",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lJ81yqZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lJ81yqZ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-9.figment.io/content/QmWomwoKWFCWFTqpBKsGmeS5oWv3R6XGns6nSa2JVc9ASj/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2790,7 +2852,7 @@
    "id": "jb3dm2G",
    "title": "Tick!",
    "artist": "snow! (@snowwavy)",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/jb3dm2G/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/jb3dm2G/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-13.figment.io/content/01JPS7N067YJ75QN0ZWSFH6M16/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2811,7 +2873,7 @@
    "id": "79zAP",
    "title": "rusty (audius exclusive)",
    "artist": "mf eistee",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/79zAP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/79zAP/stream?app_name=aurum_player",
    "artwork_url": "https://val020.open-audio-validator.com/content/QmQaGtZoWwzTimcqX12yTVSFQQmDE7VwAgMYvzocgfC5tL/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2832,7 +2894,7 @@
    "id": "5O65M",
    "title": "\"Venom\" UnoTheActivist x Yeat | RAGE Type Beat",
    "artist": "☭$OV!ET K!D☭ (E$KAY)",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5O65M/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5O65M/stream?app_name=aurum_player",
    "artwork_url": "https://val001.open-audio-validator.com/content/QmQsVnpQMdTLEzhammNe27ygDNNgNBAf8xi13tc9c2CJAi/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2853,7 +2915,7 @@
    "id": "kpwWP",
    "title": "Enigma",
    "artist": "ELIMINA",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kpwWP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kpwWP/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/Qmd14zXrevZ33ttBbXGpnrBGtVWhurW9RhU6wAMPVMUvRP/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2874,7 +2936,7 @@
    "id": "5zGGJ",
    "title": "ISOxo - Chamber (RamonPang flip)",
    "artist": "RamonPang",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5zGGJ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5zGGJ/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmUTVFqVHFHzwz5FeCDLxKoAeVKWyswJp18qHgrscv1j1B/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2895,7 +2957,7 @@
    "id": "5jK31",
    "title": "Deafadil - I Want It Now",
    "artist": "nyt club",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5jK31/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5jK31/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-12.figment.io/content/QmZYXXLMZarVPzGK1iVTc2wkwWDjfvSy8ZvpJygD4E55ZP/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2916,7 +2978,7 @@
    "id": "MKWom",
    "title": ".x.xxxx.xxxxxx.xx",
    "artist": "Powfu",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/MKWom/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/MKWom/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmbLHeYGPRVDmnhsw8JipiXNq8rPDT4RNz6Us3d4NH2KBT/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2938,7 +3000,7 @@
    "id": "5z9AM",
    "title": ".xxxx.xxxx.xx.xxxx",
    "artist": "Powfu",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5z9AM/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5z9AM/stream?app_name=aurum_player",
    "artwork_url": "https://audius-standardvc-1-validator-3.figment.io/content/QmYSAQeegecfENhP1ErMKbf4QGbdTbkYAGyGmv3aKt7A2w/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2960,7 +3022,7 @@
    "id": "bV1G9KQ",
    "title": ".xxxxxxxxx.xxxxxx",
    "artist": "Powfu",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/bV1G9KQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/bV1G9KQ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-13.theblueprint.xyz/content/QmbEWfXfgjgUJESxwPAfCqDCbuioToDeqNHmupi1hDb64Y/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -2982,7 +3044,7 @@
    "id": "1O4gPv5",
    "title": "I Know You Well",
    "artist": "Brennan Savage",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/1O4gPv5/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/1O4gPv5/stream?app_name=aurum_player",
    "artwork_url": "https://val009.open-audio-validator.com/content/QmY2jLt3TYWjWGTitSNpYB2s7PKZt5PfUoJgCfePk8buhz/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3004,7 +3066,7 @@
    "id": "8Z2Yl",
    "title": ".xxxxxxx.xx.xxxxxxxxx",
    "artist": "Powfu",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/8Z2Yl/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/8Z2Yl/stream?app_name=aurum_player",
    "artwork_url": "https://audius-01.staked.cloud/content/Qmco7vRGknXZjcWQVVyq4fjbSJ2mKpyaHdGmkKZuAR6113/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3026,7 +3088,7 @@
    "id": "kJdJP",
    "title": ".xxxxxxxxxx.xxxxxxx",
    "artist": "Powfu",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kJdJP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kJdJP/stream?app_name=aurum_player",
    "artwork_url": "https://val015.open-audio-validator.com/content/QmafgHhRgF7kdJ6vcKzQX6CCJs1YUxC98T5eeFtvm4L4mh/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3048,7 +3110,7 @@
    "id": "0PPR5",
    "title": "LUCA LUSH - SEROTONIN",
    "artist": "LUCA LUSH",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/0PPR5/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/0PPR5/stream?app_name=aurum_player",
    "artwork_url": "https://audius-standardvc-1-validator-3.figment.io/content/QmVPS92PL8nTR3KSscMqBcSQBx5aqZeGrP4KGHTubbrFEd/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3069,7 +3131,7 @@
    "id": "VgEAr",
    "title": "I Write Sins Not Tragedies",
    "artist": "LUCA LUSH",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/VgEAr/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/VgEAr/stream?app_name=aurum_player",
    "artwork_url": "https://val011.open-audio-validator.com/content/QmWgctfgd8TfhqNJp68c2XLsFVvK25i39pDHjxwT8TJ6dU/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3090,7 +3152,7 @@
    "id": "wYzGzVk",
    "title": "My Downfall",
    "artist": "Elment",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/wYzGzVk/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/wYzGzVk/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmRGcgqUtuXebgJkNk5TeCxYum95RtwExGqXyngfPqwezQ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3111,7 +3173,7 @@
    "id": "Nk0mVR8",
    "title": "Noer the Boy - 100 Tendrils",
    "artist": "Phuture Collective",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Nk0mVR8/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Nk0mVR8/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmeQp4oUfuadr3ZW5VipVWqgdPovU4HeGY6qYu9kNp8bpy/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3132,7 +3194,7 @@
    "id": "vJM2p",
    "title": "BUBBLE BASS",
    "artist": "YOOKiE",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/vJM2p/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/vJM2p/stream?app_name=aurum_player",
    "artwork_url": "https://audius.rickyrombo.com/content/QmVXGyC48M7rn3PN7JpxdfqqTVBaE3aD9AmdEDVioDY7Vv/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3153,7 +3215,7 @@
    "id": "nqERB",
    "title": "Spag Heddy - Zoom (Moore Kismet Remix)",
    "artist": "Moore Kismet",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/nqERB/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/nqERB/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmcLsiqd13rtD7CVBbwFbtgYjVK5wQfgSATtZkdWku4Z4K/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3174,7 +3236,7 @@
    "id": "bm2YO",
    "title": "Aadysi x SONACE - Abyss",
    "artist": "Aadysi",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/bm2YO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/bm2YO/stream?app_name=aurum_player",
    "artwork_url": "https://creatornode.audius.co/content/QmZehKWSmzZUCAzTdUcC8QWk83HB8j5MBaUqHTXQt94PAm/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3195,7 +3257,7 @@
    "id": "kZaOV",
    "title": "had2do (w/ marc indigo)",
    "artist": "MICO",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kZaOV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kZaOV/stream?app_name=aurum_player",
    "artwork_url": "https://val017.open-audio-validator.com/content/QmSqJeDb6xPnNXUVsVR1TZLhAqGotHF7fNvDaFD3XXSAxr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3216,7 +3278,7 @@
    "id": "mRbvy",
    "title": "closing time (Dylan Brady & Aaron Cartier remix)",
    "artist": "KEVIN BEDFORD",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/mRbvy/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/mRbvy/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmPbZK5K3W1TdgdKf8ygnZvS4M7RqNRjSbxUGVcvefv3L3/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3237,7 +3299,7 @@
    "id": "rzJOQ",
    "title": "MOON",
    "artist": "LUCAS LEX",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/rzJOQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/rzJOQ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-1.altego.net/content/QmWQiJoWiTwXjez6Z1EQUGFCR5hAGq4ec7mKuc3gvqS5Jj/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3258,7 +3320,7 @@
    "id": "bvxJJ",
    "title": "breaking point (p. akira3k)",
    "artist": "MO$H",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/bvxJJ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/bvxJJ/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmPEek9pyKk49MMHS9ePrhjdtiRVgCxeXj8TeBp5WxDXWS/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3279,7 +3341,7 @@
    "id": "0KwBk3K",
    "title": "gone",
    "artist": "Reikko",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/0KwBk3K/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/0KwBk3K/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmRSnuuaYL1sU9PYVxWsrGYYXn34i4PKfM3jaWs1cyCnRZ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3300,7 +3362,7 @@
    "id": "n1a3y",
    "title": "SPEEDRUN",
    "artist": "EZZYLAND",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/n1a3y/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/n1a3y/stream?app_name=aurum_player",
    "artwork_url": "https://audius-04.staked.cloud/content/QmTCkop7Umg13LJrcANNTKf4cjgWn1Zednh6qEXNVY1Vbz/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3321,7 +3383,7 @@
    "id": "OGZEg",
    "title": "Soldier, Like Me feat. Ravenna Golden (prod. Dylan Brady)",
    "artist": "Pritty",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/OGZEg/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/OGZEg/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmPRp3pNLSj2HwG28x6wShaDiDnr8riXnmqfG1AuL892mK/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3342,7 +3404,7 @@
    "id": "ZrW36",
    "title": "worth a try",
    "artist": "sewnfkt",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/ZrW36/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/ZrW36/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-2.figment.io/content/QmSrA46gfAmKyS5L9eE4GVjAq3XXYRjcU9pwRgR7Li44wj/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3363,7 +3425,7 @@
    "id": "JNjGoZ2",
    "title": "On The Edge",
    "artist": "Rome in Silver",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/JNjGoZ2/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/JNjGoZ2/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01HPK32RCERC5VWNTY7C69Y6HK/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3384,7 +3446,7 @@
    "id": "Kp8mrOl",
    "title": "Rome in Silver - cloud9high (feat. Vaarwell)",
    "artist": "Rome in Silver",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Kp8mrOl/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Kp8mrOl/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmdrVhFjjCaH9xXWAP789iviayhjd4bPckLkMLiPc9Xe4b/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3405,7 +3467,7 @@
    "id": "0vRz5",
    "title": "ROLLUP with Pressha",
    "artist": "Pacific Patterns",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/0vRz5/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/0vRz5/stream?app_name=aurum_player",
    "artwork_url": "https://val018.open-audio-validator.com/content/QmaF7yMfprJu36Z1PN9yG7ftzyXCJMPee6RL7oDkxhdf1q/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3426,7 +3488,7 @@
    "id": "vRKqY",
    "title": "Tennyson - Innerspace",
    "artist": "College Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/vRKqY/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/vRKqY/stream?app_name=aurum_player",
    "artwork_url": "https://audius-standardvc-1-validator-3.figment.io/content/QmWySPKnzkrspkx25mpRUTAX3U2MA351khjY9zMHUUNdoU/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3447,7 +3509,7 @@
    "id": "V5Yxb",
    "title": "Water colors",
    "artist": "Meek of Okay Beats",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/V5Yxb/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/V5Yxb/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-4.theblueprint.xyz/content/QmNd1vrWTJa6LRnxv7vL4cCwoaKHfhqcFe525w5vsNkr43/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3468,7 +3530,7 @@
    "id": "QoBzlG",
    "title": "Dark whispers of invocation of your pure soul",
    "artist": "JonnyD",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/QoBzlG/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/QoBzlG/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmWAJhyxvL67vUiSaBau4vkEDmLQZphVZJshh5xxu6T8sf/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3489,7 +3551,7 @@
    "id": "V0gxr",
    "title": "Sei lá",
    "artist": "D-Haze",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/V0gxr/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/V0gxr/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-5.figment.io/content/QmRivTMP1zBkoz7ixwnexQxUurpUdKhyii7Jy3rvyyYcZG/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3510,7 +3572,7 @@
    "id": "sc_2352247838",
    "title": "soul scars w/ wesghost and witchouse 40k ( prod. mossback and dont eat slugs)",
    "artist": "Savage Ga$p (@Savagegasp)",
-   "stream_url": "",
+   "stream_url": "/api/aurum/scstream?u=https%3A%2F%2Fapi-v2.soundcloud.com%2Fmedia%2Fsoundcloud%3Atracks%3A2352247838%2F644894f6-8ed9-4c4a-bc3c-e064e98909df%2Fstream%2Fprogressive%3Fclient_id%3D3uJIGBRwdofKn6QKzONvDxUM1Vs4bTv9",
    "artwork_url": "https://i1.sndcdn.com/artworks-hXlQ1KggLFdv90G9-qfugag-t500x500.png",
    "duration_s": 170,
    "soundcloud_url": "https://soundcloud.com/avageaspandungique/soul-scars-w-wesghost-and",
@@ -3526,13 +3588,14 @@
    "album_artist": "",
    "label": "",
    "discovery": true,
-   "playback_count": 18033
+   "playback_count": 18033,
+   "resolved_by": "resolve62-2026-09-27"
   },
   {
    "id": "YKyoYKv",
    "title": "Power Trance Dance",
    "artist": "ColdHART",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/YKyoYKv/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/YKyoYKv/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-3.altego.net/content/01JQ44P6RNQBBJHM302MX7RAWF/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3553,7 +3616,7 @@
    "id": "y5wmaYP",
    "title": "Keep it Cold",
    "artist": "ColdHART",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y5wmaYP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y5wmaYP/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01HPSYC19FXRQWDJQNNEZVDEFY/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3574,7 +3637,7 @@
    "id": "3KvP0",
    "title": "TELL ME YOUR SECRETS$$$$",
    "artist": "Brennan Savage",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/3KvP0/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/3KvP0/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-13.figment.io/content/QmSMfnYJbh1sQ93EGjyuqqAEYWdkUnRBH9ZdWkJufpZFRr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3595,7 +3658,7 @@
    "id": "kPY7N",
    "title": "Rave Rager 24",
    "artist": "ColdHART",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kPY7N/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kPY7N/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmRfhRvDHbfBQwy34MAYkPSW36ESxf3EDpNQn8aNzQBWXs/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3616,7 +3679,7 @@
    "id": "4a15y",
    "title": "Comatose",
    "artist": "Brennan Savage",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/4a15y/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/4a15y/stream?app_name=aurum_player",
    "artwork_url": "https://audius-01.staked.cloud/content/QmXyTfPL3U8bsKnBcUsoPtqrVnTEiEYS8H2twGRpPnMovS/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3637,7 +3700,7 @@
    "id": "lJmwA5Q",
    "title": "MIRROR",
    "artist": "Brennan Savage",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lJmwA5Q/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lJmwA5Q/stream?app_name=aurum_player",
    "artwork_url": "https://val005.open-audio-validator.com/content/Qmcc62cCBGGyCrHy7wRh9kBVRftuMGSFHKYtityP29qZXG/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3658,7 +3721,7 @@
    "id": "z9RNdNz",
    "title": "24",
    "artist": "Brennan Savage",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/z9RNdNz/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/z9RNdNz/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/Qmcc62cCBGGyCrHy7wRh9kBVRftuMGSFHKYtityP29qZXG/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3679,7 +3742,7 @@
    "id": "KpbV1or",
    "title": "Ty's Music - Dare to Dream (Special Version)",
    "artist": "College Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/KpbV1or/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/KpbV1or/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-13.figment.io/content/01J4VS2Y4PSGPF1J946ZARFR2B/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3700,7 +3763,7 @@
    "id": "Abkoy77",
    "title": "Crushed Candy - Blame",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Abkoy77/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Abkoy77/stream?app_name=aurum_player",
    "artwork_url": "https://cn3.mainnet.audiusindex.org/content/01HJ9Z194YGWNF198ZFQFNRFK5/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3721,7 +3784,7 @@
    "id": "k4Q15P",
    "title": "Beyounger & DJ ED3 - Montagem PlayStation",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/k4Q15P/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/k4Q15P/stream?app_name=aurum_player",
    "artwork_url": "https://val003.open-audio-validator.com/content/01JHXHY33ZS61W8QERKNC684BK/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3742,7 +3805,7 @@
    "id": "ozpwv",
    "title": "Lethyx Nekuia - Run It Up",
    "artist": "Lethyx Nekuia",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/ozpwv/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/ozpwv/stream?app_name=aurum_player",
    "artwork_url": "https://cn3.mainnet.audiusindex.org/content/QmQ4Zk1gwrUYoCopk2GzBQRTwPAqZmp7yB5Ghs1pYjLzjk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3763,7 +3826,7 @@
    "id": "z9WvrKP",
    "title": "UNLEAZER - Children",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/z9WvrKP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/z9WvrKP/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01JA5XDKZH5M4A18N65K27691S/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3784,7 +3847,7 @@
    "id": "mZOZwv",
    "title": "Jay Phoenix & Daevo - Crazy",
    "artist": "Jay Phoenix",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/mZOZwv/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/mZOZwv/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01KFYTV1BKN62MT3359BX6QARZ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3805,7 +3868,7 @@
    "id": "K9G7w",
    "title": "Wazad - Sharks ft. Marwan Khurshid",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/K9G7w/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/K9G7w/stream?app_name=aurum_player",
    "artwork_url": "https://validator.stuffisup.com/content/QmVggQMtmuRRpKKUd1Nob8bFz9RXeVepnTdAPcKf36Dyx5/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3826,7 +3889,7 @@
    "id": "ja7ZEjZ",
    "title": "Vyrak & Dakan - No Sunlight",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/ja7ZEjZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/ja7ZEjZ/stream?app_name=aurum_player",
    "artwork_url": "https://val011.open-audio-validator.com/content/01JY7A0G6T20Q0SR126GK248ZF/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3847,7 +3910,7 @@
    "id": "dWWY1lP",
    "title": "PHOENIX",
    "artist": "MATTRICK",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/dWWY1lP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/dWWY1lP/stream?app_name=aurum_player",
    "artwork_url": "https://val002.open-audio-validator.com/content/QmU8RcTdUCr6gzcgddKynvgN46yES2hJbFBAyE3XcxfHdA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3868,7 +3931,7 @@
    "id": "YRZyd97",
    "title": "Serenada",
    "artist": "MaximusVandal",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/YRZyd97/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/YRZyd97/stream?app_name=aurum_player",
    "artwork_url": "https://audius-standardvc-1-validator-3.figment.io/content/01H5GEF2P3S7JKXR3NX47MT9AB/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3889,7 +3952,7 @@
    "id": "5jj4Y",
    "title": "Trias - Crisis",
    "artist": "Break & Enter Society",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5jj4Y/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5jj4Y/stream?app_name=aurum_player",
    "artwork_url": "https://val011.open-audio-validator.com/content/QmTmGtuRBSQKLh4ZHV1ffgBnXr7UWcp5Zzv3RwNGwoaLdF/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3910,7 +3973,7 @@
    "id": "PQyO1",
    "title": "Dreamers",
    "artist": "Composer Squad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/PQyO1/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/PQyO1/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmR3jU8CQE7peBB2zWtmKYNsubpjKDKv6wHc4T9bDrcEh3/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3931,7 +3994,7 @@
    "id": "2jKA6",
    "title": "Sickick - Epic DMX Tribute",
    "artist": "S!CK!CK",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/2jKA6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/2jKA6/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-12.figment.io/content/QmNTfDqB4vyZRQDAJgqeBNA6FEZn9wTghvpnMgJy49SSc6/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3952,7 +4015,7 @@
    "id": "MWBwGBm",
    "title": "Epic on the Inside",
    "artist": "Lofi-darkcity",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/MWBwGBm/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/MWBwGBm/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01JTF2PSW7WQ72Z64A5J4SDNBB/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3973,7 +4036,7 @@
    "id": "pjX6m",
    "title": "Fearless Warrior",
    "artist": "Composer Squad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/pjX6m/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/pjX6m/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-7.figment.io/content/QmXeGhPFvr8SUqLcVNqN2YfEhZxwTpJc6C1NvCqDHNXxBJ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -3994,7 +4057,7 @@
    "id": "Gxykb",
    "title": "Another Breath - Malo Bertrand",
    "artist": "Malo Bertrand",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Gxykb/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Gxykb/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-7.theblueprint.xyz/content/QmSVkxMhzgY1rxdpd68d86isUEV2mHreJPqgGSpxzGm5kT/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4015,7 +4078,7 @@
    "id": "1gE4N6X",
    "title": "RAIDH & Jay Phoenix - My Mind",
    "artist": "Jay Phoenix",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/1gE4N6X/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/1gE4N6X/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/01K9G42X3B27M9DRHWXTE1WYZV/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4036,7 +4099,7 @@
    "id": "2MYxRp6",
    "title": "finaldest!nation, L3ss & Barmuda - lies",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/2MYxRp6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/2MYxRp6/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-1.altego.net/content/01K0QAC7C5KWPP6W3FRBPPC0TX/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4057,7 +4120,7 @@
    "id": "k4rZN",
    "title": "Dreamer",
    "artist": "D0d",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/k4rZN/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/k4rZN/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmXAaYBPn4VbSXcVAXcDws4nJPD6BqnN7WVgtw8nbaakuo/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4078,7 +4141,7 @@
    "id": "R9dNz7g",
    "title": "RVRITY, DIRTY SIX, Immanuel Carrer, Jay Phoenix - DANGER",
    "artist": "Jay Phoenix",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/R9dNz7g/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/R9dNz7g/stream?app_name=aurum_player",
    "artwork_url": "https://val005.open-audio-validator.com/content/01K8BPF71RRS12K0EEBR5377MG/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4099,7 +4162,7 @@
    "id": "y9Z0wbP",
    "title": "RNRS - Part of Me",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y9Z0wbP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y9Z0wbP/stream?app_name=aurum_player",
    "artwork_url": "https://val003.open-audio-validator.com/content/01JSQ2N53GMMJSJG1VDKBSCKYW/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4120,7 +4183,7 @@
    "id": "7GKvExq",
    "title": "Like A Miracle",
    "artist": "DJ Shinsuke !",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/7GKvExq/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/7GKvExq/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmXw4i5GtdWvw238FiwEaQ7zhPTD3ayNY1yGadcT2r37d7/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4141,7 +4204,7 @@
    "id": "3ExgozE",
    "title": "Dancing In The Rain",
    "artist": "Whaskii",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/3ExgozE/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/3ExgozE/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-3.theblueprint.xyz/content/01JYZ8CJ477RG8SA04HDJS2FZZ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4162,7 +4225,7 @@
    "id": "E0ZxN",
    "title": "Rescve - Hivemind (ft. Martin Pedersen)",
    "artist": "Rescve",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/E0ZxN/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/E0ZxN/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmdKcDBdv29kG9DkKQSuGnkBgvd7uwvhZBmBki8mEhEZMC/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4183,7 +4246,7 @@
    "id": "vZP3O",
    "title": "The Rush",
    "artist": "Composer Squad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/vZP3O/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/vZP3O/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmT8xzFv3C2V6ubLkMPitFo8GEDbKupNVekewCpwcjTaEQ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4204,7 +4267,7 @@
    "id": "ozklp2J",
    "title": "Phoenix",
    "artist": "Angelika Septima",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/ozklp2J/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/ozklp2J/stream?app_name=aurum_player",
    "artwork_url": "https://val006.open-audio-validator.com/content/01K6Z39199VSS3Q7SPBHX1M1C5/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4225,7 +4288,7 @@
    "id": "zK2Oq",
    "title": "Angels Are Falling",
    "artist": "Billy Korg",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/zK2Oq/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/zK2Oq/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-10.theblueprint.xyz/content/QmRGemS7ZEfCab3DESqkg9uKnPTHPSpxPqxcEkV2u7SUCG/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4246,7 +4309,7 @@
    "id": "b9a036y",
    "title": "Jay Phoenix & KLERIS - CHECK!",
    "artist": "Jay Phoenix",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/b9a036y/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/b9a036y/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/01KF24W2XYWB05340JXKE0BVES/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4267,7 +4330,7 @@
    "id": "py9Rm",
    "title": "Another Breath - Malo Bertrand",
    "artist": "Malo Bertrand",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/py9Rm/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/py9Rm/stream?app_name=aurum_player",
    "artwork_url": "https://val002.open-audio-validator.com/content/QmSVkxMhzgY1rxdpd68d86isUEV2mHreJPqgGSpxzGm5kT/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4288,7 +4351,7 @@
    "id": "EG4W4",
    "title": "Lil Nas X - Panini (Georgia Phoenix Bootleg) [Riot Dubs]",
    "artist": "RiotDubs",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/EG4W4/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/EG4W4/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmXzut6pvqU9EG2pyALqgMUoTutcV3T8kafnPkUB9DZYNL/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4309,7 +4372,7 @@
    "id": "WVq6o",
    "title": "John Dreamer - Rise Extended (Epic Music) (1)",
    "artist": "Mohamad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/WVq6o/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/WVq6o/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmVZ2kHvtMGCFXBrbreVHG87XtBiX1EVfJDNNMYEp4VRSb/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4330,7 +4393,7 @@
    "id": "jEw4bq1",
    "title": "Alchemical [Inferno]",
    "artist": "Jason Langvee",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/jEw4bq1/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/jEw4bq1/stream?app_name=aurum_player",
    "artwork_url": "https://creatornode.audius.co/content/01JB5FRS9S5C31SX2FGCHEGG3H/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4351,7 +4414,7 @@
    "id": "agBG1QA",
    "title": "DANCE!",
    "artist": "Jay Phoenix",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/agBG1QA/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/agBG1QA/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-3.altego.net/content/01K1AB6E0M3AJJ7NBCAQAGE2E4/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4372,7 +4435,7 @@
    "id": "Qb02R73",
    "title": "Alchemical [Fusion]",
    "artist": "Jason Langvee",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Qb02R73/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Qb02R73/stream?app_name=aurum_player",
    "artwork_url": "https://val013.open-audio-validator.com/content/01HZ544CX2RAM0KED5ATZK3JBZ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4393,7 +4456,7 @@
    "id": "lpkGO",
    "title": "Free Epic Music (No Copyright) Fire And Thunder by Cjbeards",
    "artist": "Link",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lpkGO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lpkGO/stream?app_name=aurum_player",
    "artwork_url": "https://val004.open-audio-validator.com/content/QmXcLMoDvkNUGFyDuBJE8mn7p5VBDvt5EGJPmHT1HLmhwt/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4414,7 +4477,7 @@
    "id": "v2J5K",
    "title": "Mars",
    "artist": "Rob Cawley",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/v2J5K/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/v2J5K/stream?app_name=aurum_player",
    "artwork_url": "https://audius-01.staked.cloud/content/QmYzw89C9mxQ5sZgSqT1zqABRF42hWGtdWt5vKdLXxyqUa/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4435,7 +4498,7 @@
    "id": "lJx96",
    "title": "John Dreamer - Rise Extended (Epic Music) (1)",
    "artist": "Mkhairu4",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lJx96/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lJx96/stream?app_name=aurum_player",
    "artwork_url": "https://val013.open-audio-validator.com/content/QmY9xJoS3Hx8kgMujVXgAXsCnAkiP7GMUWC5KroVBCjYnD/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4456,7 +4519,7 @@
    "id": "n1xJX",
    "title": "Blue Mountain Mystery Theme Music - Title Sequence",
    "artist": "EpicLafiteau",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/n1xJX/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/n1xJX/stream?app_name=aurum_player",
    "artwork_url": "https://val013.open-audio-validator.com/content/QmZRzEhXMaLvSGE2HK2PUa9Zx3YJLUF2BMXHQDX2ReADqw/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4477,7 +4540,7 @@
    "id": "oW8g2",
    "title": "Maxxi Soundsystem - Medicine (Zanon, Capital Monkey Edit)",
    "artist": "ZANON",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/oW8g2/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/oW8g2/stream?app_name=aurum_player",
    "artwork_url": "https://val004.open-audio-validator.com/content/QmZnGvLGt818NE3LDEczj2KKPiZA5MNyW91GesigNqXPfn/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4498,7 +4561,7 @@
    "id": "QNRxV",
    "title": "My Calling",
    "artist": "Kevin Kuschel",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/QNRxV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/QNRxV/stream?app_name=aurum_player",
    "artwork_url": "https://audius-figment-1-validator-18.figment.io/content/QmTCvdEVf3MsQh3n3RkZg8L4dhtrAKbTjCV7SzK6RHz78L/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4519,7 +4582,7 @@
    "id": "y5ARE",
    "title": "Enough of the Past",
    "artist": "Pamela Yuen",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y5ARE/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y5ARE/stream?app_name=aurum_player",
    "artwork_url": "https://val010.open-audio-validator.com/content/QmQiQAjfXNneUauc93MDmK9nTrc75BFFdrVCLU7HBX15th/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4540,7 +4603,7 @@
    "id": "j4axj",
    "title": "Aether Madness",
    "artist": "My Energy And Time",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/j4axj/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/j4axj/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmRrdkJYbahag1KQ8sUn8x5q3SRJep8rBANJcJyQ6k3KT1/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4561,7 +4624,7 @@
    "id": "P5orb4J",
    "title": "Alchemical [Instrumental]",
    "artist": "Jason Langvee",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/P5orb4J/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/P5orb4J/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01HW1K1DDZ0D4WCGMPZYTF6ZSV/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4582,7 +4645,7 @@
    "id": "KKZmO",
    "title": "League of Legends - Phoenix (Sthorm Remix)",
    "artist": "Sthorm",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/KKZmO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/KKZmO/stream?app_name=aurum_player",
    "artwork_url": "https://val002.open-audio-validator.com/content/QmcLPMJTJ9WVgWfxtSMbLVGhSL5QA3KHzixMWZgZ3w7SnB/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4603,7 +4666,7 @@
    "id": "ygxaZ",
    "title": "Phoenix 1901 customised by DLID",
    "artist": "D.L.i.d",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/ygxaZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/ygxaZ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-02.staked.cloud/content/QmWvZZJnBL9b27Vamjr1D3EWjVn3FQmLCZNZ3dwP1Ve5zX/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4624,7 +4687,7 @@
    "id": "JB29o",
    "title": "John Dreamer - Rise Extended (Epic Music) (1)",
    "artist": "Mkhairu4",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/JB29o/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/JB29o/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmNW8wD5XbuSHHdQPSYRcJ6mSWXVvvBJoCoxVtJoNMyzWR/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4645,7 +4708,7 @@
    "id": "nQG6G",
    "title": "Moonlight",
    "artist": "Jeff Heim",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/nQG6G/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/nQG6G/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-5.figment.io/content/QmarSEyFiLm5HEE2UsWyAqX8q9LMSZGPEMQbJMxurhLsPQ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4666,7 +4729,7 @@
    "id": "JNqGMY",
    "title": "By The Time I Get To Phoenix",
    "artist": "Darryl Greer",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/JNqGMY/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/JNqGMY/stream?app_name=aurum_player",
    "artwork_url": "https://val012.open-audio-validator.com/content/01J1459125WZ83TSXZ400CFKFD/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4687,7 +4750,7 @@
    "id": "wzwp68k",
    "title": "Epic Soundtrack Music (instrumental)",
    "artist": "EAST AFRICA DRILL EXCLUSIVES",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/wzwp68k/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/wzwp68k/stream?app_name=aurum_player",
    "artwork_url": "https://val007.open-audio-validator.com/content/01K67BX347FS444JXZ4J9WN08M/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4708,7 +4771,7 @@
    "id": "Pb8JX",
    "title": "From Here To Eternity",
    "artist": "Michel Lemay",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Pb8JX/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Pb8JX/stream?app_name=aurum_player",
    "artwork_url": "https://audius-01.staked.cloud/content/QmeEb4KKGvbPpZk1J86LdtubaxHkNUmSesvkkciY3ZuxiA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4729,7 +4792,7 @@
    "id": "LMXNm",
    "title": "Metal Bird",
    "artist": "GrimWax",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/LMXNm/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/LMXNm/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmXF6SCYG3ADkbY9XjH31SpSd8f5A7WrCP6QeyBYUwx8oh/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4750,7 +4813,7 @@
    "id": "k2JjK",
    "title": "Attack on Titan Season 4 Trailer music COVER",
    "artist": "ZANNKI's music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/k2JjK/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/k2JjK/stream?app_name=aurum_player",
    "artwork_url": "https://audius-figment-1-validator-19.figment.io/content/QmXcuxdjmRbd7rX2yeHZRLSpcUJvkwoMmaU84HvzLobs5v/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4771,7 +4834,7 @@
    "id": "2G3xMy6",
    "title": "Gift Wrapping",
    "artist": "Seva M",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/2G3xMy6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/2G3xMy6/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/Qmf98K7Uh2SFnGyCaPAfLybpQmk7UGwQteKPbJXYrN6ABd/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4792,7 +4855,7 @@
    "id": "y7GE7",
    "title": "Strongest Medicine (With Casey Kalmenson)",
    "artist": "Kevin Paris",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y7GE7/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y7GE7/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmWKhSxoRfjJD8uhumqndSAcu4fSzwq4M3DDjxkyVfKMwy/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4813,7 +4876,7 @@
    "id": "D9r3j",
    "title": "This Is Home",
    "artist": "Jeff Heim",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/D9r3j/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/D9r3j/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmarSEyFiLm5HEE2UsWyAqX8q9LMSZGPEMQbJMxurhLsPQ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4834,7 +4897,7 @@
    "id": "mzJ9Olp",
    "title": "Kora Vain",
    "artist": "jAI Feezy",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/mzJ9Olp/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/mzJ9Olp/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-2.altego.net/content/baeaaaiqsebvt5zf6fuo7hpwsqkbtu4n7bdesdchikzqzwhghodtxx4ywio44s/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4855,7 +4918,7 @@
    "id": "y4J47",
    "title": "Frozen Eclipse",
    "artist": "Essie Russ",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y4J47/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y4J47/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-2.theblueprint.xyz/content/QmPqMwXXguCiyFFYMdX3b1P7CFRpahvwSmDNmzqonieUxR/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4876,7 +4939,7 @@
    "id": "M2ROx",
    "title": "Unstoppable",
    "artist": "Composer Squad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/M2ROx/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/M2ROx/stream?app_name=aurum_player",
    "artwork_url": "https://val002.open-audio-validator.com/content/QmQpXNZcps9zEy6fnkKg7HJY3QXCPVr6s17hRdLgnJuqwP/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4897,7 +4960,7 @@
    "id": "VEgJ1XW",
    "title": "Fine",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/VEgJ1XW/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/VEgJ1XW/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-3.theblueprint.xyz/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4918,7 +4981,7 @@
    "id": "nVjQ6",
    "title": "Alex Mason - Goddess of Deceit",
    "artist": "Enough Records",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/nVjQ6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/nVjQ6/stream?app_name=aurum_player",
    "artwork_url": "https://val011.open-audio-validator.com/content/QmeUUAhDvgLRiWjmi1hRByxwKfLuNXEbeLQgLaV58AV1mD/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4939,7 +5002,7 @@
    "id": "lWyOXVZ",
    "title": "Shadow",
    "artist": "Aadysi",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lWyOXVZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lWyOXVZ/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01JVYR09QKVGVJQ8G2GN7ZKNP0/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4960,7 +5023,7 @@
    "id": "gmaaZ",
    "title": "Horror Movie Invasion",
    "artist": "Brentin Davis",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/gmaaZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/gmaaZ/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmcEXhzDHfhmndCruz8tHdexd5qucQLHvqRKeD5gHsMjgB/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -4981,7 +5044,7 @@
    "id": "071oEa9",
    "title": "Tempus Fugit (Out of Context)",
    "artist": "Solar Phasing",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/071oEa9/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/071oEa9/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-17.theblueprint.xyz/content/01K9YBX9PT60TGWNZPWZ1J9YRA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5002,7 +5065,7 @@
    "id": "blElgRW",
    "title": "The One Then",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/blElgRW/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/blElgRW/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5023,7 +5086,7 @@
    "id": "DvXXO",
    "title": "Beyond",
    "artist": "Solar Phasing",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/DvXXO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/DvXXO/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01K9YB7KVJ9V5HVGPHJ7729DFN/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5044,7 +5107,7 @@
    "id": "x5Vk2",
    "title": "Army of the Dead",
    "artist": "Rhyot",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/x5Vk2/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/x5Vk2/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmUjBmzri34NW7hr8SEgRtc4nRra3dXUtZtNrsc41gkrRD/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5065,7 +5128,7 @@
    "id": "PgQa1",
    "title": "Halloween Waltz",
    "artist": "Composer Squad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/PgQa1/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/PgQa1/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmNnUkFNrp6odegK9jbjvMQWvhJSyfNFZNQNLesR8vhMAd/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5086,7 +5149,7 @@
    "id": "qEE9m",
    "title": "Poseidon - Hekate",
    "artist": "VALE",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/qEE9m/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/qEE9m/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-13.theblueprint.xyz/content/QmWa4Qh87Yg7zuM7hLW4XanAQgta8fVncHVL9xdXUFCAQy/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5107,7 +5170,7 @@
    "id": "QbAQV",
    "title": "Descent",
    "artist": "sanjaux",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/QbAQV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/QbAQV/stream?app_name=aurum_player",
    "artwork_url": "https://validator.soundmaxx.xyz/content/QmS69HR6NXjjwVuTcpjRbDc8yUqPiMxbWo3E21VP2hY1ty/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5128,7 +5191,7 @@
    "id": "r916wAZ",
    "title": "Piece of Advice",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/r916wAZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/r916wAZ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-3.theblueprint.xyz/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5149,7 +5212,7 @@
    "id": "DvxJ6",
    "title": "Alex Mason - The Escape",
    "artist": "Enough Records",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/DvxJ6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/DvxJ6/stream?app_name=aurum_player",
    "artwork_url": "https://val005.open-audio-validator.com/content/QmeUUAhDvgLRiWjmi1hRByxwKfLuNXEbeLQgLaV58AV1mD/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5170,7 +5233,7 @@
    "id": "QxAwV",
    "title": "Apocalypse",
    "artist": "Composer Squad",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/QxAwV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/QxAwV/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-5.figment.io/content/QmcDWTwh7ivmdzSp24McdVZpD31caBk8VZWTSkhNgp3mEQ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5191,7 +5254,7 @@
    "id": "aAbBj",
    "title": "The Legion (voc. Celica Soldream)",
    "artist": "Jyc Row",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/aAbBj/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/aAbBj/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmeZnKBAz4qBqFXRxgE9KWnCSKBcVh9u5jQ5Y9daGoTnh8/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5212,7 +5275,7 @@
    "id": "6Ry39",
    "title": "Dark Trees of Valhalla",
    "artist": "ahmet soner",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/6Ry39/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/6Ry39/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-11.theblueprint.xyz/content/QmaQka59awJSg1KSNN6VtGS3MRWJuo1tJoxPJM4qYcPxoN/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5233,7 +5296,7 @@
    "id": "DBVZJ",
    "title": "Castle village and desert and keeps ~ rendition krugman : stage 3 theme",
    "artist": "paula lee",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/DBVZJ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/DBVZJ/stream?app_name=aurum_player",
    "artwork_url": "https://validator.stuffisup.com/content/QmVpuTMCeQqs47J5Q29GtpVrbuthdRs19VGfEAesAeQFVg/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5254,7 +5317,7 @@
    "id": "6440Z",
    "title": "Result - Bone Bender",
    "artist": "VALE",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/6440Z/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/6440Z/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmYLTUA4gnKutY5jUUi5HbPSLHTjRKgC7BXG7qEGaHm7HV/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5275,7 +5338,7 @@
    "id": "XPogZ",
    "title": "Credits",
    "artist": "Leon Ross",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/XPogZ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/XPogZ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmdCVQ3YCEEaZ5JZPV1s5cKFz5HpSoxDdGmc1ur7w3bUd7/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5296,7 +5359,7 @@
    "id": "Vvb1Q",
    "title": "ÆTERNA - IMPERIAL",
    "artist": "VALE",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Vvb1Q/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Vvb1Q/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-10.figment.io/content/QmNzrPjRtEFqRNKudyNCSgzZV2cQG71EppYbZLUabKTANK/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5317,7 +5380,7 @@
    "id": "PjzrN",
    "title": "6. Dreamers of the World",
    "artist": "Alexandra Martin",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/PjzrN/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/PjzrN/stream?app_name=aurum_player",
    "artwork_url": "https://val011.open-audio-validator.com/content/QmQe4M8nBpmLDaUdsAjn4FawoxebXQQSWyGvvf2hFr4vUr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5338,7 +5401,7 @@
    "id": "lj61l",
    "title": "4. Unstoppable",
    "artist": "Alexandra Martin",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lj61l/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lj61l/stream?app_name=aurum_player",
    "artwork_url": "https://audius-figment-1-validator-19.figment.io/content/QmQe4M8nBpmLDaUdsAjn4FawoxebXQQSWyGvvf2hFr4vUr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5359,7 +5422,7 @@
    "id": "1gRpY",
    "title": "Alan",
    "artist": "darkwinged",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/1gRpY/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/1gRpY/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-15.theblueprint.xyz/content/QmZM4EbYossBT22xErtE3S64SDT6bEVwnjBFcnX8hQi5dJ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5380,7 +5443,7 @@
    "id": "kPx3B",
    "title": "The Dawning",
    "artist": "Paul van der Walt",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kPx3B/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kPx3B/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-1.altego.net/content/QmSZkjF7qc49ZwvrqiiD4i3kzZzcuzUEkTyBR4VriA7Ta4/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5401,7 +5464,7 @@
    "id": "G2j1QAm",
    "title": "HexCeed - Lost",
    "artist": "HexCeed",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/G2j1QAm/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/G2j1QAm/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-6.figment.io/content/QmZhnvgVnph1c6ZqC3E7vTT3Yx553LeZEfQMmj4e1EWjF5/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5422,7 +5485,7 @@
    "id": "vjza8",
    "title": "Guild of Assassins",
    "artist": "Kamileon",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/vjza8/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/vjza8/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-15.theblueprint.xyz/content/QmdkpK2pYgkr7q7w8gEbkDC4CtmsVnnEBxPuKwQioviWRe/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5443,7 +5506,7 @@
    "id": "d9MJYy",
    "title": "One Gun",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/d9MJYy/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/d9MJYy/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-8.figment.io/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5464,7 +5527,7 @@
    "id": "K7NwY",
    "title": "9. Journey to the Stars",
    "artist": "Alexandra Martin",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/K7NwY/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/K7NwY/stream?app_name=aurum_player",
    "artwork_url": "https://audius-figment-1-validator-19.figment.io/content/QmQe4M8nBpmLDaUdsAjn4FawoxebXQQSWyGvvf2hFr4vUr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5485,7 +5548,7 @@
    "id": "eG4gG",
    "title": "Paark - Coldsignal",
    "artist": "Paark",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/eG4gG/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/eG4gG/stream?app_name=aurum_player",
    "artwork_url": "https://cn3.mainnet.audiusindex.org/content/QmQFnpiWaCUEvcwn8R3Sa57wZ58qt8tKxeritfYr2YAjhi/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5506,7 +5569,7 @@
    "id": "3EAvB",
    "title": "Fantasy (Feat. Kidd Robb)",
    "artist": "𝕻𝖆𝖑𝖒 𝖂𝖆𝖛𝖞",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/3EAvB/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/3EAvB/stream?app_name=aurum_player",
    "artwork_url": "https://val010.open-audio-validator.com/content/QmZUTZeKYuMkvQKu1EGUcgk5PDcvk2mSk6UUSSouhN68EV/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5527,7 +5590,7 @@
    "id": "OJW2R",
    "title": "Lost In The Unknown (gameplay trailer music)",
    "artist": "SKAABZ",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/OJW2R/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/OJW2R/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmR78XvhF26owQ4tfVq1WUWRXeEcaXWkzsCqf4cutezdSK/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5548,7 +5611,7 @@
    "id": "WxjzKOo",
    "title": "Costa Brava",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/WxjzKOo/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/WxjzKOo/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5569,7 +5632,7 @@
    "id": "W62w5pv",
    "title": "Imminence",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/W62w5pv/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/W62w5pv/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5590,7 +5653,7 @@
    "id": "Q7jpV",
    "title": "Thyme",
    "artist": "Matt Magus",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Q7jpV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Q7jpV/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmSQDczGCVnnMCSELkcmV2h2jbobJmGtmW47z7VRXyaorS/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5611,7 +5674,7 @@
    "id": "jlldo",
    "title": "Personal Serv",
    "artist": "Charles Mesa",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/jlldo/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/jlldo/stream?app_name=aurum_player",
    "artwork_url": "https://val014.open-audio-validator.com/content/QmU4iv8qai1tp3YcqQVV5yyHDh72kPidC2xzvQXHz5yve8/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5632,7 +5695,7 @@
    "id": "lZVpzVN",
    "title": "WE ARE FURY - Poem Of A Killer (w/ Elijah Cruise)[VARIANT Remix]",
    "artist": "VARIANT",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lZVpzVN/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lZVpzVN/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-4.theblueprint.xyz/content/baeaaaiqsed7ufbaunwfuo7ap23lorcbqkgftxpshalkbwrs3m5au37lnnxbk4/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5653,7 +5716,7 @@
    "id": "arla3j",
    "title": "Animals",
    "artist": "brokenkites",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/arla3j/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/arla3j/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-1.theblueprint.xyz/content/01JQVVCB626RFWV5Q83P071GG3/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5674,7 +5737,7 @@
    "id": "bKGAW",
    "title": "Queen of Darkness",
    "artist": "Anthony Lo Re",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/bKGAW/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/bKGAW/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/Qmexyt9LUz6ney1DrbrydeJw69KgCdHTGfh65ZYFXQDvgr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5695,7 +5758,7 @@
    "id": "BJ9YyrQ",
    "title": "Phantoms (Penny Palabras Mix)",
    "artist": "brokenkites",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/BJ9YyrQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/BJ9YyrQ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-2.figment.io/content/01HRSP3277AWSKGWCAMCTNHS1H/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5716,7 +5779,7 @@
    "id": "B5Bkj",
    "title": "04_xalm_retribution_-_someone_is_looking_at_you_in_the_dark",
    "artist": "Enough Records",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/B5Bkj/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/B5Bkj/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmRWuMkkKTx3Jph214gnbXSM5mvD4fdNTTmTnQUecAB1aj/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5737,7 +5800,7 @@
    "id": "Maa7X",
    "title": "Result - Spasm",
    "artist": "VALE",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Maa7X/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Maa7X/stream?app_name=aurum_player",
    "artwork_url": "https://val015.open-audio-validator.com/content/QmYLTUA4gnKutY5jUUi5HbPSLHTjRKgC7BXG7qEGaHm7HV/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5758,7 +5821,7 @@
    "id": "95Km43G",
    "title": "To Be Me and You",
    "artist": "The Sudden",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/95Km43G/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/95Km43G/stream?app_name=aurum_player",
    "artwork_url": "https://val001.open-audio-validator.com/content/QmQPEeqpZZ1JKSJQu5EWrfS2vfzRbk7iMUQwwwNEycVpDk/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5779,7 +5842,7 @@
    "id": "lp7PO",
    "title": "Give Me Wings",
    "artist": "Spidermonchis",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lp7PO/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lp7PO/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmcG7rhUHACksDGb145W5FiPnxBde84XsUM5TZmBbEqJ7x/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5800,7 +5863,7 @@
    "id": "5jlM7",
    "title": "METATRADER Phonk Type INSTRUMENTAL FOR SALE",
    "artist": "Phonkid Prod",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5jlM7/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5jlM7/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmULVrHFbbmaELAbz6BqmjacpuxEXWBQJVhfxRxYZV4GN3/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5821,7 +5884,7 @@
    "id": "796wW",
    "title": "Deeb - Forest Nightdrive (feat. Philanthrope)",
    "artist": "Komorebi Records",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/796wW/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/796wW/stream?app_name=aurum_player",
    "artwork_url": "https://audius-02.staked.cloud/content/QmQSA8KPXUiB4v1rGhyB8tG5oed3vPv8Ebpfy2CPq1ckJx/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5842,7 +5905,7 @@
    "id": "6agpQ",
    "title": "§50 Collectible Music Egg Egon Musk feat. Lilsiri.eth",
    "artist": "EGG 🥚 RECORDS Ξ",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/6agpQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/6agpQ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-11.figment.io/content/QmQDoTthzYArBfQ7S7KFn1ehpPkNfTJvU9cdkGCqa5ubZK/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5863,14 +5926,15 @@
    "id": "W0JP60j",
    "title": "NightDrive (demo)",
    "artist": "LemonadeJetpack",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/W0JP60j/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/W0JP60j/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01H6EJC9XVMQXM7FA4P0AY148T/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
    "genre": "",
    "mood": "",
    "playlists": [
-    "Night Drive"
+    "Night Drive",
+    "Cloud Nine"
    ],
    "vibe": "Night Drive",
    "album": "",
@@ -5884,7 +5948,7 @@
    "id": "7G1Ky8W",
    "title": "Drive All Night",
    "artist": "shant singh",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/7G1Ky8W/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/7G1Ky8W/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/01H84YASGNG1PARQ872A0F9Z6P/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5905,7 +5969,7 @@
    "id": "6kOvR7Z",
    "title": "I Tried Phonk",
    "artist": "Trvpinstein Beats",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/6kOvR7Z/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/6kOvR7Z/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/Qmba7PosQf6W9NKF4toqP5fAQbPAzpHgyH6PhjDoQ8kKeL/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5926,7 +5990,7 @@
    "id": "wGxZ2",
    "title": "MEMPHIS - PHONK",
    "artist": "LAIMON 👨🏻‍🚀",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/wGxZ2/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/wGxZ2/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-4.figment.io/content/Qmaj3yQNMba6ouXcSyV3JHZhucZX4rHyP8faqU4CWV89ma/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5947,7 +6011,7 @@
    "id": "NlV7dpp",
    "title": "Ecco Phonk",
    "artist": "Weaver Beats",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/NlV7dpp/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/NlV7dpp/stream?app_name=aurum_player",
    "artwork_url": "https://audius-standardvc-1-validator-3.figment.io/content/01JB0V3ZKMVGMVGVF8J3J50F0V/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5968,7 +6032,7 @@
    "id": "6M0XQ",
    "title": "Midnight Drive",
    "artist": "yo_itsrobert",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/6M0XQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/6M0XQ/stream?app_name=aurum_player",
    "artwork_url": "https://val020.open-audio-validator.com/content/QmTCM61j4jXBZzkYJgSHq86jr6M8PBtqLyxMagDoVMnYp3/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -5989,7 +6053,7 @@
    "id": "93v00",
    "title": "Star Hunter (Cinematic Synthwave)",
    "artist": "Blythelyبب",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/93v00/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/93v00/stream?app_name=aurum_player",
    "artwork_url": "https://val010.open-audio-validator.com/content/QmaLjEpuk3ZkjrSn79oS5qYnYPKLMFSpocrZJBsTnMCTtC/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6010,7 +6074,7 @@
    "id": "NV9Bx",
    "title": "Metaversal Sounds-Romey And The Robotz- Live @ See The Music TV",
    "artist": "Animated Music!",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/NV9Bx/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/NV9Bx/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmeWUCUGMqfytPd4bQYy4Lxp2K6vqsXLTHFej6nwxKAC5C/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6031,7 +6095,7 @@
    "id": "lVv9G",
    "title": "'80s Love (feat. King Protea)",
    "artist": "Moonrunner83",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lVv9G/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lVv9G/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-7.theblueprint.xyz/content/QmWnQ5fsF7ciyVQGvFuCsgN59u8pXKRD5KCdhvKH2rShk9/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6052,7 +6116,7 @@
    "id": "z2BlP",
    "title": "Side B :Dark Sunset",
    "artist": "eddie edditter",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/z2BlP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/z2BlP/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-7.figment.io/content/01K7XVMEWNKX72Z4FW4RBVT7GM/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6073,7 +6137,7 @@
    "id": "ry0gggY",
    "title": "Camouflage feat. Veiled Eyes and QUINCY",
    "artist": "Cuppa' Joe",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/ry0gggY/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/ry0gggY/stream?app_name=aurum_player",
    "artwork_url": "https://validator.stuffisup.com/content/QmTM3w3QR9PkY9gw72tEnsLgJhhdremFDJ1gKDCXK6iD2k/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6094,7 +6158,7 @@
    "id": "GEWO1XE",
    "title": "C Y G N - Late Night Drive",
    "artist": "Chillhop Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/GEWO1XE/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/GEWO1XE/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-2.altego.net/content/01H4FV1AV6ZPHS35CY56RPTB30/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6115,7 +6179,7 @@
    "id": "1gm6vpQ",
    "title": "Montagem Tomada x Dame Un Grrr [Danna Jo - Phonk Mashup]",
    "artist": "Danna Jo",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/1gm6vpQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/1gm6vpQ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-14.figment.io/content/01JZPC618C3Z1CZXEGDJPN6V2R/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6136,7 +6200,7 @@
    "id": "1GAwd",
    "title": "phonk",
    "artist": "bleu 2",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/1GAwd/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/1GAwd/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmNoJYkXKSfsxHoTuUxYruVaJvoAaCwP8D24roWDK3Zuqv/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6157,7 +6221,7 @@
    "id": "YmP0v",
    "title": "PHONK KING",
    "artist": "Dabllex",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/YmP0v/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/YmP0v/stream?app_name=aurum_player",
    "artwork_url": "https://val009.open-audio-validator.com/content/QmdfkzPg3bsmKjKaSBNhbrsWd7PsY3UMHXhn7PK14bUckm/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6178,7 +6242,7 @@
    "id": "zKYMk7p",
    "title": "MIDNIGHT.",
    "artist": "zaza",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/zKYMk7p/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/zKYMk7p/stream?app_name=aurum_player",
    "artwork_url": "https://val013.open-audio-validator.com/content/01K1K8WZER9ZYDF6N2Q4XHW4VR/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6199,7 +6263,7 @@
    "id": "P9kWo7p",
    "title": "The Sound",
    "artist": "Binx",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/P9kWo7p/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/P9kWo7p/stream?app_name=aurum_player",
    "artwork_url": "https://val015.open-audio-validator.com/content/01JB7DXCE4F8BJ8XNF2HFHJX6K/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6220,7 +6284,7 @@
    "id": "RxXlR",
    "title": "Creep - Phonk Trap Beat Instrumental [Prod: Nunz]",
    "artist": "Kabryil",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/RxXlR/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/RxXlR/stream?app_name=aurum_player",
    "artwork_url": "https://audius-02.staked.cloud/content/QmWyRGCwueroxDaTJyFdGQzAVZvpJVJGAoLXhjc881d4Bb/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6241,7 +6305,7 @@
    "id": "5QW2Y",
    "title": "Midnight City (feat. chirrrex)",
    "artist": "c152",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5QW2Y/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5QW2Y/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmPGy7u6NWTf4Wfxp8T2i8mxuxcM777urr8axqin2NuhJW/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6262,7 +6326,7 @@
    "id": "py8KG70",
    "title": "DRIVE ALL NIGHT",
    "artist": "lumii",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/py8KG70/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/py8KG70/stream?app_name=aurum_player",
    "artwork_url": "https://val003.open-audio-validator.com/content/01JRCAN0A1RS9850CY37CHEY9N/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6283,7 +6347,7 @@
    "id": "K5pE2",
    "title": "Spooky Scary Skeletons (Danna Jo Phonk Edit)",
    "artist": "Danna Jo",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/K5pE2/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/K5pE2/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmWCqvA6gxbMdyTBqauDfjkj9EgppeERgYT4J4SDeuv8fv/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6304,7 +6368,7 @@
    "id": "3GbWOZk",
    "title": "Ready to play",
    "artist": "Flavonoise",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/3GbWOZk/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/3GbWOZk/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-14.theblueprint.xyz/content/01HTQHRNRC0GMZ8YGDY7A02JMD/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6325,7 +6389,7 @@
    "id": "y75m4Ex",
    "title": "Mind Succor [AUDIUS EXCLUSIVE]",
    "artist": "LILSIRI.ETH 子 EGGS 💜",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y75m4Ex/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y75m4Ex/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmebR4njaxgFhTthXZXBuAWS5ASFK8mPm3qbCCgiXWQVwL/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6346,7 +6410,7 @@
    "id": "8zPGv",
    "title": "Snortin' Phonk",
    "artist": "Weaver Beats",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/8zPGv/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/8zPGv/stream?app_name=aurum_player",
    "artwork_url": "https://audius-04.staked.cloud/content/Qmb4Wup5RbzNh4pF13pChicH7NJ8EqYxnee9zDszqgab4x/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6367,7 +6431,7 @@
    "id": "lpBvZA6",
    "title": "HUNA - A N I M A L ((DRVGG3D N CH3W3D RMX))",
    "artist": "lowercase drugs",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/lpBvZA6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/lpBvZA6/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmYvMvum5X6L3gCAtGhXLrjDgt3zQuCDs5V15wyNEhwD9t/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6388,7 +6452,7 @@
    "id": "m7Wb1Ep",
    "title": "🥶 Dark Electronic Trap Type Beat - Bassgod",
    "artist": "Surce",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/m7Wb1Ep/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/m7Wb1Ep/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-13.figment.io/content/QmfKugVPn277wS2LfybTcTWMSMAWxRDqkWVFwh7mSqMLyw/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6409,7 +6473,7 @@
    "id": "VQlj6",
    "title": "phonky phonk",
    "artist": "kopitoo.wav",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/VQlj6/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/VQlj6/stream?app_name=aurum_player",
    "artwork_url": "https://validator.soundmaxx.xyz/content/QmcHXjYsinVCFYdwtsnU8E6Pxf2Qk1Udo6Cg2rp6x7z4n9/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6430,7 +6494,7 @@
    "id": "b4EjaKP",
    "title": "Slowboy & lucaf. - DISASTER",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/b4EjaKP/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/b4EjaKP/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmQuJsF9oHDPwpPsRNU4aqdQSoc9FvhzKux6qfWXhQWbbb/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6451,7 +6515,7 @@
    "id": "Y5O0J",
    "title": "Scalovin (feat. New Orleans) - DJ MHouse",
    "artist": "Malo Bertrand",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Y5O0J/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Y5O0J/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-9.theblueprint.xyz/content/QmebNRonpXovNKMSSxbJ3ZQibbBc3HnFRhJkc43Uba2YRQ/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6472,7 +6536,7 @@
    "id": "EqXkvlM",
    "title": "Dj Psyco85 - Umigodegumy (Latin Phonk)",
    "artist": "Music Altern Dj",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/EqXkvlM/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/EqXkvlM/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-2.altego.net/content/01HERT1QR9P5YER230CR9S1EFY/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6493,7 +6557,7 @@
    "id": "kmM4V",
    "title": "RAAQEL - A girl is a gun (Pacific Patterns Remix)",
    "artist": "Pacific Patterns",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kmM4V/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kmM4V/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-14.figment.io/content/QmYHQJ2CNxWBmUhuPdXadkHnKGHhoFVErgEA6NDdeFSTp8/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6514,7 +6578,7 @@
    "id": "54xlwYg",
    "title": "QGR-042S | Zachary & .NET RUN - WYGD",
    "artist": "Quality Goods Records",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/54xlwYg/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/54xlwYg/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-15.theblueprint.xyz/content/01JXEZDK1AAYB9Z4W1WTV0PV8C/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6535,7 +6599,7 @@
    "id": "E2A6Qpo",
    "title": "CyberHeart! (Luv in a Feedback Loop)",
    "artist": "Pressse",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/E2A6Qpo/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/E2A6Qpo/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-14.theblueprint.xyz/content/01JT8TV2D47FCRN1NSXCZ35QYA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6556,7 +6620,7 @@
    "id": "v2ZxxpV",
    "title": "Rxm リム - SAD!",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/v2ZxxpV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/v2ZxxpV/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-5.theblueprint.xyz/content/QmT8wx4ZXyuMTx5eStetz81JjGUKQsScYtvsa3pkpGA7mS/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6577,7 +6641,7 @@
    "id": "xvzmX",
    "title": "No Political Solution",
    "artist": "TEKNEIN",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/xvzmX/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/xvzmX/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-15.theblueprint.xyz/content/QmPicj12hnWWWnWPgu1nMpPdDbhRBe54BB41KWF4nbPTLY/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6598,7 +6662,7 @@
    "id": "63Rv9",
    "title": "Die Kirche",
    "artist": "TEKNEIN",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/63Rv9/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/63Rv9/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmcmLRmctk7cqizGVHafe8HxxH3kMqpaBRQtqjygzB7KiA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6619,7 +6683,7 @@
    "id": "w7gxb",
    "title": "PHONK MEISTER",
    "artist": "stevvie🕴",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/w7gxb/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/w7gxb/stream?app_name=aurum_player",
    "artwork_url": "https://audius-discovery-2.altego.net/content/QmPV4p9b8AdKBnbiEng4NtXesVci7YqjyxZpFZw8LMbgHw/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6640,7 +6704,7 @@
    "id": "M6pdQ",
    "title": "The Rapids",
    "artist": "TEKNEIN",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/M6pdQ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/M6pdQ/stream?app_name=aurum_player",
    "artwork_url": "https://audius-content-3.figment.io/content/QmcmLRmctk7cqizGVHafe8HxxH3kMqpaBRQtqjygzB7KiA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6661,7 +6725,7 @@
    "id": "kJrq0RV",
    "title": "Svansy - Everything",
    "artist": "coming soon",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/kJrq0RV/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/kJrq0RV/stream?app_name=aurum_player",
    "artwork_url": "https://val019.open-audio-validator.com/content/QmbMGhxQfZ8N52HrF8ox4hiW5cJopsbAGaZfxZUMNSTBm7/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6682,7 +6746,7 @@
    "id": "42O848a",
    "title": "PHONK",
    "artist": "AmirAli Morph",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/42O848a/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/42O848a/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-4.theblueprint.xyz/content/QmNdwN8ygMqFFDPzkMRgnrNZTiwM1oUyKkafwGbrKuNYb8/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6703,7 +6767,7 @@
    "id": "y9aR5M7",
    "title": "Resurrection of the Dark Angel",
    "artist": "Nocti Vox 89",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/y9aR5M7/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/y9aR5M7/stream?app_name=aurum_player",
    "artwork_url": "https://audius-creator-6.theblueprint.xyz/content/01JX2RZT1WZ3Z144MYGHZZCHYA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6724,7 +6788,7 @@
    "id": "5Bbg756",
    "title": "BT - Laurel Canyon Night Drive (Jody Wisternoff Breaking Sticks Remix)",
    "artist": "Black Hole Recordings",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/5Bbg756/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/5Bbg756/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/Qmcp3sjzXD33hwjfkMdLDjoXYrX5TmhNBdpt5EHHCUWZw4/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6745,7 +6809,7 @@
    "id": "eYblJ",
    "title": "Shuffle Horse - Hot Salsa",
    "artist": "Equinity",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/eYblJ/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/eYblJ/stream?app_name=aurum_player",
    "artwork_url": "https://val014.open-audio-validator.com/content/QmTJrrEwGMFcNrPWgHoD74t6ooA1wBQK63vkNQr3wgMHTr/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6766,7 +6830,7 @@
    "id": "1GVQX",
    "title": "Will2Rise",
    "artist": "TEKNEIN",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/1GVQX/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/1GVQX/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmcmLRmctk7cqizGVHafe8HxxH3kMqpaBRQtqjygzB7KiA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6787,7 +6851,7 @@
    "id": "myqWr",
    "title": "What Owns Who",
    "artist": "Stradius",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/myqWr/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/myqWr/stream?app_name=aurum_player",
    "artwork_url": "https://audius-05.staked.cloud/content/QmYGHgZaSJRSRxK2qvnrVmYS3aXySq2UPR4JAL6s9fxoNA/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6808,7 +6872,7 @@
    "id": "dpR9M",
    "title": "Cradle To Grave",
    "artist": "The Second Child",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/dpR9M/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/dpR9M/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmXtcGJ6y21kieiofj7biLjzKZHGrfAr7mDsk8ZH2TJtwW/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6829,7 +6893,7 @@
    "id": "936pwpM",
    "title": "driftboi, CYPOVA - just a chill phonk",
    "artist": "Trapical Music",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/936pwpM/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/936pwpM/stream?app_name=aurum_player",
    "artwork_url": "https://val004.open-audio-validator.com/content/01JJRDJQ9QHGT2566MFJWFXP16/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6850,7 +6914,7 @@
    "id": "Q71mVNG",
    "title": "Phonk",
    "artist": "ruh7inas",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/Q71mVNG/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/Q71mVNG/stream?app_name=aurum_player",
    "artwork_url": "https://val015.open-audio-validator.com/content/01HGZB255X434WGT381GJ6FKJG/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6871,7 +6935,7 @@
    "id": "WVVBl",
    "title": "Byway",
    "artist": "BARx̄",
-   "stream_url": "https://discoveryprovider.audius.co/v1/tracks/WVVBl/stream",
+   "stream_url": "https://api.audius.co/v1/tracks/WVVBl/stream?app_name=aurum_player",
    "artwork_url": "https://v.monophonic.digital/content/QmeAcqPhbDY6sPpyGinbGyYsF3HUByLiuDCt6dow3aPeF2/1000x1000.jpg",
    "duration_s": 0,
    "soundcloud_url": "",
@@ -6887,6 +6951,189 @@
    "label": "",
    "discovery": false,
    "playback_count": 0
+  },
+  {
+   "id": "eJ0g0",
+   "title": "F33LSHIT ft. Moxs",
+   "artist": "Cloutsyder",
+   "stream_url": "https://api.audius.co/v1/tracks/eJ0g0/stream?app_name=aurum_player",
+   "artwork_url": "https://cn2.mainnet.audiusindex.org/content/QmUeP3ot5Ji5hxmRFQSvaRm7QpA2sKg4e1trXJzBXbDjgc/150x150.jpg",
+   "playlists": [
+    "Apollo Hunt"
+   ]
+  },
+  {
+   "id": "z8vWxrz",
+   "title": "Beast in Us (feat. J.s.R)",
+   "artist": "MXIII",
+   "stream_url": "https://api.audius.co/v1/tracks/z8vWxrz/stream?app_name=aurum_player",
+   "artwork_url": "https://audius.zeogrid.com/content/01J0R678SGN1DEF3QSGXKCB8MD/150x150.jpg",
+   "playlists": [
+    "Apollo Hunt"
+   ]
+  },
+  {
+   "id": "D9am0",
+   "title": "Toluca Lake (feat. Lil Katy)",
+   "artist": "Cloutsyder",
+   "stream_url": "https://api.audius.co/v1/tracks/D9am0/stream?app_name=aurum_player",
+   "artwork_url": "https://v.monophonic.digital/content/QmdEebgVCvzVT53jnQ571jaQRJ2HvXaUAtP8axotSGbiKX/150x150.jpg",
+   "playlists": [
+    "Apollo Hunt"
+   ]
+  },
+  {
+   "id": "GNMQWBE",
+   "title": "I'm Undone",
+   "artist": "EQTracks",
+   "stream_url": "https://api.audius.co/v1/tracks/GNMQWBE/stream?app_name=aurum_player",
+   "artwork_url": "https://v.monophonic.digital/content/baeaaaiqsechlyjw46y2c35unmcl7glse3apkwmrxbsphx5hglpyiob262wm4g/480x480.jpg",
+   "duration_s": 232,
+   "playlists": [
+    "Peep Forever"
+   ]
+  },
+  {
+   "id": "YJPxr",
+   "title": "Don't Cry",
+   "artist": "Zhady",
+   "stream_url": "https://api.audius.co/v1/tracks/YJPxr/stream?app_name=aurum_player",
+   "artwork_url": "https://audius-creator-4.theblueprint.xyz/content/QmZ1s41rwscHyeZJ4VU6UjS6QSyUCGcbNGUyFfvZb48HXk/480x480.jpg",
+   "duration_s": 78,
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "1OzZEOd",
+   "title": "i can be lonely",
+   "artist": "anonMS",
+   "stream_url": "https://api.audius.co/v1/tracks/1OzZEOd/stream?app_name=aurum_player",
+   "artwork_url": "https://v.monophonic.digital/content/01HDCDQASFYVJ3TDAJZQP1B6C6/480x480.jpg",
+   "duration_s": 222,
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "JEZw23Y",
+   "title": "BLACKTYDE × PAYTRA - Lost My Friends (Original Mix)",
+   "artist": "BLACKTYDE",
+   "stream_url": "https://api.audius.co/v1/tracks/JEZw23Y/stream?app_name=aurum_player",
+   "artwork_url": "https://audius-content-4.figment.io/content/baeaaaiqsebtu7xxw4h7fy7wbh3wq2mx3qegnhddoctjwfusfw3gx7xswvxzho/480x480.jpg",
+   "duration_s": 258,
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "BaJjA",
+   "title": "Lonely",
+   "artist": "Nessa Feels",
+   "stream_url": "https://api.audius.co/v1/tracks/BaJjA/stream?app_name=aurum_player",
+   "artwork_url": "https://cn2.mainnet.audiusindex.org/content/QmbR8oGxzh3CK2fugGogfSHHQmaYjDaf6yypnpu6vUiEnY/480x480.jpg",
+   "duration_s": 178,
+   "playlists": [
+    "Deep Poetry Trap"
+   ]
+  },
+  {
+   "id": "95vOa",
+   "title": "Lunar Trail",
+   "artist": "enluv",
+   "stream_url": "https://api.audius.co/v1/tracks/95vOa/stream?app_name=aurum_player",
+   "artwork_url": "https://audius-figment-1-validator-19.figment.io/content/QmXgVkfRf1AmBLdPQHAujDJQ2ZsSCR7ToP6jrpApS2sxRW/480x480.jpg",
+   "duration_s": 159,
+   "playlists": [
+    "Cloud Nine"
+   ]
+  },
+  {
+   "id": "jNEdG",
+   "title": "LucidDream. - Midnight",
+   "artist": "LucidDream.",
+   "stream_url": "https://api.audius.co/v1/tracks/jNEdG/stream?app_name=aurum_player",
+   "artwork_url": "https://val012.open-audio-validator.com/content/QmVNnnjD6rHcFVfPwnMTwS23nPgBnbmt7Fb8qdGTQApDjm/480x480.jpg",
+   "duration_s": 163,
+   "playlists": [
+    "Cloud Nine"
+   ]
+  },
+  {
+   "id": "ePNOp",
+   "title": "NOSEBLEED (FEAT. SIGMA STRANGE)",
+   "artist": "SPOOK",
+   "stream_url": "https://api.audius.co/v1/tracks/ePNOp/stream?app_name=aurum_player",
+   "artwork_url": "https://val015.open-audio-validator.com/content/QmVeV1zY7ZyRveFFzKNPdCpG4d1ycezZ8WMLqyaNimPnvU/480x480.jpg",
+   "duration_s": 117,
+   "playlists": [
+    "Underground Heat"
+   ]
+  },
+  {
+   "id": "KzG54Br",
+   "title": "Rage",
+   "artist": "MICah",
+   "stream_url": "https://api.audius.co/v1/tracks/KzG54Br/stream?app_name=aurum_player",
+   "artwork_url": "https://v.monophonic.digital/content/01HCQHXDQBHST2MYF816CC3FPK/480x480.jpg",
+   "duration_s": 185,
+   "playlists": [
+    "Underground Heat"
+   ]
+  },
+  {
+   "id": "3oYWgOZ",
+   "title": "Tear It Up",
+   "artist": "Alumni XI",
+   "stream_url": "https://api.audius.co/v1/tracks/3oYWgOZ/stream?app_name=aurum_player",
+   "artwork_url": "https://audius-figment-1-validator-18.figment.io/content/baeaaaiqsed33yjbsrd32s7g2n4jppeybztxbbnw5vzyzs7k5m3hrdmm23vv7e/480x480.jpg",
+   "duration_s": 120,
+   "playlists": [
+    "Underground Heat"
+   ]
+  },
+  {
+   "id": "DN9RZ",
+   "title": "WASP 12B",
+   "artist": "OneWingedAJ",
+   "stream_url": "https://api.audius.co/v1/tracks/DN9RZ/stream?app_name=aurum_player",
+   "artwork_url": "https://audius-standardvc-1-validator-3.figment.io/content/QmYKEiuu3xnpUExPcCagtbcr8FhEC7WssQmuxLSNrAuUVv/480x480.jpg",
+   "duration_s": 198,
+   "playlists": [
+    "Underground Heat"
+   ]
+  },
+  {
+   "id": "kGPXlWV",
+   "title": "Demon",
+   "artist": "El Attah",
+   "stream_url": "https://api.audius.co/v1/tracks/kGPXlWV/stream?app_name=aurum_player",
+   "artwork_url": "https://audius-content-11.figment.io/content/01K0J4M18GP39NEZG9AXDEBAMM/480x480.jpg",
+   "duration_s": 174,
+   "playlists": [
+    "Underground Heat"
+   ]
+  },
+  {
+   "id": "qRjM6V2",
+   "title": "DARK TRAP VOL 2 - NIGHT LOVELL X GHOSTMANE X BONES",
+   "artist": "Cena Underground",
+   "stream_url": "https://api.audius.co/v1/tracks/qRjM6V2/stream?app_name=aurum_player",
+   "artwork_url": "https://validator.stuffisup.com/content/01JEKES65HT22FHZZPY5ZV2N58/480x480.jpg",
+   "duration_s": 246,
+   "playlists": [
+    "Underground Heat"
+   ]
+  },
+  {
+   "id": "Kvq6O",
+   "title": "Time Bomb",
+   "artist": "SELTRAH",
+   "stream_url": "https://api.audius.co/v1/tracks/Kvq6O/stream?app_name=aurum_player",
+   "artwork_url": "https://v.monophonic.digital/content/QmYp9yCkFVSNsyg6etF2FR6JAQ99KMEhZfy1D5druvUBt9/480x480.jpg",
+   "playlists": [
+    "Apollo Hunt"
+   ]
   }
  ],
  "playlists": [
@@ -7176,7 +7423,8 @@
     "y5kk7",
     "4jpz10y",
     "QVy6v",
-    "8ZbXqJa"
+    "8ZbXqJa",
+    "GNMQWBE"
    ]
   },
   {
@@ -7186,13 +7434,21 @@
     "872xP",
     "wy19k",
     "9O3EkRG",
-    "b5vMO"
+    "b5vMO",
+    "YJPxr",
+    "1OzZEOd",
+    "JEZw23Y",
+    "BaJjA"
    ]
   },
   {
    "name": "Cloud Nine",
    "track_ids": [
-    "zEYyO"
+    "zEYyO",
+    "95vOa",
+    "W0JP60j",
+    "jNEdG",
+    "agzvA"
    ]
   },
   {
@@ -7352,7 +7608,8 @@
     "xWdAz",
     "oE48X",
     "1A9m3",
-    "lajx0jO"
+    "lajx0jO",
+    "Kvq6O"
    ]
   },
   {
@@ -7605,6 +7862,17 @@
     "936pwpM",
     "Q71mVNG",
     "WVVBl"
+   ]
+  },
+  {
+   "name": "Underground Heat",
+   "track_ids": [
+    "ePNOp",
+    "KzG54Br",
+    "3oYWgOZ",
+    "DN9RZ",
+    "kGPXlWV",
+    "qRjM6V2"
    ]
   }
  ],
