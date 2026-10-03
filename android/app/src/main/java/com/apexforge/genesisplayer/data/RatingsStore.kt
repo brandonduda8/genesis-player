@@ -38,7 +38,7 @@ object RatingsStore {
      *  The serve cert comes from the tailnet's internal CA, which Android does
      *  not trust by default; TasteSync uses a trust manager scoped to this one
      *  hardcoded host (the WireGuard tailnet itself is the auth boundary). */
-    const val TASTE_URL = "https://zane-box-1.tail63e556.ts.net:18801/rate"
+    const val TASTE_URL = "https://htch-runtime.tail63e556.ts.net:18801/rate"
 
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

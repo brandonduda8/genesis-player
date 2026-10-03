@@ -18,10 +18,10 @@ private const val TAG = "GenesisPlayer"
  * Shared networking for the Apollo machine service (APOLLO-LIVE.md §2).
  *
  * Endpoints live on the tailnet only:
- *   POST https://zane-box-1.tail63e556.ts.net:18801/apollo/chat
- *   GET  https://zane-box-1.tail63e556.ts.net:18801/apollo/drops
- *   POST https://zane-box-1.tail63e556.ts.net:18801/apollo/decide   (proposed — see contract note)
- *   POST https://zane-box-1.tail63e556.ts.net:18801/history
+ *   POST https://htch-runtime.tail63e556.ts.net:18801/apollo/chat
+ *   GET  https://htch-runtime.tail63e556.ts.net:18801/apollo/drops
+ *   POST https://htch-runtime.tail63e556.ts.net:18801/apollo/decide   (proposed — see contract note)
+ *   POST https://htch-runtime.tail63e556.ts.net:18801/history
  *
  * The tailnet serve cert comes from the tailnet's internal CA, which Android
  * does not trust by default. Like TasteSync, this uses a trust manager scoped
@@ -30,7 +30,7 @@ private const val TAG = "GenesisPlayer"
  * host. There are no accounts, no tokens, no logins.
  */
 object ApolloNet {
-    const val HOST = "zane-box-1.tail63e556.ts.net"
+    const val HOST = "htch-runtime.tail63e556.ts.net"
     const val BASE = "https://$HOST:18801"
     const val CHAT_URL = "$BASE/apollo/chat"
     const val DROPS_URL = "$BASE/apollo/drops"
