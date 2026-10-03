@@ -363,16 +363,18 @@ class ParametricEq(val sampleRate: Int = 48000) {
     }
 
     /**
-     * Process one mono block. Applies: preamp (effective, headroom-adjusted) ->
-     * 8 biquads -> soft limiter. Returns a NEW array; input is untouched.
+     * In-place variant of [processBlock]: processes [input] into [out] (which
+     * may be the same array). Exists so the Media3 AudioProcessor adapter can
+     * run allocation-free on the audio thread. The math is identical to
+     * [processBlock] — that function delegates here.
      */
-    fun processBlock(input: FloatArray): FloatArray {
-        val out = FloatArray(input.size)
+    fun processBlockInto(input: FloatArray, out: FloatArray) {
+        require(out.size >= input.size) { "out too small for input" }
         if (bypassAll || input.isEmpty()) {
             input.copyInto(out)
             protectionActive = false
             limiterEngagedLastBlock = false
-            return out
+            return
         }
         val effPre = effectivePreampDb()
         val pre = 10.0.pow(effPre / 20.0)
@@ -387,6 +389,15 @@ class ParametricEq(val sampleRate: Int = 48000) {
         }
         limiterEngagedLastBlock = limited
         protectionActive = preampCut || limited
+    }
+
+    /**
+     * Process one mono block. Applies: preamp (effective, headroom-adjusted) ->
+     * 8 biquads -> soft limiter. Returns a NEW array; input is untouched.
+     */
+    fun processBlock(input: FloatArray): FloatArray {
+        val out = FloatArray(input.size)
+        processBlockInto(input, out)
         return out
     }
 
@@ -641,7 +652,7 @@ object DspProfiles {
             if (bands != null) DspPreset("Custom", loadPreampDb(store, c), bands)
             else DspPresets.REFERENCE_FLAT
         } else {
-            DspPresets.byName(savedName) ?: DspPresets.REFERENCE_FLAT
+            resolveDspPreset(savedName)
         }
         val bands = base.bands.map { b ->
             if (c == OutputClass.PHONE_SPEAKER && b.freqHz < TINY_SPEAKER_CAP_FREQ_HZ && b.gainDb > TINY_SPEAKER_BASS_CAP_DB) {
@@ -657,3 +668,16 @@ object DspProfiles {
         saveBands(store, c, eq.bands)
     }
 }
+
+/**
+ * Combined preset lookup: the SoundMax profiles (PULVERIZE / RAGE-MAX) first,
+ * then the six WO-AURUM-008 core presets. Unknown names fall back to
+ * Reference / Flat — never null, never a crash.
+ *
+ * Used by [DspProfiles.effectivePreset] so a route profile saved as
+ * "Pulverize / Rage-Max" resolves instead of silently falling back to flat.
+ */
+fun resolveDspPreset(name: String): DspPreset =
+    SoundMaxPresets.byName(name)
+        ?: DspPresets.byName(name)
+        ?: DspPresets.REFERENCE_FLAT

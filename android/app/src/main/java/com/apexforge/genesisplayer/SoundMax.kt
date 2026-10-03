@@ -127,6 +127,8 @@ object SoundMaxPresets {
     )
 
     val ALL: List<DspPreset> = listOf(PULVERIZE)
+
+    fun byName(name: String): DspPreset? = ALL.find { it.name == name }
 }
 
 /**

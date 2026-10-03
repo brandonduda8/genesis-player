@@ -449,4 +449,50 @@ class ParametricDspTest {
         // JVM sanity bound only — real low-end-device numbers are device-gated.
         assertTrue("48000-sample block took ${ms}ms", ms < 2000.0)
     }
+
+    // ---------- adapter path (AURUM rebuild) ----------
+
+    @Test
+    fun processBlockIntoMatchesProcessBlock() {
+        val a = eqWith(DspPresets.TRAP_ROCK_RAGE)
+        val b = eqWith(DspPresets.TRAP_ROCK_RAGE)
+        val input = FloatArray(4096) { i ->
+            (0.6 * sin(i * 0.05) + 0.2 * sin(i * 0.31)).toFloat()
+        }
+        val expected = a.processBlock(input)
+        val actual = FloatArray(input.size)
+        b.processBlockInto(input, actual)
+        assertEquals(expected.size, actual.size)
+        for (i in expected.indices) {
+            assertEquals("sample $i", expected[i].toDouble(), actual[i].toDouble(), 1e-6)
+        }
+        // Protection flags must agree too — the UI reads them from the adapter.
+        assertEquals(a.protectionActive, b.protectionActive)
+        assertEquals(a.limiterEngagedLastBlock, b.limiterEngagedLastBlock)
+    }
+
+    @Test
+    fun processBlockIntoInPlaceIsSafe() {
+        val eq = eqWith(DspPresets.FEEL_IT)
+        val input = FloatArray(2048) { (0.4 * sin(it * 0.07)).toFloat() }
+        val expected = eqWith(DspPresets.FEEL_IT).processBlock(input)
+        val inPlace = input.copyOf()
+        eq.processBlockInto(inPlace, inPlace)
+        for (i in expected.indices) {
+            assertEquals("sample $i", expected[i].toDouble(), inPlace[i].toDouble(), 1e-6)
+        }
+    }
+
+    @Test
+    fun processBlockIntoBypassCopiesThrough() {
+        val eq = eqWith(DspPresets.REFERENCE_FLAT)
+        eq.bypassAll = true
+        val input = FloatArray(512) { (0.3 * sin(it * 0.11)).toFloat() }
+        val out = FloatArray(512)
+        eq.processBlockInto(input, out)
+        for (i in input.indices) {
+            assertEquals("sample $i", input[i].toDouble(), out[i].toDouble(), 0.0)
+        }
+        assertFalse(eq.protectionActive)
+    }
 }

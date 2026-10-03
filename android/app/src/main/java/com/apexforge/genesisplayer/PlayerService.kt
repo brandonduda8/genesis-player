@@ -15,10 +15,15 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import com.apexforge.genesisplayer.audio.DspCommand
+import com.apexforge.genesisplayer.audio.DspEngine
+import com.apexforge.genesisplayer.audio.DspEngineMode
+import com.apexforge.genesisplayer.audio.ParametricDspAudioProcessor
 import com.apexforge.genesisplayer.data.ApolloStore
 import com.apexforge.genesisplayer.data.AudioSessionHub
 import com.apexforge.genesisplayer.data.CrossfadeMath
@@ -43,6 +48,9 @@ class PlayerService : MediaSessionService() {
 
     private var player: ExoPlayer? = null
     private var session: MediaSession? = null
+
+    /** AURUM rebuild — parametric DSP engine (float PCM path). */
+    private var dspProcessor: ParametricDspAudioProcessor? = null
 
     // history bookkeeping
     private var currentId: String? = null
@@ -73,11 +81,25 @@ class PlayerService : MediaSessionService() {
             .setUsage(C.USAGE_MEDIA)
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
+        // AURUM rebuild — parametric float DSP in the audio sink. The sink
+        // requests float PCM so ParametricDspAudioProcessor owns the sound;
+        // on devices whose HAL rejects float, the processor self-bypasses and
+        // reports SYSTEM_FX_FALLBACK (legacy system FX stays the fallback).
+        val dsp = ParametricDspAudioProcessor()
+        dspProcessor = dsp
+        DspEngine.processor = dsp
+        val audioSink = DefaultAudioSink.Builder(this)
+            .setAudioProcessors(arrayOf<AudioProcessor>(dsp))
+            .setEnableFloatOutput(true)
+            .build()
         val p = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
+            .setAudioSink(audioSink)
             .build()
         player = p
+        dsp.onEngineModeChanged = { mode -> mainHandler.post { applyDspEngineMode(mode) } }
+        seedAndLoadDspProfile(dsp)
         p.addListener(object : Player.Listener {
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 Log.i(TAG, "audioSessionId changed -> $audioSessionId")
@@ -87,6 +109,9 @@ class PlayerService : MediaSessionService() {
                 if (audioSessionId != C.AUDIO_SESSION_ID_UNSET && audioSessionId != 0) {
                     fx?.release()
                     fx = AudioFxController(this@PlayerService, audioSessionId)
+                    // AURUM rebuild: arbitrate the two DSP engines — only one
+                    // may be active (parametric float owns it when negotiated).
+                    dspProcessor?.let { applyDspEngineMode(it.engineMode) }
                 }
             }
 
@@ -155,6 +180,7 @@ class PlayerService : MediaSessionService() {
                     AudioSessionHub.audioSessionId = sid
                     if (sid != C.AUDIO_SESSION_ID_UNSET && sid != 0) {
                         fx = AudioFxController(this@PlayerService, sid)
+                        dspProcessor?.let { applyDspEngineMode(it.engineMode) }
                     }
                 }
                 val id = currentId ?: p.currentMediaItem?.mediaId
@@ -882,6 +908,51 @@ class PlayerService : MediaSessionService() {
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
 
+    /**
+     * AURUM rebuild — cold-start DSP profile.
+     *
+     * First run ever: seeds the DEFAULT route profile to Pulverize / Rage-Max
+     * (the flagship sound), then loads the stored route profile into the
+     * parametric engine. RouteMonitor (Phase 1, next) will re-resolve this on
+     * real route changes; until then DEFAULT is the standing route.
+     */
+    private fun seedAndLoadDspProfile(dsp: ParametricDspAudioProcessor) {
+        val store = DspAndroidStore(this)
+        if (store.getString("dsp_seed_v1", "") != "pulverize") {
+            DspProfiles.save(
+                store,
+                OutputClass.DEFAULT,
+                SoundMaxPresets.PULVERIZE.name,
+                SoundMax.PULVERIZE_PREAMP_DB,
+            )
+            store.putString("dsp_seed_v1", "pulverize")
+            Log.i(TAG, "DSP: seeded DEFAULT route profile to Pulverize / Rage-Max")
+        }
+        val effective = DspProfiles.effectivePreset(store, OutputClass.DEFAULT)
+        dsp.offerCommand(DspCommand.ApplyPreset(effective))
+        Log.i(TAG, "DSP: loaded route profile '${effective.name}'")
+    }
+
+    /**
+     * AURUM rebuild — engine arbitration. Only one DSP engine may be active:
+     * parametric float owns the sound when the device negotiates float PCM;
+     * the legacy system-FX path is parked (never double-processing) and only
+     * left alone if the device falls back to it.
+     */
+    private fun applyDspEngineMode(mode: DspEngineMode) {
+        when (mode) {
+            DspEngineMode.PARAMETRIC_FLOAT -> {
+                fx?.setAllRuntimeEnabled(false)
+                Log.i(TAG, "DSP engine: parametric float path — system FX parked")
+            }
+            DspEngineMode.SYSTEM_FX_FALLBACK -> {
+                Log.w(TAG, "DSP engine: float PCM rejected — system FX fallback active")
+                toast("Sound engine: device fallback mode")
+            }
+            DspEngineMode.UNKNOWN -> { /* format not negotiated yet */ }
+        }
+    }
+
     override fun onDestroy() {
         mainHandler.removeCallbacks(xfadeTick)
         abortCrossfade("destroy")
@@ -890,6 +961,7 @@ class PlayerService : MediaSessionService() {
         cancelSleepTimer(silent = true)
         fx?.release()
         fx = null
+        DspEngine.processor = null
         session?.release()
         player?.release()
         super.onDestroy()

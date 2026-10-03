@@ -103,6 +103,20 @@ class AudioFxController(context: Context, sessionId: Int) {
         try { loudness?.setTargetGain(gainMb) } catch (_: Exception) {}
     }
 
+    /**
+     * AURUM rebuild — runtime-only engine switch, no pref writes.
+     *
+     * When the parametric float engine is active, the system effects are
+     * parked (forced off) so the two engines never double-process. The
+     * user's persisted prefs are untouched, so the device-fallback path
+     * (float PCM rejected by the HAL) still restores exactly what they had.
+     */
+    fun setAllRuntimeEnabled(enabled: Boolean) {
+        try { bassBoost?.enabled = enabled } catch (_: Exception) {}
+        try { equalizer?.enabled = enabled } catch (_: Exception) {}
+        try { loudness?.enabled = enabled } catch (_: Exception) {}
+    }
+
     fun isBassEnabled() = prefs.getBoolean("bass_on", true)
     fun isEqEnabled() = prefs.getBoolean("eq_on", true)
     fun isLoudEnabled() = prefs.getBoolean("loud_on", false)
