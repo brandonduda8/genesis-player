@@ -1,0 +1,229 @@
+{
+  "checks": [
+    {
+      "name": "pulverize_worst",
+      "ok": true,
+      "detail": "worst=6.718 dB"
+    },
+    {
+      "name": "pulverize_preamp",
+      "ok": true,
+      "detail": "worst+pre=-0.782"
+    },
+    {
+      "name": "shape_50",
+      "ok": true,
+      "detail": "got=+5.95 exp=+5.95"
+    },
+    {
+      "name": "shape_120",
+      "ok": true,
+      "detail": "got=+5.73 exp=+5.73"
+    },
+    {
+      "name": "shape_300",
+      "ok": true,
+      "detail": "got=-1.28 exp=-1.28"
+    },
+    {
+      "name": "shape_4000",
+      "ok": true,
+      "detail": "got=+4.43 exp=+4.43"
+    },
+    {
+      "name": "guard_sub_cap",
+      "ok": true,
+      "detail": "band0=2.0"
+    },
+    {
+      "name": "guard_punch_cap",
+      "ok": true,
+      "detail": "band1=3.0"
+    },
+    {
+      "name": "guard_preamp",
+      "ok": true,
+      "detail": "pre=-4.5"
+    },
+    {
+      "name": "guard_mids_untouched",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "guard_headroom",
+      "ok": true,
+      "detail": "worst+pre=-0.813"
+    },
+    {
+      "name": "guard_flat_untouched",
+      "ok": true,
+      "detail": "pre=0.0"
+    },
+    {
+      "name": "soft_never_exceeds_unity",
+      "ok": true,
+      "detail": "max=1.000000"
+    },
+    {
+      "name": "soft_transparent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "soft_asymptote",
+      "ok": true,
+      "detail": "1.000000"
+    },
+    {
+      "name": "hard_never_exceeds_ceiling",
+      "ok": true,
+      "detail": "max=0.891251"
+    },
+    {
+      "name": "hard_clamps",
+      "ok": true,
+      "detail": "[0.891251, 0.891251, 0.891251, 0.891251]"
+    },
+    {
+      "name": "hard_transparent",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hard_zero_overshoot",
+      "ok": true,
+      "detail": "peak=0.891251 ceil=0.891251"
+    },
+    {
+      "name": "hard_release_recovers",
+      "ok": true,
+      "detail": "y=0.1000"
+    },
+    {
+      "name": "tanh_threshold",
+      "ok": true,
+      "detail": "0.891251"
+    },
+    {
+      "name": "tanh_slope_at_knee",
+      "ok": true,
+      "detail": "1.0000"
+    },
+    {
+      "name": "tanh_0dbfs_in",
+      "ok": true,
+      "detail": "-0.228 dBFS"
+    },
+    {
+      "name": "loud_full",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "loud_quiet",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "loud_half",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "loud_interp",
+      "ok": true,
+      "detail": "(3.5, 1.75)"
+    },
+    {
+      "name": "loud_clamp",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "loud_monotonic",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "flat_unity_0.01db",
+      "ok": true,
+      "detail": "worst=0.00e+00 dB"
+    },
+    {
+      "name": "stress_Reference / Flat",
+      "ok": true,
+      "detail": "worstf=20Hz"
+    },
+    {
+      "name": "stress_guarded_Reference / Flat",
+      "ok": true,
+      "detail": "peak=0.9741"
+    },
+    {
+      "name": "stress_FEEL IT",
+      "ok": true,
+      "detail": "worstf=20Hz"
+    },
+    {
+      "name": "stress_guarded_FEEL IT",
+      "ok": true,
+      "detail": "peak=0.9385"
+    },
+    {
+      "name": "stress_Night Drive",
+      "ok": true,
+      "detail": "worstf=20Hz"
+    },
+    {
+      "name": "stress_guarded_Night Drive",
+      "ok": true,
+      "detail": "peak=0.9281"
+    },
+    {
+      "name": "stress_Emo / Vocal",
+      "ok": true,
+      "detail": "worstf=3557Hz"
+    },
+    {
+      "name": "stress_guarded_Emo / Vocal",
+      "ok": true,
+      "detail": "peak=0.9171"
+    },
+    {
+      "name": "stress_Trap-Rock / Rage",
+      "ok": true,
+      "detail": "worstf=20Hz"
+    },
+    {
+      "name": "stress_guarded_Trap-Rock / Rage",
+      "ok": true,
+      "detail": "peak=0.8949"
+    },
+    {
+      "name": "stress_Dark Cinematic",
+      "ok": true,
+      "detail": "worstf=20Hz"
+    },
+    {
+      "name": "stress_guarded_Dark Cinematic",
+      "ok": true,
+      "detail": "peak=0.9345"
+    },
+    {
+      "name": "stress_Pulverize / Rage-Max",
+      "ok": true,
+      "detail": "worstf=20Hz"
+    },
+    {
+      "name": "stress_guarded_Pulverize / Rage-Max",
+      "ok": true,
+      "detail": "peak=0.9155"
+    }
+  ],
+  "summary": {
+    "total": 44,
+    "passed": 44,
+    "kotlin_tests": "NOT VERIFIED on this box (no JDK/kotlinc; Gradle daemon blocked)"
+  }
+}
