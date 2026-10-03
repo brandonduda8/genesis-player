@@ -1,5 +1,6 @@
 package com.apexforge.genesisplayer.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -60,6 +61,8 @@ fun EqScreen(modifier: Modifier = Modifier) {
     // Bumped whenever the 4-stage panel writes, so the raw controls below
     // re-read the real DSP state instead of showing stale positions.
     var rev by remember { mutableIntStateOf(0) }
+    // WO-AURUM-008: Easy (4-stage, system audiofx) vs Advanced (parametric engine).
+    var dspMode by remember { mutableStateOf("Easy") }
 
     LazyColumn(modifier = modifier.fillMaxSize().padding(16.dp)) {
         item {
@@ -69,9 +72,20 @@ fun EqScreen(modifier: Modifier = Modifier) {
             Spacer(Modifier.height(12.dp))
         }
 
-        // ---- Golden Phase 1: AMPLIFIER — 4-stage EQ (drives the same chain) ----
+        // ---- WO-AURUM-008: Easy / Advanced DSP ----
+        // Easy = Golden Phase 1 4-stage EQ on the real system audiofx chain.
+        // Advanced = the parametric biquad engine (ParametricEqPanel).
         item {
-            FourStageEqPanel(fx) { rev++ }
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Pill("Easy", dspMode == "Easy") { dspMode = "Easy" }
+                Pill("Advanced", dspMode == "Advanced") { dspMode = "Advanced" }
+            }
+            Spacer(Modifier.height(8.dp))
+            if (dspMode == "Easy") {
+                FourStageEqPanel(fx) { rev++ }
+            } else {
+                ParametricEqPanel()
+            }
             Spacer(Modifier.height(16.dp))
             Text("Fine controls", color = PhoenixGold, fontSize = 16.sp)
             Text("Every device band and effect, individually", color = TextDim, fontSize = 12.sp)
