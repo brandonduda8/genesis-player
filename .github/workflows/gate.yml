@@ -315,7 +315,7 @@ jobs:
             -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "'Tha Aadity'"
           # Prove the SHELF (not the full-library fallback) queued: the
           # playTracks count must equal the live catalog's Tha Aadity membership.
-          SHELF_N=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" | python3 -c "import json,sys; c=json.load(sys.stdin); print(sum(1 for t in c['tracks'] if 'Tha Aadity' in (t.get('playlists') or [])))")
+          SHELF_N=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; c=json.load(sys.stdin); print(sum(1 for t in c['tracks'] if 'Tha Aadity' in (t.get('playlists') or [])))")
           [ -n "$SHELF_N" ] || { echo "CATALOG FETCH FAILED (shelf size)"; exit 1; }
           echo "expected shelf size: $SHELF_N"
           SC_QUEUED=0; Q=""
@@ -342,8 +342,8 @@ jobs:
           echo "SOUNDCLOUD SHELF PROVEN: resolve -> signed stream -> position advancing"
           echo "--- local test server: magenta-accent config + catalog at live+1 ---"
           mkdir -p /tmp/remote_test
-          curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" -o /tmp/remote_test/catalog.json
-          curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/config.json" -o /tmp/remote_test/config.json
+          curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" -o /tmp/remote_test/catalog.json
+          curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/config.json" -o /tmp/remote_test/config.json
           TEST_CAT_V=$(APPLIED_V=$APPLIED_V python3 - << 'PYEOF'
           import json, os
           cat = json.load(open('/tmp/remote_test/catalog.json'))
@@ -429,7 +429,7 @@ jobs:
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
           echo "--- FB1: Full Blend exists with the FULL catalog track count ---"
-          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
           echo "live catalog track_count=$LIVE_COUNT"
           adb shell pm clear com.apexforge.genesisplayer
           adb logcat -c

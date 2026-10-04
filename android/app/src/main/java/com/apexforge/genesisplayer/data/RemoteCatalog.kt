@@ -42,7 +42,7 @@ internal fun postMain(block: () -> Unit) {
 }
 
 /**
- * Remote music catalog: https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json
+ * Remote music catalog: https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json
  *
  * - Fetched on launch on a background thread; NEVER blocks launch.
  * - Applied only when remote version > active (bundled/cached) version.
@@ -52,7 +52,7 @@ internal fun postMain(block: () -> Unit) {
  */
 object RemoteCatalog {
     const val CATALOG_URL =
-        "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/catalog.json"
+        "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json"
     const val BUNDLED_VERSION = 0
 
     /** Subtle UI note; set ONLY when a version actually advanced. Observed by CrateScreen. */

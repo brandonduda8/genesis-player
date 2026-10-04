@@ -39,7 +39,7 @@ object ApolloNet {
 
     /** Public zero-auth fallback feed for drops (APOLLO-LIVE.md §2.2). */
     const val PUBLIC_SUGGESTIONS_URL =
-        "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/apollo_suggestions.json"
+        "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/apollo_suggestions.json"
 
     private fun tailnetSsl(): SSLContext {
         val permissive = object : X509TrustManager {

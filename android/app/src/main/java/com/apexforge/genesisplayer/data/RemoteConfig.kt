@@ -13,7 +13,7 @@ import org.json.JSONObject
 private const val TAG = "GenesisPlayer"
 
 /**
- * Remote look-and-feel: https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/config.json
+ * Remote look-and-feel: https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/config.json
  *
  * - Fetched on launch on a background thread; NEVER blocks launch.
  * - Applied live (theme/sections/labels) only when remote version > active version.
@@ -23,7 +23,7 @@ private const val TAG = "GenesisPlayer"
  */
 object RemoteConfig {
     const val CONFIG_URL =
-        "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/master/config.json"
+        "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/config.json"
     const val BUNDLED_VERSION = 0
 
     fun activeVersion(context: Context): Int =
