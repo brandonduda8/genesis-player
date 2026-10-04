@@ -1,7 +1,7 @@
 package com.apexforge.genesisplayer.audio
 
 import android.util.Log
-import androidx.media3.common.AudioFormat
+import androidx.media3.common.audio.AudioProcessor.AudioFormat
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.audio.BaseAudioProcessor
@@ -307,25 +307,28 @@ class ParametricDspAudioProcessor(
         var cmd = commands.poll() ?: return
         var sawParams = false
         while (true) {
-            when (cmd) {
+            // Copy to a val: the branches capture it in forEach lambdas and
+            // cmd is reassigned at the loop bottom, which kills smart casts.
+            val c = cmd
+            when (c) {
                 is DspCommand.ApplyPreset -> {
-                    eqs.forEach { it.applyPreset(cmd.preset) }
-                    lastPreset = cmd.preset
+                    eqs.forEach { it.applyPreset(c.preset) }
+                    lastPreset = c.preset
                     sawParams = true
                 }
                 is DspCommand.LoadRoutePreset -> {
-                    eqs.forEach { it.applyPreset(cmd.preset) }
-                    lastPreset = cmd.preset
+                    eqs.forEach { it.applyPreset(c.preset) }
+                    lastPreset = c.preset
                     sawParams = true
                     glideTotalSamples =
                         (sampleRate * ROUTE_GLIDE_SEC).toLong().coerceAtLeast(1)
                     glideDoneSamples = 0
                 }
                 is DspCommand.SetBand -> {
-                    val i = cmd.index
+                    val i = c.index
                     if (i in 0 until ParametricEq.BAND_COUNT) {
                         eqs.forEach {
-                            it.bands[i] = cmd.band.copy()
+                            it.bands[i] = c.band.copy()
                             it.retarget(snap = false)
                         }
                         sawParams = true
@@ -334,11 +337,11 @@ class ParametricDspAudioProcessor(
                     }
                 }
                 is DspCommand.SetPreamp -> {
-                    eqs.forEach { it.preampDb = cmd.preampDb }
+                    eqs.forEach { it.preampDb = c.preampDb }
                     sawParams = true
                 }
                 is DspCommand.SetBypass -> {
-                    eqs.forEach { it.bypassAll = cmd.bypass }
+                    eqs.forEach { it.bypassAll = c.bypass }
                 }
             }
             cmd = commands.poll() ?: break

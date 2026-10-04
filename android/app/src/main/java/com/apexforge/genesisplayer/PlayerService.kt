@@ -1,6 +1,7 @@
 package com.apexforge.genesisplayer
 
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +15,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.audio.AudioProcessor
+import androidx.media3.common.audio.AudioSink
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.session.MediaSession
@@ -85,17 +89,29 @@ class PlayerService : MediaSessionService() {
         // requests float PCM so ParametricDspAudioProcessor owns the sound;
         // on devices whose HAL rejects float, the processor self-bypasses and
         // reports SYSTEM_FX_FALLBACK (legacy system FX stays the fallback).
+        //
+        // Media3 1.5.x owns the audio sink inside the renderers factory
+        // (ExoPlayer.Builder.setAudioSink no longer exists), so we override
+        // DefaultRenderersFactory.buildAudioSink to inject the DSP processor.
         val dsp = ParametricDspAudioProcessor()
         dspProcessor = dsp
         DspEngine.processor = dsp
-        val audioSink = DefaultAudioSink.Builder(this)
-            .setAudioProcessors(arrayOf<AudioProcessor>(dsp))
-            .setEnableFloatOutput(true)
-            .build()
+        val renderersFactory = object : DefaultRenderersFactory(this) {
+            override fun buildAudioSink(
+                context: Context,
+                enableFloatOutput: Boolean,
+                enableAudioTrackPlaybackParams: Boolean,
+            ): AudioSink? {
+                return DefaultAudioSink.Builder(context)
+                    .setEnableFloatOutput(true)
+                    .setAudioProcessors(arrayOf<AudioProcessor>(dsp))
+                    .build()
+            }
+        }
         val p = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
-            .setAudioSink(audioSink)
+            .setRenderersFactory(renderersFactory)
             .build()
         player = p
         dsp.onEngineModeChanged = { mode -> mainHandler.post { applyDspEngineMode(mode) } }
