@@ -75,16 +75,6 @@ fun ParametricEqPanel() {
     var rev by remember { mutableIntStateOf(0) }
     fun poke() { rev++ }
 
-    fun pushEngine(snap: Boolean) {
-        // Level-matched A/B attenuates the BYPASSED path (see abBypassTrimDb):
-        // the engaged path is never boosted, because the headroom auto-cut
-        // would eat exactly that boost.
-        eq.preampDb = basePreamp
-        eq.bypassAll = abBypass
-        eq.retarget(snap = snap)
-        pushLive()
-    }
-
     /**
      * Forward the panel's full current state to the LIVE audio thread.
      * The live engine plays the DEFAULT route profile, so only edits made
@@ -99,6 +89,16 @@ fun ParametricEqPanel() {
         eq.bands.forEachIndexed { i, b ->
             proc.offerCommand(DspCommand.SetBand(i, b.copy()))
         }
+    }
+
+    fun pushEngine(snap: Boolean) {
+        // Level-matched A/B attenuates the BYPASSED path (see abBypassTrimDb):
+        // the engaged path is never boosted, because the headroom auto-cut
+        // would eat exactly that boost.
+        eq.preampDb = basePreamp
+        eq.bypassAll = abBypass
+        eq.retarget(snap = snap)
+        pushLive()
     }
 
     fun persistCustom() {
