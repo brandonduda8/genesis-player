@@ -7,6 +7,7 @@ import org.junit.Test
 import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.math.PI
+import kotlin.math.pow
 import kotlin.math.sin
 
 /**
