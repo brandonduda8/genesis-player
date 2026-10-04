@@ -124,7 +124,6 @@ class ParametricDspTest {
         f.snap()
         // Abrupt retarget: 0 dB -> +12 dB low shelf.
         f.setTarget(DspMath.lowShelf(100.0, 12.0, 48000))
-        var maxErr = 0.0
         var maxStep = 0.0
         var prev = f.currentCoeffs().asArray()
         repeat(48000 * 2) { // 2 s of samples: must converge
@@ -132,11 +131,15 @@ class ParametricDspTest {
             val cur = f.currentCoeffs().asArray()
             for (i in cur.indices) {
                 maxStep = maxOf(maxStep, abs(cur[i] - prev[i]))
-                maxErr = maxOf(maxErr, abs(cur[i] - f.targetCoeffs().asArray()[i]))
             }
             prev = cur
         }
-        assertTrue("converged, residual $maxErr", maxErr < 1e-9)
+        // Residual = FINAL error after the 2 s run (not the max over the
+        // run — the first samples legitimately carry the full travel).
+        val residual = f.currentCoeffs().asArray().zip(
+            f.targetCoeffs().asArray()
+        ).maxOf { (c, t) -> abs(c - t) }
+        assertTrue("converged, residual $residual", residual < 1e-9)
         // No single-sample coefficient jump larger than 2% of the total travel.
         val total = f.targetCoeffs().asArray().zip(
             DspMath.lowShelf(100.0, 0.0, 48000).asArray()

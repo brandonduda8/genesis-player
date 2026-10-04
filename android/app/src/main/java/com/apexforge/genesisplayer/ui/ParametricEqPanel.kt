@@ -38,6 +38,8 @@ import com.apexforge.genesisplayer.DspAndroidStore
 import com.apexforge.genesisplayer.DspPreset
 import com.apexforge.genesisplayer.DspPresets
 import com.apexforge.genesisplayer.DspProfiles
+import com.apexforge.genesisplayer.audio.DspCommand
+import com.apexforge.genesisplayer.audio.DspEngine
 import com.apexforge.genesisplayer.OutputClass
 import com.apexforge.genesisplayer.ParametricEq
 import kotlin.math.log10
@@ -53,9 +55,12 @@ import kotlin.math.roundToInt
  * and per-output-route profiles with persistence.
  *
  * Honesty note (also in DSP_EVIDENCE.md): the engine math, persistence, A/B
- * logic and protection are real and unit-tested; routing this engine into the
- * LIVE playback path (Media3 AudioProcessor) is device-gated and NOT done
- * here. The Easy panel's system-audiofx path is untouched.
+ * logic and protection are real and unit-tested. Since the AURUM rebuild the
+ * panel ALSO drives the live playback path: every change is offered to the
+ * audio thread via [DspEngine.processor] (lock-free [DspCommand] queue), but
+ * only while the panel is editing the DEFAULT route — the live engine plays
+ * the DEFAULT route profile, so other routes persist for inspection without
+ * hijacking what you hear. The Easy panel's system-audiofx path is untouched.
  */
 @Composable
 fun ParametricEqPanel() {
@@ -73,12 +78,27 @@ fun ParametricEqPanel() {
     fun pushEngine(snap: Boolean) {
         // Level-matched A/B attenuates the BYPASSED path (see abBypassTrimDb):
         // the engaged path is never boosted, because the headroom auto-cut
-        // would eat exactly that boost. Playback routing is device-gated, so
-        // the trim below is a measured, displayed value until the output
-        // stage exists to apply it.
+        // would eat exactly that boost.
         eq.preampDb = basePreamp
         eq.bypassAll = abBypass
         eq.retarget(snap = snap)
+        pushLive()
+    }
+
+    /**
+     * Forward the panel's full current state to the LIVE audio thread.
+     * The live engine plays the DEFAULT route profile, so only edits made
+     * while the panel shows the DEFAULT route go live; other routes persist
+     * (DspProfiles) without hijacking what you hear.
+     */
+    fun pushLive() {
+        if (route != OutputClass.DEFAULT) return
+        val proc = DspEngine.processor ?: return
+        proc.offerCommand(DspCommand.SetPreamp(basePreamp))
+        proc.offerCommand(DspCommand.SetBypass(abBypass))
+        eq.bands.forEachIndexed { i, b ->
+            proc.offerCommand(DspCommand.SetBand(i, b.copy()))
+        }
     }
 
     fun persistCustom() {
@@ -107,6 +127,7 @@ fun ParametricEqPanel() {
         abBypass = false
         abMatch = false
         eq.applyPreset(p)
+        pushLive()
         poke()
     }
 
@@ -230,6 +251,7 @@ fun ParametricEqPanel() {
                 eq.resetFlat()
                 persistCustom()
                 presetName = "Custom"
+                pushLive()
                 poke()
             }
         }
@@ -257,9 +279,10 @@ fun ParametricEqPanel() {
         }
         Spacer(Modifier.height(6.dp))
         Text(
-            "Engine is real DSP math with per-route persistence. Live playback " +
-                "routing is device-gated (see DSP_EVIDENCE.md); the Easy panel's " +
-                "system-audiofx path is unchanged.",
+            "Engine is real DSP math with per-route persistence. Changes go LIVE " +
+                "on the audio thread while this panel shows the Default route " +
+                "(other routes persist without changing what you hear). The Easy " +
+                "panel's system-audiofx path is unchanged.",
             color = Golden.dim, fontSize = 11.sp
         )
     }
