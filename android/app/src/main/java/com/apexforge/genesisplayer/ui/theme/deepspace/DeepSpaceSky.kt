@@ -1,6 +1,7 @@
 package com.apexforge.genesisplayer.ui.theme.deepspace
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -94,11 +95,14 @@ fun DeepSpaceSky(
         }
     }
 
-    // The beat-reactive visualizer: content-desc doubles as the gate's proof
-    // that a real visualizer view is present in the hierarchy.
-    Canvas(
-        modifier = modifier.semantics { contentDescription = "Ember visualizer" }
+    // The gate proves this view exists via its content description.
+    // (Proven pattern from EmberVisualizer: semantics on a Box layout surface
+    // in uiautomator dumps; directly on Canvas they do not.)
+    Box(
+        modifier
+            .semantics { contentDescription = "Ember visualizer" }
     ) {
+        Canvas(Modifier.fillMaxSize()) {
         // Observed: establishes the per-frame redraw read.
         @Suppress("UNUSED_VARIABLE")
         val tick = redrawTick
@@ -142,5 +146,6 @@ fun DeepSpaceSky(
         if (!static) {
             with(beat) { drawRings(w * 0.5f, h * 0.5f) }
         }
-    }
+    } // Canvas
+    } // Box ("Ember visualizer")
 }
