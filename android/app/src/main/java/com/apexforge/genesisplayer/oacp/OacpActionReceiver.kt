@@ -222,7 +222,8 @@ class OacpActionReceiver : BroadcastReceiver() {
             val arr: JSONArray = root.optJSONArray("tracks") ?: JSONArray()
             for (i in 0 until arr.length()) {
                 val o = arr.optJSONObject(i) ?: continue
-                val id = o.optString("id").ifEmpty { continue }
+                val id = o.optString("id")
+                if (id.isEmpty()) continue
                 val title = o.optString("title")
                 val artist = o.optString("artist")
                 val t = title.lowercase()

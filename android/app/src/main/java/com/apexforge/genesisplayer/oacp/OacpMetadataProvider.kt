@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import android.os.ParcelFileDescriptor
 import java.io.FileNotFoundException
 
 /**
@@ -34,14 +33,14 @@ class OacpMetadataProvider : ContentProvider() {
 
     override fun onCreate(): Boolean = true
 
-    override fun openAssetFile(uri: Uri, mode: String): ParcelFileDescriptor? {
+    override fun openAssetFile(uri: Uri, mode: String): AssetFileDescriptor? {
         val ctx = context ?: throw FileNotFoundException("OACP: provider has no context")
         val assetName = when (matcher.match(uri)) {
             CODE_MANIFEST -> "oacp.json"
             CODE_CONTEXT -> "OACP.md"
             else -> throw FileNotFoundException("OACP: unknown path ${uri.path}")
         }
-        return ctx.assets.openFd(assetName).parcelFileDescriptor
+        return ctx.assets.openFd(assetName)
     }
 
     override fun getType(uri: Uri): String? = when (matcher.match(uri)) {
