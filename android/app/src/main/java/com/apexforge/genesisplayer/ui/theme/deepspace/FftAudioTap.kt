@@ -124,25 +124,23 @@ internal fun radix2Fft(re: FloatArray, im: FloatArray) {
  */
 object FftAudioTap : BaseAudioProcessor() {
 
-    companion object {
-        /** Lock-free ring capacity in floats. Power of two — masking, not modulo. */
-        private const val RING_SIZE = 8192
-        private const val RING_MASK = RING_SIZE - 1
-        private const val RING_MASK_L = RING_SIZE - 1L
+    /** Lock-free ring capacity in floats. Power of two — masking, not modulo. */
+    private const val RING_SIZE = 8192
+    private const val RING_MASK = RING_SIZE - 1
+    private const val RING_MASK_L = RING_SIZE - 1L
 
-        /** ~20 Hz analysis cadence. */
-        private const val TICK_MS = 50L
+    /** ~20 Hz analysis cadence. */
+    private const val TICK_MS = 50L
 
-        /** Attack: one tick (~50 ms) — rises follow the music immediately. */
-        /** Release: 1 − e^(−50 ms / 400 ms) ≈ 0.1175 per tick. */
-        private val RELEASE_COEFF = (1.0 - exp(-0.05 / 0.4)).toFloat()
+    /** Attack: one tick (~50 ms) — rises follow the music immediately. */
+    /** Release: 1 − e^(−50 ms / 400 ms) ≈ 0.1175 per tick. */
+    private val RELEASE_COEFF = (1.0 - exp(-0.05 / 0.4)).toFloat()
 
-        /** Spectrum log sweep: 20 Hz → 20 kHz. */
-        private const val SPEC_F_MIN = 20f
-        private const val SPEC_F_MAX = 20000f
+    /** Spectrum log sweep: 20 Hz → 20 kHz. */
+    private const val SPEC_F_MIN = 20f
+    private const val SPEC_F_MAX = 20000f
 
-        private const val DEFAULT_SAMPLE_RATE = 44100
-    }
+    private const val DEFAULT_SAMPLE_RATE = 44100
 
     // ------------------------------------------------------------------
     // Public API — exact signatures consumed by theme workers (S3) and the

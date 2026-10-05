@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.palette.graphics.Palette
 import coil.Coil
-import coil.request.GetRequest
+import coil.request.ImageRequest
 import coil.request.SuccessResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -143,7 +143,7 @@ object PaletteNebula {
         if (artworkUrl.isNullOrEmpty()) return null
         return try {
             val result = Coil.imageLoader(context)
-                .execute(GetRequest.Builder(context).data(artworkUrl).build())
+                .execute(ImageRequest.Builder(context).data(artworkUrl).build())
             val drawable = (result as? SuccessResult)?.drawable ?: return null
             val small = downscale(drawableToBitmap(drawable), PALETTE_MAX_DIM)
             val picked = Palette.from(small).generate().swatches

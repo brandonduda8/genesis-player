@@ -62,8 +62,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.pointer.awaitPointerEvent
-import androidx.compose.ui.input.pointer.awaitPointerEventScope
+import androidx.compose.foundation.gestures.awaitPointerEventScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -527,7 +526,8 @@ private fun DeepSpaceSettingsDialog(
         ctx.getSharedPreferences("genesis_playback", Context.MODE_PRIVATE)
     }
     var xfade by remember { mutableStateOf(prefs.getFloat("xfade_s", 0f)) }
-    var reduceMotion by remember { mutableStateOf(rememberReduceMotion(ctx)) }
+    val reduceMotionDefault = rememberReduceMotion(ctx)
+    var reduceMotion by remember(reduceMotionDefault) { mutableStateOf(reduceMotionDefault) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
