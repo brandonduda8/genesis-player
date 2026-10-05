@@ -3,6 +3,7 @@ package com.apexforge.genesisplayer.oacp
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.UriMatcher
+import android.content.res.AssetFileDescriptor
 import android.database.Cursor
 import android.net.Uri
 import java.io.FileNotFoundException
