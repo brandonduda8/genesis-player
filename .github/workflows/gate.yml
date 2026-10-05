@@ -157,6 +157,31 @@ jobs:
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
           APK=android/app/build/outputs/apk/debug/app-debug.apk
+          echo "--- live catalog track count (empty-catalog contract) ---"
+          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          echo "live track_count=$LIVE_COUNT"
+          if [ "$LIVE_COUNT" = "0" ]; then
+            echo "live catalog intentionally empty (444-track purge 2026-10-05): proving clean launch + no-op instead of audio-prove"
+            adb install -r "$APK"
+            adb shell pm grant com.apexforge.genesisplayer android.permission.POST_NOTIFICATIONS || true
+            sleep 2
+            adb logcat -c
+            adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+              -a com.apexforge.genesisplayer.TEST_PLAY --ei index 0
+            sleep 10
+            if adb logcat -d | grep -i "FATAL EXCEPTION" | grep -i "genesisplayer"; then
+              echo "CRASH FOUND ON EMPTY-CATALOG LAUNCH"; exit 1
+            fi
+            if adb logcat -d | grep -i "ANR in"; then
+              echo "ANR FOUND ON EMPTY-CATALOG LAUNCH"; adb logcat -d | grep -i "ANR in" | head -5; exit 1
+            fi
+            adb shell pidof com.apexforge.genesisplayer > /dev/null \
+              || { echo "APP PROCESS DIED ON EMPTY-CATALOG LAUNCH"; exit 1; }
+            echo "EMPTY-CATALOG LAUNCH PROVEN: installs, TEST_PLAY no-ops on the empty queue, no crash/ANR"
+            adb shell screencap -p /sdcard/player_nowplaying.png || true
+            adb pull /sdcard/player_nowplaying.png /tmp/player_nowplaying.png || true
+            [ -f /tmp/player_nowplaying.png ] || { echo "NOWPLAYING SCREENSHOT MISSING"; exit 1; }
+          else
           echo "--- install ---"
           adb install -r "$APK"
           adb shell pm grant com.apexforge.genesisplayer android.permission.POST_NOTIFICATIONS || true
@@ -276,11 +301,17 @@ jobs:
           [ -f /tmp/player_nowplaying.png ] || { echo "NOWPLAYING SCREENSHOT MISSING"; exit 1; }
           python3 /tmp/anr_check.py /tmp/player_nowplaying.png \
             || { echo "ANR-DIALOG PIXEL CHECK FAILED (nowplaying)"; exit 1; }
+          fi
 
       - name: Gate — remote catalog pickup + config theme change + airplane fallback
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          echo "--- live catalog (empty-catalog contract) ---"
+          LIVE_JSON=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json")
+          LIVE_COUNT=$(echo "$LIVE_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          LIVE_VERSION=$(echo "$LIVE_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['version'])")
+          echo "live catalog version=$LIVE_VERSION track_count=$LIVE_COUNT"
           echo "--- PHASE A: fresh install must pick up the live catalog on launch ---"
           adb shell pm clear com.apexforge.genesisplayer
           adb logcat -c
@@ -293,9 +324,15 @@ jobs:
           adb logcat -d | grep -E "RemoteCatalog|RemoteConfig" | tail -6
           APPLIED=$(adb logcat -d | grep -Eo "RemoteCatalog: applied version [0-9]+ \([0-9]+ tracks" | tail -1)
           COUNT=$(echo "$APPLIED" | grep -Eo "[0-9]+ tracks" | grep -Eo "[0-9]+")
+          if [ "$LIVE_COUNT" = "0" ]; then
+            [ -n "$COUNT" ] && [ "$COUNT" = "0" ] \
+              || { echo "EMPTY CATALOG NOT APPLIED ON LAUNCH (got: $APPLIED)"; exit 1; }
+            echo "EMPTY CATALOG APPLIED ON LAUNCH ($APPLIED; intentional 444-track purge)"
+          else
           [ -n "$COUNT" ] && [ "$COUNT" -ge 351 ] \
             || { echo "REMOTE CATALOG NOT APPLIED ON LAUNCH (got: $APPLIED)"; exit 1; }
           echo "REMOTE CATALOG APPLIED ON LAUNCH ($APPLIED; >=351 incl. SoundCloud shelf)"
+          fi
           # APPLIED_V: the version the APP itself holds. Phase B's test catalog
           # is derived from this, NOT from a fresh CDN fetch — the CDN serves
           # stale copies per-edge, and a mid-run catalog publish would collide
@@ -305,6 +342,9 @@ jobs:
           APPLIED_V=$(echo "$APPLIED" | grep -Eo "applied version [0-9]+" | grep -Eo "[0-9]+")
           [ -n "$APPLIED_V" ] || { echo "COULD NOT PARSE APPLIED CATALOG VERSION"; exit 1; }
           echo "app holds catalog v$APPLIED_V; test catalog will be v$((APPLIED_V + 1))"
+          if [ "$LIVE_COUNT" = "0" ]; then
+            echo "--- PHASE A2: SKIPPED (empty catalog has no SoundCloud shelf to prove) ---"
+          else
           echo "--- PHASE A2: SoundCloud shelf plays end to end on the emulator ---"
           adb logcat -c
           # Nested quotes: the playlist name must survive adb's remote-shell
@@ -340,6 +380,7 @@ jobs:
           done
           [ "$SC_PLAYING" = "1" ] || { echo "SOUNDCLOUD SHELF NEVER PLAYED"; adb logcat -d | grep "GenesisPlayer" | tail -30; exit 1; }
           echo "SOUNDCLOUD SHELF PROVEN: resolve -> signed stream -> position advancing"
+          fi
           echo "--- local test server: hostile magenta config + catalog at live+1 ---"
           mkdir -p /tmp/remote_test
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" -o /tmp/remote_test/catalog.json
@@ -469,6 +510,25 @@ jobs:
             || { echo "FULL BLEND COUNT MISMATCH (got $FB_COUNT, live $LIVE_COUNT)"; exit 1; }
           echo "FULL BLEND PROVEN: $FB_COUNT tracks = full live catalog"
           fi
+          if [ "$LIVE_COUNT" = "0" ]; then
+            echo "--- FB2 (empty state): soft-check Like/Dislike presence; FB3-FB8 skipped (need tracks) ---"
+            sleep 3
+            tap_exact "Now Playing" || echo "NOTE: Now Playing tab not found in empty state (non-fatal)"
+            sleep 3
+            adb shell uiautomator dump /sdcard/ui.xml > /dev/null
+            adb pull /sdcard/ui.xml /tmp/ui.xml > /dev/null
+            grep -q 'content-desc="Like"' /tmp/ui.xml \
+              && echo "Like button present (empty state)" \
+              || echo "Like button absent in empty state (not a failure — no track to rate)"
+            grep -q 'content-desc="Dislike"' /tmp/ui.xml \
+              && echo "Dislike button present (empty state)" \
+              || echo "Dislike button absent in empty state (not a failure — no track to rate)"
+            adb shell screencap -p /sdcard/player_ratings.png || true
+            adb pull /sdcard/player_ratings.png /tmp/player_ratings.png || true
+            [ -f /tmp/player_ratings.png ] || { echo "RATINGS SCREENSHOT MISSING"; exit 1; }
+            python3 /tmp/anr_check.py /tmp/player_ratings.png \
+              || { echo "ANR-DIALOG PIXEL CHECK FAILED (ratings)"; exit 1; }
+          else
           echo "--- FB2: like/dislike buttons render on Now Playing ---"
           sleep 3
           # Golden Phase 1: the app now opens on the Crate, so open the
@@ -622,6 +682,7 @@ jobs:
           [ -n "$R_COUNT" ] && [ "$R_COUNT" -ge 2 ] \
             || { echo "RATINGS NOT PERSISTED (got: $R_LINE)"; exit 1; }
           echo "PERSISTENCE PROVEN: $R_COUNT ratings survived relaunch"
+          fi
           echo "--- crash/ANR check (ANR is any-package) ---"
           if adb logcat -d | grep -i "FATAL EXCEPTION" | grep -i "genesisplayer"; then
             echo "CRASH FOUND"; exit 1
@@ -669,6 +730,27 @@ jobs:
             # shellcheck disable=SC2086
             adb shell input tap $xy
           }
+          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          echo "live track_count=$LIVE_COUNT (empty-catalog contract)"
+          if [ "$LIVE_COUNT" = "0" ]; then
+            echo "EMPTY CATALOG: reduced BRKN prove — app launches, Now Playing renders, no crash/ANR (playback tour needs tracks)"
+            adb shell am start -n com.apexforge.genesisplayer/.MainActivity
+            sleep 8
+            tap_node "Now Playing" || echo "NOTE: Now Playing tab not found in empty state (non-fatal)"
+            sleep 2
+            adb shell screencap -p /sdcard/brkn_nowplaying.png || true
+            adb pull /sdcard/brkn_nowplaying.png /tmp/brkn_nowplaying.png || true
+            [ -f /tmp/brkn_nowplaying.png ] || { echo "NOWPLAYING SCREENSHOT MISSING"; exit 1; }
+            python3 /tmp/anr_check.py /tmp/brkn_nowplaying.png \
+              || { echo "ANR-DIALOG PIXEL CHECK FAILED (brkn empty)"; exit 1; }
+            if adb logcat -d | grep -i "FATAL EXCEPTION" | grep -i "genesisplayer"; then
+              echo "CRASH FOUND (brkn empty)"; exit 1
+            fi
+            if adb logcat -d | grep -i "ANR in"; then
+              echo "ANR FOUND (brkn empty)"; adb logcat -d | grep -i "ANR in" | head -5; exit 1
+            fi
+            echo "EMPTY-STATE NOW PLAYING RENDERED, no crash/ANR"
+          else
           echo "--- W1: big queue playing, then open the Now Playing tab ---"
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
             -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Full Blend" --ez shuffle true
@@ -898,6 +980,7 @@ jobs:
           if adb logcat -d | grep -i "ANR in"; then
             echo "ANR FOUND (any package)"; adb logcat -d | grep -i "ANR in" | head -5; exit 1
           fi
+          fi
           echo "BRKN WAVES GATE PASS"
 
       - name: Gate — Golden Phase 1 screens (Crate, Playlists, Apollo, EQ panel)
@@ -924,6 +1007,19 @@ jobs:
             [ -f "/tmp/golden_$1.png" ] || { echo "SCREENSHOT MISSING: $1"; return 1; }
             python3 /tmp/anr_check.py "/tmp/golden_$1.png" || { echo "ANR-DIALOG PIXEL CHECK FAILED ($1)"; return 1; }
           }
+          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          echo "live track_count=$LIVE_COUNT (empty-catalog contract)"
+          if [ "$LIVE_COUNT" = "0" ]; then
+            echo "EMPTY CATALOG: reduced Golden UI tour — tabs render, no crash/ANR (populated-data assertions need tracks)"
+            adb shell am start -n com.apexforge.genesisplayer/.MainActivity
+            sleep 8
+            for TAB in "Crate" "Playlists" "Apollo" "EQ"; do
+              tap_exact "$TAB" || { echo "TAB NOT FOUND: $TAB"; exit 1; }
+              sleep 2
+              shot "empty_$TAB" || exit 1
+            done
+            echo "EMPTY-STATE TABS RENDERED: Crate, Playlists, Apollo, EQ"
+          else
           echo "--- G0: playback running (the BRKN step's Full Blend shuffle) ---"
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
             -a com.apexforge.genesisplayer.TEST_PLAY --es playlist "Full Blend" --ez shuffle true
@@ -1010,6 +1106,7 @@ jobs:
           if [ -z "$Q1" ] || [ -z "$Q2" ] || [ "$Q2" -le "$((Q1 + 1500))" ]; then
             echo "PLAYBACK STALLED DURING GOLDEN UI TOUR"; exit 1
           fi
+          fi
           echo "--- crash/ANR check (ANR is any-package) ---"
           if adb logcat -d | grep -i "FATAL EXCEPTION" | grep -i "genesisplayer"; then
             echo "CRASH FOUND"; exit 1
@@ -1067,3 +1164,4 @@ jobs:
         with:
           name: gate-screenshot-brkn-queue
           path: /tmp/brkn_queue.png
+          if-no-files-found: warn  # empty-catalog mode skips the queue sheet (no tracks to queue)
