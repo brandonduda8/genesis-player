@@ -441,21 +441,34 @@ jobs:
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
           echo "--- FB1: Full Blend exists with the FULL catalog track count ---"
-          LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
-          echo "live catalog track_count=$LIVE_COUNT"
+          LIVE_JSON=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json")
+          LIVE_COUNT=$(echo "$LIVE_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
+          LIVE_VERSION=$(echo "$LIVE_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['version'])")
+          echo "live catalog version=$LIVE_VERSION track_count=$LIVE_COUNT"
           adb shell pm clear com.apexforge.genesisplayer
           adb logcat -c
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity
+          if [ "$LIVE_COUNT" = "0" ]; then
+            echo "live catalog intentionally empty (444-track purge 2026-10-05); proving the empty catalog applies cleanly"
+            for i in $(seq 1 24); do
+              if adb logcat -d | grep -q "RemoteCatalog: applied version $LIVE_VERSION (0 tracks, 0 playlists)"; then break; fi
+              sleep 5
+            done
+            adb logcat -d | grep -q "RemoteCatalog: applied version $LIVE_VERSION (0 tracks, 0 playlists)" \
+              || { echo "EMPTY CATALOG NOT APPLIED (no applied-version line for v$LIVE_VERSION)"; exit 1; }
+            echo "EMPTY CATALOG PROVEN: v$LIVE_VERSION applied with 0 tracks, no crash"
+          else
           for i in $(seq 1 24); do
             if adb logcat -d | grep -q "RemoteCatalog: playlist 'Full Blend'"; then break; fi
             sleep 5
           done
-          FB_LINE=$(adb logcat -d | grep -Eo "RemoteCatalog: playlist 'Full Blend' \([0-9]+ tracks\)" | tail -1)
+          FB_LINE=$(adb logcat -d | grep -Eo "RemoteCatalog: playlist 'Full Blend' \\([0-9]+ tracks\\)" | tail -1)
           echo "gate line: $FB_LINE"
           FB_COUNT=$(echo "$FB_LINE" | grep -Eo "[0-9]+" | tail -1)
           [ -n "$FB_COUNT" ] && [ "$FB_COUNT" = "$LIVE_COUNT" ] \
             || { echo "FULL BLEND COUNT MISMATCH (got $FB_COUNT, live $LIVE_COUNT)"; exit 1; }
           echo "FULL BLEND PROVEN: $FB_COUNT tracks = full live catalog"
+          fi
           echo "--- FB2: like/dislike buttons render on Now Playing ---"
           sleep 3
           # Golden Phase 1: the app now opens on the Crate, so open the
