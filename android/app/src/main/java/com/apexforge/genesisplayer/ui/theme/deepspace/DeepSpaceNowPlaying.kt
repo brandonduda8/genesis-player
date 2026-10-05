@@ -62,7 +62,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.foundation.gestures.awaitPointerEventScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -194,12 +193,10 @@ fun DeepSpaceNowPlaying(
             // Passive touch tracking for the 30s drive-idle rule: observes
             // every touch but consumes nothing, so all clicks still land.
             .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        if (event.changes.any { it.pressed }) {
-                            lastTouchNanos = System.nanoTime()
-                        }
+                while (true) {
+                    val event = awaitPointerEvent()
+                    if (event.changes.any { it.pressed }) {
+                        lastTouchNanos = System.nanoTime()
                     }
                 }
             }
