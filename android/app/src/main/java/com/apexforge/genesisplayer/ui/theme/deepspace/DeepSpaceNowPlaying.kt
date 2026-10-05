@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -190,14 +191,17 @@ fun DeepSpaceNowPlaying(
     Box(
         modifier = modifier
             .fillMaxSize()
-            // Passive touch tracking for the 30s drive-idle rule: observes
-            // every touch but consumes nothing, so all clicks still land.
             .pointerInput(Unit) {
-                while (true) {
-                    val event = awaitPointerEvent()
-                    if (event.changes.any { it.pressed }) {
-                        lastTouchNanos = System.nanoTime()
-                    }
+                // Passive touch tracking for the 30s drive-idle rule: observes
+                // every touch but consumes nothing, so all clicks still land.
+                // awaitEachGesture's block runs in an AwaitPointerEventScope.
+                awaitEachGesture {
+                    do {
+                        val event = awaitPointerEvent()
+                        if (event.changes.any { it.pressed }) {
+                            lastTouchNanos = System.nanoTime()
+                        }
+                    } while (event.changes.any { it.pressed })
                 }
             }
     ) {
