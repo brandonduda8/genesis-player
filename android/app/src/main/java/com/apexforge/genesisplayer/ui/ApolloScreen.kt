@@ -229,10 +229,10 @@ fun ApolloScreen(controller: MediaController?, modifier: Modifier = Modifier) {
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        // ---- header: BRKN Vibes branding ----
+        // ---- header ----
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)) {
             Text("Apollo", style = MaterialTheme.typography.headlineMedium, color = PhoenixGold)
-            Text("BRKN Vibes · your curator", color = TextDim, fontSize = 13.sp)
+            Text("Apollo · your curator", color = TextDim, fontSize = 13.sp)
             if (!online) {
                 Spacer(Modifier.height(8.dp))
                 Card(

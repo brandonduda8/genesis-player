@@ -71,10 +71,10 @@ import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.Ratings
 import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.RemoteCatalog
-import com.apexforge.genesisplayer.data.RemoteConfig
 import com.apexforge.genesisplayer.data.SnapshotStore
 import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.sendGenesis
+import com.apexforge.genesisplayer.ui.theme.deepspace.StarfieldRenderer
 import kotlinx.coroutines.launch
 
 private fun uiPrefs(c: Context) = c.getSharedPreferences("golden_ui", Context.MODE_PRIVATE)
@@ -157,6 +157,8 @@ fun CrateScreen(
     var radioFor by remember { mutableStateOf<Pair<String, String>?>(null) }
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    // Deep Space: ambient starfield pooled once (static backdrop, no animation).
+    val starfield = remember { StarfieldRenderer(120) }
 
     val energies = remember(note) { EnergyRules.forLibrary() }
     val tracks = remember(note) { Library.tracks }
@@ -201,6 +203,10 @@ fun CrateScreen(
         modifier = modifier.fillMaxSize().drawBehind {
             // web .app-shell: faint ember radial glow top-right
             drawRect(Golden.bg)
+            // Deep Space: ambient starfield over the base background (static,
+            // cheap — the renderer pools its particles and we freeze twinkle).
+            starfield.draw(scope = this, w = size.width, h = size.height,
+                tSec = 0f, energy = 0.35f, warp = 0f, driftX = 0f, driftY = 0f)
             val glow = Offset(size.width * 0.8f, -size.height * 0.05f)
             drawCircle(
                 Brush.radialGradient(
@@ -264,7 +270,6 @@ fun CrateScreen(
                 SectionHeading("APOLLO / FOR YOU", "Fresh signals") {
                     EmberTextButton("Refresh drops") {
                         RemoteCatalog.checkForUpdates(ctx)
-                        RemoteConfig.checkForUpdates(ctx)
                         ApolloDrops.poll(ctx)
                         SnapshotStore.fetch(ctx, "manual")
                         Toast.makeText(ctx, "Checking for new drops…", Toast.LENGTH_SHORT).show()
@@ -358,7 +363,7 @@ fun CrateScreen(
         }
         if (snapHits.isNotEmpty()) {
             item(key = "snap-head") {
-                Kicker("BRKNVIBES SNAPSHOT · READ-ONLY", modifier = Modifier.padding(top = 18.dp, bottom = 6.dp))
+                Kicker("MACHINE SNAPSHOT · READ-ONLY", modifier = Modifier.padding(top = 18.dp, bottom = 6.dp))
             }
             items(snapHits, key = { "s:${it.id}" }) { t ->
                 TrackRow(

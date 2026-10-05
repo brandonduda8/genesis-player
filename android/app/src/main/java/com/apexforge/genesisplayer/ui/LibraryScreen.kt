@@ -42,7 +42,6 @@ import com.apexforge.genesisplayer.data.ApolloDrops
 import com.apexforge.genesisplayer.data.HistoryStore
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RemoteCatalog
-import com.apexforge.genesisplayer.data.RemoteConfig
 import com.apexforge.genesisplayer.data.SnapshotStore
 import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.sendGenesis
@@ -115,10 +114,9 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                     )
                 }
                 TextButton(onClick = {
-                    // Force re-check: catalog, look-and-feel config, drops,
-                    // AND the machine snapshot.
+                    // Force re-check: catalog, drops, AND the machine snapshot.
+                    // (Remote look-and-feel is dead — Deep Space is fixed.)
                     RemoteCatalog.checkForUpdates(context)
-                    RemoteConfig.checkForUpdates(context)
                     ApolloDrops.poll(context)
                     SnapshotStore.fetch(context, "manual")
                 }) {
@@ -207,7 +205,7 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
             }
             if (snapHits.isNotEmpty()) {
                 item {
-                    Text("BrknVibes snapshot", color = PhoenixGold, fontSize = 15.sp,
+                    Text("Machine snapshot", color = PhoenixGold, fontSize = 15.sp,
                         modifier = Modifier.padding(vertical = 8.dp))
                 }
                 items(snapHits, key = { "snap:${it.id}" }) { t ->
@@ -266,7 +264,7 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
         // ---- BrknVibes snapshot section ----
         if (q.isEmpty() && openPlaylist == null && openSnapPlaylist == null) {
             item {
-                Text("BrknVibes", color = PhoenixGold, fontSize = 16.sp,
+                Text("Machine snapshot", color = PhoenixGold, fontSize = 16.sp,
                     modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
                 if (snapshot == null) {
                     Text(

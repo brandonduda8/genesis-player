@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brandon's pick: the player is BRKN Vibes. The application ID stays
+    <!-- AURUM — Deep Space edition. The application ID stays
          com.apexforge.genesisplayer so updates stay clean. -->
     <string name="app_name">Aurum</string>
 </resources>

@@ -3,6 +3,7 @@ package com.apexforge.genesisplayer.ui
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +49,7 @@ import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.RemoteCatalog
 import com.apexforge.genesisplayer.data.SnapshotStore
 import com.apexforge.genesisplayer.sendGenesis
+import com.apexforge.genesisplayer.ui.theme.deepspace.StarfieldRenderer
 
 /** Which world is open: a catalog playlist, a snapshot playlist, or a legacy screen. */
 private sealed interface World {
@@ -69,10 +71,17 @@ private sealed interface World {
 fun PlaylistsScreen(controller: MediaController?, pulse: PlayerPulse, modifier: Modifier = Modifier) {
     var open by remember { mutableStateOf<World?>(null) }
     BackHandler(enabled = open != null) { open = null }
+    // Deep Space: ambient starfield backdrop (static, cheap — pooled particles,
+    // twinkle frozen; inner screens keep transparent backgrounds so it shows).
+    val starfield = remember { StarfieldRenderer(120) }
     LaunchedEffect(open) {
         Log.i("GenesisPlayer", "GoldenPlaylists: ${open?.let { describe(it) } ?: "index"}")
     }
     Box(modifier.fillMaxSize().background(Golden.bg)) {
+        Canvas(Modifier.fillMaxSize()) {
+            starfield.draw(scope = this, w = size.width, h = size.height,
+                tSec = 0f, energy = 0.35f, warp = 0f, driftX = 0f, driftY = 0f)
+        }
         when (val w = open) {
             null -> PlaylistIndex { open = it }
             is World.Catalog -> CatalogDetail(controller, pulse, w.name) { open = null }
@@ -113,7 +122,7 @@ private fun PlaylistIndex(onOpen: (World) -> Unit) {
         val snaps = snapshot?.playlists.orEmpty()
         if (snaps.isNotEmpty()) {
             item(key = "snap-head") {
-                Kicker("BRKNVIBES SNAPSHOT · READ-ONLY", modifier = Modifier.padding(top = 24.dp, bottom = 6.dp))
+                Kicker("MACHINE SNAPSHOT · READ-ONLY", modifier = Modifier.padding(top = 24.dp, bottom = 6.dp))
                 GoldenDivider()
             }
             itemsIndexed(snaps, key = { _, p -> "s:${p.name}" }) { i, p ->
@@ -246,7 +255,7 @@ private fun SnapshotDetail(controller: MediaController?, pulse: PlayerPulse, nam
     val list = snapshot?.playlists?.find { it.name == name }?.tracks.orEmpty()
     LazyColumn(Modifier.fillMaxSize().padding(horizontal = 14.dp)) {
         item(key = "head") {
-            DetailHeader("BRKNVIBES SNAPSHOT · READ-ONLY", name, "${list.size} tracks · from the machine", onBack) {
+            DetailHeader("MACHINE SNAPSHOT · READ-ONLY", name, "${list.size} tracks · from the machine", onBack) {
                 EmberButton("Play") { if (list.isNotEmpty()) controller.playSnapshot(list, 0) }
             }
         }

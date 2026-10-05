@@ -196,7 +196,7 @@ fun DeepSpaceNowPlaying(
             // Gate proof: the Now Playing screen IS the beat-reactive visualizer.
             // (The sky's own Box carries this too; the root guarantees it
             // surfaces in the accessibility hierarchy.)
-            .semantics { contentDescription = "Ember visualizer" }
+            .semantics { contentDescription = "Deep Space visualizer" }
             .pointerInput(Unit) {
                 // Passive touch tracking for the 30s drive-idle rule: observes
                 // every touch but consumes nothing, so all clicks still land.

@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material.icons.Icons
@@ -39,11 +40,13 @@ import androidx.media3.session.SessionToken
 import com.apexforge.genesisplayer.data.Ratings
 import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RemoteCatalog
-import com.apexforge.genesisplayer.data.RemoteConfig
+import com.apexforge.genesisplayer.ui.AurumTheme
+import com.apexforge.genesisplayer.ui.CardDark
 import com.apexforge.genesisplayer.ui.CrateScreen
 import com.apexforge.genesisplayer.ui.EqScreen
-import com.apexforge.genesisplayer.ui.GenesisTheme
+import com.apexforge.genesisplayer.ui.SurfaceDark
 import com.apexforge.genesisplayer.ui.MiniPlayerBar
+import com.apexforge.genesisplayer.ui.theme.deepspace.DeepSpaceColors
 import com.apexforge.genesisplayer.ui.theme.deepspace.DeepSpaceNowPlaying
 import com.apexforge.genesisplayer.ui.PlaylistsScreen
 import com.apexforge.genesisplayer.ui.ApolloScreen
@@ -56,13 +59,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Library.load(this)
-        // Re-apply persisted remote state first (instant, offline-safe), then
-        // fetch live in the background. Neither fetch ever blocks launch.
+        // Aurum Deep Space rebuild: the remote look-and-feel path is gone.
+        // One-time migration wipe — a stale remote_config.json / config_version
+        // must NEVER repaint the app again. Idempotent; safe every launch.
+        try {
+            deleteFile("remote_config.json")
+            getSharedPreferences("genesis_remote", MODE_PRIVATE).edit().remove("config_version").apply()
+            Log.i("GenesisPlayer", "RemoteConfig: migration wipe done")
+        } catch (_: Exception) { }
+        // Music catalog cache + live fetch are untouched (playback lane).
         RemoteCatalog.applyCache(this)
-        RemoteConfig.applyCache(this)
-        title = com.apexforge.genesisplayer.ui.RemoteTheme.labels.value.appName
+        title = "Aurum"
         RemoteCatalog.checkForUpdates(this)
-        RemoteConfig.checkForUpdates(this)
         ApolloDrops.poll(this) // Phase 1: Fresh Signals poll at launch (Refresh Music re-polls).
         SnapshotStore.fetch(this, "launch") // BRKN wave 3: machine-owned snapshot (graceful offline).
         handleTestPlay(intent)
@@ -71,7 +79,7 @@ class MainActivity : ComponentActivity() {
         handleTestSleep(intent)
         handleTestXfade(intent)
         handleTestQueueDump(intent)
-        setContent { GenesisTheme { GenesisApp() } }
+        setContent { AurumTheme { AurumApp() } }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -173,17 +181,17 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * DEBUG-ONLY hook for the CI emulator gate: forces a re-check of BOTH the
-     * remote catalog and the remote config (same as the "Refresh music" button).
-     * Optional intent extras "catalog_url" / "config_url" redirect the fetch at
-     * a test server (the gate uses a local one via adb reverse) — production
-     * code paths are otherwise identical. Release builds ignore it entirely.
+     * DEBUG-ONLY hook for the CI emulator gate: forces a re-check of the
+     * remote catalog (same as the "Refresh music" button). The remote
+     * look-and-feel path is gone, so only the catalog refreshes here.
+     * Optional intent extra "catalog_url" redirects the fetch at a test
+     * server (the gate uses a local one via adb reverse) — production code
+     * paths are otherwise identical. Release builds ignore it entirely.
      */
     private fun handleTestRefresh(intent: Intent?) {
         if (!BuildConfig.DEBUG) return
         if (intent?.action != TEST_REFRESH_ACTION) return
         RemoteCatalog.checkForUpdates(this, intent.getStringExtra("catalog_url"))
-        RemoteConfig.checkForUpdates(this, intent.getStringExtra("config_url"))
         SnapshotStore.fetch(this, "test-refresh")
         Log.i("GenesisPlayer", "TEST_REFRESH fired")
     }
@@ -294,7 +302,7 @@ fun MediaController.sendGenesis(action: String, args: Bundle = Bundle()) {
 private data class Tab(val id: String, val name: String, val icon: ImageVector)
 
 @Composable
-fun GenesisApp() {
+fun AurumApp() {
     val controller = rememberPlayerController()
     val pulse = rememberPlayerPulse(controller)
     // Golden Phase 1: the app opens on the Crate (tab 0).
@@ -303,61 +311,60 @@ fun GenesisApp() {
     // swipe down on it collapses back). The "Now Playing" tab still exists for
     // direct access and the CI gate's visualizer proof.
     var showNowPlaying by remember { mutableStateOf(false) }
-    // Golden Phase 1 nav (GOLDEN_PLAN §9): Crate / Playlists / Apollo are
-    // pinned (like Apollo was, APOLLO-LIVE §1.1), then Now Playing and EQ.
-    // The remote config still drives the rest: any section id may rename its
-    // tab, and "nowplaying"/"eq" vanish when the config hides or omits them.
-    // Legacy "library"/"foryou" sections are absorbed — their content lives
-    // on in the Crate (For You cards) and Playlists (full library + drops).
-    val sections = com.apexforge.genesisplayer.ui.RemoteTheme.sections.value
-    val byId = sections.associateBy { it.id }
-    fun label(id: String, fallback: String) = byId[id]?.label?.takeIf { it.isNotBlank() } ?: fallback
-    val tabs = buildList {
-        add(Tab("crate", label("crate", "Crate"), Icons.Filled.LibraryMusic))
-        add(Tab("playlists", label("playlists", "Playlists"), Icons.AutoMirrored.Filled.QueueMusic))
-        add(Tab("apollo", label("apollo", "Apollo"), Icons.Filled.Psychology))
-        if (byId["nowplaying"]?.visible == true) {
-            add(Tab("nowplaying", label("nowplaying", "Now Playing"), Icons.Filled.PlayCircle))
-        }
-        if (byId["eq"]?.visible == true) add(Tab("eq", label("eq", "EQ"), Icons.Filled.GraphicEq))
-    }
+    // Aurum Deep Space: FIXED tab bar — Crate / Playlists / Apollo / Now
+    // Playing / EQ, always visible, fixed labels. No remote-driven sections.
+    val tabs = listOf(
+        Tab("crate", "Crate", Icons.Filled.LibraryMusic),
+        Tab("playlists", "Playlists", Icons.AutoMirrored.Filled.QueueMusic),
+        Tab("apollo", "Apollo", Icons.Filled.Psychology),
+        Tab("nowplaying", "Now Playing", Icons.Filled.PlayCircle),
+        Tab("eq", "EQ", Icons.Filled.GraphicEq)
+    )
     val safeTab = tab.coerceIn(tabs.indices)
     if (safeTab != tab) tab = safeTab
     Box(Modifier.fillMaxSize()) {
-        Scaffold(
-            bottomBar = {
-                // BRKN wave 1: persistent mini-player above the nav bar on
-                // every tab. Hidden until something has actually played.
-                Column {
-                    MiniPlayerBar(controller = controller, onOpen = { showNowPlaying = true })
-                    NavigationBar(containerColor = com.apexforge.genesisplayer.ui.SurfaceDark) {
-                        tabs.forEachIndexed { i, t ->
-                            NavigationBarItem(
-                                selected = tab == i,
-                                onClick = { tab = i },
-                                icon = { Icon(t.icon, contentDescription = t.name) },
-                                label = { Text(t.name) },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = com.apexforge.genesisplayer.ui.EmberOrange,
-                                    selectedTextColor = com.apexforge.genesisplayer.ui.EmberOrange,
-                                    indicatorColor = com.apexforge.genesisplayer.ui.CardDark
+        // Deep Space backdrop behind everything: SpaceBlack -> DeepIndigo.
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(DeepSpaceColors.backgroundBrush())
+        ) {
+            Scaffold(
+                containerColor = Color.Transparent,
+                bottomBar = {
+                    // BRKN wave 1: persistent mini-player above the nav bar on
+                    // every tab. Hidden until something has actually played.
+                    Column {
+                        MiniPlayerBar(controller = controller, onOpen = { showNowPlaying = true })
+                        NavigationBar(containerColor = SurfaceDark) {
+                            tabs.forEachIndexed { i, t ->
+                                NavigationBarItem(
+                                    selected = tab == i,
+                                    onClick = { tab = i },
+                                    icon = { Icon(t.icon, contentDescription = t.name) },
+                                    label = { Text(t.name) },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = DeepSpaceColors.Gold,
+                                        selectedTextColor = DeepSpaceColors.Gold,
+                                        indicatorColor = CardDark
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
-            }
-        ) { pad ->
-            when (tabs[tab].id) {
-                "crate" -> CrateScreen(
-                    controller, pulse,
-                    onAskApollo = { tab = tabs.indexOfFirst { it.id == "apollo" } },
-                    modifier = Modifier.padding(pad)
-                )
-                "playlists" -> PlaylistsScreen(controller, pulse, Modifier.padding(pad))
-                "nowplaying" -> DeepSpaceNowPlaying(controller, modifier = Modifier.padding(pad))
-                "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
-                "eq" -> EqScreen(Modifier.padding(pad))
+            ) { pad ->
+                when (tabs[tab].id) {
+                    "crate" -> CrateScreen(
+                        controller, pulse,
+                        onAskApollo = { tab = tabs.indexOfFirst { it.id == "apollo" } },
+                        modifier = Modifier.padding(pad)
+                    )
+                    "playlists" -> PlaylistsScreen(controller, pulse, Modifier.padding(pad))
+                    "nowplaying" -> DeepSpaceNowPlaying(controller, modifier = Modifier.padding(pad))
+                    "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
+                    "eq" -> EqScreen(Modifier.padding(pad))
+                }
             }
         }
         // Full-screen overlay above everything; swipe down collapses it.

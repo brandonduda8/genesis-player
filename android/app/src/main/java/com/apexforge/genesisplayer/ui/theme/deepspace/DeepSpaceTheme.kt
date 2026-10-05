@@ -2,7 +2,6 @@ package com.apexforge.genesisplayer.ui.theme.deepspace
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.apexforge.genesisplayer.ui.PhoenixGold
 
 /**
  * W2 — Deep Space palette. The observatory-dark foundation of AURUM.
@@ -14,10 +13,11 @@ object DeepSpaceColors {
     val SpaceBlack: Color = Color(0xFF060714)
     val DeepIndigo: Color = Color(0xFF1B1340)
     /**
-     * Brand gold — the live Genesis palette gold, so the theme follows
-     * remote-config palette swaps instead of hard-coding a hex.
+     * Brand gold — hard-coded. It must NEVER follow a remote-config palette
+     * swap again (that was the firewall breach: remote config repainted the
+     * app at launch).
      */
-    val Gold: Color = PhoenixGold
+    val Gold: Color = Color(0xFFF5B942)
     val Starlight: Color = Color(0xFFFFFFFF)
     val StarlightDim: Color = Color(0xB3FFFFFF)
 

@@ -4,10 +4,11 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
 
-/** Live theme palette. Defaults = the bundled Ember / Genesis quantum-fire look. */
+/** Fixed theme palette: Aurum Deep Space. Immutable by construction — the
+ * remote look-and-feel mutation path no longer exists (2026-10-05). */
 data class ThemePalette(
     val background: Color,
     val surface: Color,
@@ -28,43 +29,51 @@ data class AppLabels(
     val refreshLabel: String
 )
 
+/** A Compose State that never changes. Keeps `.value` reads in existing
+ * screens compiling while guaranteeing no mutation path exists. */
+private class FixedState<T>(override val value: T) : State<T>
+
 /**
- * Remote look-and-feel state. Updated live by RemoteConfig when a newer
- * config.json is fetched; every read below happens inside @Composable
- * functions, so a palette swap recomposes the whole UI instantly.
+ * Fixed look-and-feel state (Aurum Deep Space rebuild, 2026-10-05).
+ * The remote-config application path is gone; these are plain vals.
+ * `.value` reads are preserved so screens outside the theme lane keep
+ * compiling (LibraryScreen, Golden), but there is no setter, no
+ * MutableState, and no writer anywhere in the codebase.
  */
 object RemoteTheme {
-    fun defaultPalette() = ThemePalette(
-        background = Color(0xFF0A0A0C),
-        surface = Color(0xFF141417),
-        card = Color(0xFF1B1B1F),
-        accent = Color(0xFFFF6A00),
-        gold = Color(0xFFF5B942),
-        text = Color(0xFFFFFFFF),
-        textDim = Color(0xFF9A9AA0),
-        ember = Color(0xFFFF6A00)
+    val palette: State<ThemePalette> = FixedState(
+        ThemePalette(
+            background = Color(0xFF060714),
+            surface = Color(0xFF1B1340),
+            card = Color(0xFF241B4D),
+            accent = Color(0xFFF5B942),
+            gold = Color(0xFFF5B942),
+            text = Color(0xFFFFFFFF),
+            textDim = Color(0xB3FFFFFF),
+            ember = Color(0xFFF5B942)
+        )
     )
 
-    fun defaultSections() = listOf(
+    val sections = listOf(
+        Section("crate", "Crate", true),
+        Section("playlists", "Playlists", true),
+        Section("apollo", "Apollo", true),
         Section("nowplaying", "Now Playing", true),
-        Section("library", "Library", true),
-        Section("foryou", "For You", true),
         Section("eq", "EQ", true)
     )
 
-    fun defaultLabels() = AppLabels(
-        appName = "BRKN Vibes",
-        libraryTitle = "Library",
-        librarySubtitle = "{count} tracks — streamed, never downloaded",
-        refreshLabel = "⟳ Refresh music"
+    val labels: State<AppLabels> = FixedState(
+        AppLabels(
+            appName = "Aurum",
+            libraryTitle = "Library",
+            librarySubtitle = "{count} tracks — streamed, never downloaded",
+            refreshLabel = "⟳ Refresh music"
+        )
     )
-
-    val palette = mutableStateOf(defaultPalette())
-    val sections = mutableStateOf(defaultSections())
-    val labels = mutableStateOf(defaultLabels())
 }
 
-// Legacy names kept so every screen keeps compiling; all read the live palette.
+// Legacy names kept so every screen keeps compiling; all read the FIXED
+// Deep Space palette. Accent is Gold now — no EmberOrange in the UI.
 val AshBlack: Color get() = RemoteTheme.palette.value.background
 val SurfaceDark: Color get() = RemoteTheme.palette.value.surface
 val CardDark: Color get() = RemoteTheme.palette.value.card
@@ -72,20 +81,19 @@ val EmberOrange: Color get() = RemoteTheme.palette.value.accent
 val PhoenixGold: Color get() = RemoteTheme.palette.value.gold
 val TextDim: Color get() = RemoteTheme.palette.value.textDim
 
+/** Aurum root theme: fixed Deep Space dark color scheme. */
 @Composable
-fun GenesisTheme(content: @Composable () -> Unit) {
-    val p = RemoteTheme.palette.value
+fun AurumTheme(content: @Composable () -> Unit) {
     val scheme = darkColorScheme(
-        primary = p.accent,
+        primary = Color(0xFFF5B942),
         onPrimary = Color.Black,
-        secondary = p.gold,
-        onSecondary = Color.Black,
-        background = p.background,
-        onBackground = p.text,
-        surface = p.surface,
-        onSurface = p.text,
-        surfaceVariant = p.card,
-        onSurfaceVariant = p.textDim
+        secondary = Color(0xFFF5B942),
+        background = Color(0xFF060714),
+        onBackground = Color(0xFFFFFFFF),
+        surface = Color(0xFF1B1340),
+        onSurface = Color(0xFFFFFFFF),
+        surfaceVariant = Color(0xFF241B4D),
+        onSurfaceVariant = Color(0xB3FFFFFF)
     )
     MaterialTheme(
         colorScheme = scheme,

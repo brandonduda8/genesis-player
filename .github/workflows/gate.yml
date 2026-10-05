@@ -11,7 +11,7 @@ name: player-gate
 
 on:
   push:
-    branches: [main]
+    branches: [main, golden-deep-space]
   workflow_dispatch:
 
 jobs:
@@ -340,7 +340,7 @@ jobs:
           done
           [ "$SC_PLAYING" = "1" ] || { echo "SOUNDCLOUD SHELF NEVER PLAYED"; adb logcat -d | grep "GenesisPlayer" | tail -30; exit 1; }
           echo "SOUNDCLOUD SHELF PROVEN: resolve -> signed stream -> position advancing"
-          echo "--- local test server: magenta-accent config + catalog at live+1 ---"
+          echo "--- local test server: hostile magenta config + catalog at live+1 ---"
           mkdir -p /tmp/remote_test
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" -o /tmp/remote_test/catalog.json
           curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/config.json" -o /tmp/remote_test/config.json
@@ -362,35 +362,47 @@ jobs:
           PYEOF
           )
           TEST_CAT_V=$(echo "$TEST_CAT_V" | awk '{print $1}')
-          TEST_CFG_V=$(python3 -c "import json; print(json.load(open('/tmp/remote_test/config.json'))['version'])")
-          echo "test files ready: catalog v$TEST_CAT_V, config v$TEST_CFG_V accent #FF00FF"
+          echo "test files ready: catalog v$TEST_CAT_V, hostile config accent #FF00FF"
           (cd /tmp/remote_test && nohup python3 -m http.server 18999 > /tmp/http_test.log 2>&1 & echo $! > /tmp/http_test.pid)
           sleep 2
           curl -s --max-time 10 "http://127.0.0.1:18999/config.json" | head -c 80; echo
           adb reverse tcp:18999 tcp:18999
-          echo "--- PHASE B: force refresh against the test server (same code path as Refresh button) ---"
+          echo "--- PHASE B: refresh against the test server — catalog applies, hostile theme MUST NOT ---"
+          echo "    (Aurum Deep Space rebuild: remote look-and-feel is dead. This phase"
+          echo "     proves a hostile #FF00FF config can no longer repaint the app.)"
           adb logcat -c
+          adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
+            -a com.apexforge.genesisplayer.TEST_REFRESH \
+            --es catalog_url "http://127.0.0.1:18999/catalog.json"
+          for i in $(seq 1 24); do
+            if adb logcat -d | grep -q "RemoteCatalog: applied version $TEST_CAT_V"; then break; fi
+            sleep 5
+          done
+          adb logcat -d | grep -q "RemoteCatalog: applied version $TEST_CAT_V" \
+            || { echo "CATALOG REFRESH NOT APPLIED"; exit 1; }
+          echo "CATALOG REFRESH PROVEN: catalog v$TEST_CAT_V applied"
+          echo "--- PHASE B2: hostile theme repaint attempt — must be ignored ---"
+          adb logcat -c
+          # The app never fetches remote look-and-feel, so the hostile config is
+          # never requested. Tripwire: the real apply path logs
+          # "RemoteConfig: applied version" — that line must NEVER appear.
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity \
             -a com.apexforge.genesisplayer.TEST_REFRESH \
             --es catalog_url "http://127.0.0.1:18999/catalog.json" \
             --es config_url "http://127.0.0.1:18999/config.json"
-          for i in $(seq 1 24); do
-            if adb logcat -d | grep -q "RemoteConfig: applied version $TEST_CFG_V" \
-               && adb logcat -d | grep -q "RemoteCatalog: applied version $TEST_CAT_V"; then break; fi
-            sleep 5
-          done
-          adb logcat -d | grep "RemoteConfig" | tail -5
-          adb logcat -d | grep -q "RemoteConfig: applied version $TEST_CFG_V accent=#FF00FF" \
-            || { echo "THEME CHANGE NOT APPLIED"; exit 1; }
-          adb logcat -d | grep -q "RemoteCatalog: applied version $TEST_CAT_V" \
-            || { echo "CATALOG REFRESH NOT APPLIED"; exit 1; }
-          echo "THEME CHANGE PROVEN: accent=#FF00FF applied live, no reinstall; catalog v$TEST_CAT_V applied"
+          sleep 15
+          if adb logcat -d | grep -q "RemoteConfig: applied version"; then
+            echo "HOSTILE REPAINT APPLIED — the dead path is alive. FAIL."
+            adb logcat -d | grep "RemoteConfig" | tail -10
+            exit 1
+          fi
+          echo "REPAINT-PROOF PROVEN: hostile #FF00FF config ignored, Deep Space intact"
           sleep 3
-          adb shell screencap -p /sdcard/player_magenta.png || true
-          adb pull /sdcard/player_magenta.png /tmp/player_magenta.png || true
-          [ -f /tmp/player_magenta.png ] || { echo "MAGENTA SCREENSHOT MISSING"; exit 1; }
-          python3 /tmp/anr_check.py /tmp/player_magenta.png \
-            || { echo "ANR-DIALOG PIXEL CHECK FAILED (magenta)"; exit 1; }
+          adb shell screencap -p /sdcard/player_deepspace_locked.png || true
+          adb pull /sdcard/player_deepspace_locked.png /tmp/player_deepspace_locked.png || true
+          [ -f /tmp/player_deepspace_locked.png ] || { echo "DEEPSPACE-LOCKED SCREENSHOT MISSING"; exit 1; }
+          python3 /tmp/anr_check.py /tmp/player_deepspace_locked.png \
+            || { echo "ANR-DIALOG PIXEL CHECK FAILED (deepspace-locked)"; exit 1; }
           adb reverse --remove tcp:18999 || true
           kill "$(cat /tmp/http_test.pid 2>/dev/null)" 2>/dev/null || true
           echo "--- PHASE C: airplane mode — launch must work from bundled/cached, no crash/ANR ---"
@@ -662,9 +674,9 @@ jobs:
           echo "--- W2: visualizer view present in the hierarchy (real view, content-desc proof) ---"
           adb shell uiautomator dump /sdcard/ui.xml > /dev/null
           adb pull /sdcard/ui.xml /tmp/ui_np.xml > /dev/null
-          grep -q 'content-desc="Ember visualizer"' /tmp/ui_np.xml \
+          grep -q 'content-desc="Deep Space visualizer"' /tmp/ui_np.xml \
             || {
-              echo "EMBER VISUALIZER VIEW NOT PRESENT"
+              echo "DEEP SPACE VISUALIZER VIEW NOT PRESENT"
               echo "--- W2 DIAG: dump stats ---"
               python3 - << 'PYEOF'
           import re, xml.etree.ElementTree as ET
@@ -935,7 +947,7 @@ jobs:
           sleep 1
           tap_exact "ASK APOLLO" || exit 1
           sleep 3
-          ui_has apollo "BRKN Vibes · your curator" || exit 1
+          ui_has apollo "Apollo · your curator" || exit 1
           shot apollo || exit 1
           echo "--- G3: Playlists — pick a world, drill in, back ---"
           tap_exact "Playlists" || exit 1
@@ -1008,12 +1020,12 @@ jobs:
           name: gate-screenshot
           path: /tmp/player_nowplaying.png
 
-      - name: Upload magenta-theme screenshot
+      - name: Upload Deep Space lock-in screenshot
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: gate-screenshot-magenta
-          path: /tmp/player_magenta.png
+          name: gate-screenshot-deepspace-locked
+          path: /tmp/player_deepspace_locked.png
 
       - name: Upload offline-fallback screenshot
         if: always()

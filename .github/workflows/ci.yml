@@ -16,7 +16,7 @@ name: CI
 
 on:
   push:
-    branches: [main, aurum-rebuild]
+    branches: [main, aurum-rebuild, golden-deep-space]
   pull_request:
     branches: [main]
   workflow_dispatch:
