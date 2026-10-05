@@ -34,5 +34,26 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
+
+        <!-- OACP v0.3: capability discovery for voice assistants (Alliance verdict 2026-10-05).
+             Authority must end in .oacp; serves /manifest (oacp.json) and /context (OACP.md). -->
+        <provider
+            android:name=".oacp.OacpMetadataProvider"
+            android:authorities="com.apexforge.genesisplayer.oacp"
+            android:exported="true" />
+
+        <!-- OACP v0.3: playback action endpoint. Playback-only (sensitivity low). -->
+        <receiver
+            android:name=".oacp.OacpActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.apexforge.genesisplayer.oacp.ACTION_RESUME" />
+                <action android:name="com.apexforge.genesisplayer.oacp.ACTION_PAUSE" />
+                <action android:name="com.apexforge.genesisplayer.oacp.ACTION_NEXT" />
+                <action android:name="com.apexforge.genesisplayer.oacp.ACTION_PREVIOUS" />
+                <action android:name="com.apexforge.genesisplayer.oacp.ACTION_PLAY_QUERY" />
+                <action android:name="com.apexforge.genesisplayer.oacp.ACTION_NOW_PLAYING" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
