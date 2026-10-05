@@ -41,6 +41,13 @@ class OacpActionReceiver : BroadcastReceiver() {
         const val EXTRA_REQUEST_ID = "org.oacp.extra.REQUEST_ID"
         const val RESULT_ACTION = "org.oacp.ACTION_RESULT"
         const val EXTRA_RESULT = "org.oacp.extra.RESULT"
+        // Namespaced keys the Hark voice assistant's result receiver reads
+        // (HarkPlatformPlugin: org.oacp.extra.{STATUS,CAPABILITY_ID,MESSAGE,ERROR,SOURCE_PACKAGE}).
+        const val EXTRA_STATUS = "org.oacp.extra.STATUS"
+        const val EXTRA_CAPABILITY_ID = "org.oacp.extra.CAPABILITY_ID"
+        const val EXTRA_MESSAGE = "org.oacp.extra.MESSAGE"
+        const val EXTRA_ERROR = "org.oacp.extra.ERROR"
+        const val EXTRA_SOURCE_PACKAGE = "org.oacp.extra.SOURCE_PACKAGE"
 
         // PlayerService custom session command (see PlayerService.ACTION_PLAY_IDS)
         private const val CMD_PLAY_IDS = "GENESIS_PLAY_IDS"
@@ -188,10 +195,15 @@ class OacpActionReceiver : BroadcastReceiver() {
         val out = Intent(RESULT_ACTION)
             .putExtra(EXTRA_REQUEST_ID, requestId)
             .putExtra(EXTRA_RESULT, envelope.toString())
+            .putExtra(EXTRA_STATUS, status)
+            .putExtra(EXTRA_CAPABILITY_ID, capabilityId)
+            .putExtra(EXTRA_MESSAGE, message)
+            .putExtra(EXTRA_SOURCE_PACKAGE, context.packageName)
             .putExtra("requestId", requestId)
             .putExtra("status", status)
             .putExtra("capabilityId", capabilityId)
             .putExtra("message", message)
+        if (errorMessage != null) out.putExtra(EXTRA_ERROR, errorMessage)
         context.sendBroadcast(out)
         Log.i(TAG, "OACP result: $capabilityId -> $status")
     }
