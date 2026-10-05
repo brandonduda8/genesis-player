@@ -157,6 +157,34 @@ jobs:
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
           APK=android/app/build/outputs/apk/debug/app-debug.apk
+          echo "--- ANR-dialog pixel heuristic (shared by every later step) ---"
+          python3 -c "import PIL" 2>/dev/null || pip install --quiet pillow
+          cat > /tmp/anr_check.py << 'PYEOF'
+          import sys
+          from PIL import Image
+          def anr_free(path):
+              img = Image.open(path).convert("RGB")
+              w, h = img.size
+              y0, y1 = int(h * 0.40), int(h * 0.60)  # middle band
+              px = img.load()
+              total = bright_neutral = 0
+              for y in range(y0, y1, 3):
+                  for x in range(0, w, 3):
+                      r, g, b = px[x, y]
+                      total += 1
+                      # neutral-bright = low saturation + bright: an ANR/system
+                      # dialog is light gray/white; our Ember UI is near-black.
+                      if max(r, g, b) - min(r, g, b) < 30 and min(r, g, b) > 120:
+                          bright_neutral += 1
+              frac = bright_neutral / max(total, 1)
+              print(f"{path}: middle-band neutral-bright fraction = {frac:.3f}")
+              return frac <= 0.25
+          ok = True
+          for p in sys.argv[1:]:
+              if not anr_free(p):
+                  print(f"ANR-DIALOG SUSPECTED in {p}"); ok = False
+          sys.exit(0 if ok else 1)
+          PYEOF
           echo "--- live catalog track count (empty-catalog contract) ---"
           LIVE_COUNT=$(curl -s --max-time 30 "https://raw.githubusercontent.com/brandonduda8/genesis-catalog/main/catalog.json" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
           echo "live track_count=$LIVE_COUNT"
@@ -270,34 +298,6 @@ jobs:
           echo "GATE PASS: no crash/ANR"
           adb shell screencap -p /sdcard/player_nowplaying.png || true
           adb pull /sdcard/player_nowplaying.png /tmp/player_nowplaying.png || true
-          echo "--- ANR-dialog pixel heuristic on the screenshot ---"
-          python3 -c "import PIL" 2>/dev/null || pip install --quiet pillow
-          cat > /tmp/anr_check.py << 'PYEOF'
-          import sys
-          from PIL import Image
-          def anr_free(path):
-              img = Image.open(path).convert("RGB")
-              w, h = img.size
-              y0, y1 = int(h * 0.40), int(h * 0.60)  # middle band
-              px = img.load()
-              total = bright_neutral = 0
-              for y in range(y0, y1, 3):
-                  for x in range(0, w, 3):
-                      r, g, b = px[x, y]
-                      total += 1
-                      # neutral-bright = low saturation + bright: an ANR/system
-                      # dialog is light gray/white; our Ember UI is near-black.
-                      if max(r, g, b) - min(r, g, b) < 30 and min(r, g, b) > 120:
-                          bright_neutral += 1
-              frac = bright_neutral / max(total, 1)
-              print(f"{path}: middle-band neutral-bright fraction = {frac:.3f}")
-              return frac <= 0.25
-          ok = True
-          for p in sys.argv[1:]:
-              if not anr_free(p):
-                  print(f"ANR-DIALOG SUSPECTED in {p}"); ok = False
-          sys.exit(0 if ok else 1)
-          PYEOF
           [ -f /tmp/player_nowplaying.png ] || { echo "NOWPLAYING SCREENSHOT MISSING"; exit 1; }
           python3 /tmp/anr_check.py /tmp/player_nowplaying.png \
             || { echo "ANR-DIALOG PIXEL CHECK FAILED (nowplaying)"; exit 1; }
@@ -486,6 +486,37 @@ jobs:
           LIVE_COUNT=$(echo "$LIVE_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['track_count'])")
           LIVE_VERSION=$(echo "$LIVE_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin)['version'])")
           echo "live catalog version=$LIVE_VERSION track_count=$LIVE_COUNT"
+          cat > /tmp/tap_exact.sh << 'SHEOF'
+          tap_exact() {  # $1 = exact text or content-desc to tap
+            adb shell uiautomator dump /sdcard/ui_tap.xml > /dev/null 2>&1
+            adb pull /sdcard/ui_tap.xml /tmp/ui_tap.xml > /dev/null 2>&1
+            local xy
+            xy=$(python3 - "$1" << 'PYEOF'
+          import sys, re, xml.etree.ElementTree as ET
+          want = sys.argv[1]
+          try:
+              root = ET.parse('/tmp/ui_tap.xml').getroot()
+          except Exception:
+              print("PARSEFAIL"); sys.exit(0)
+          for n in root.iter('node'):
+              if want in ((n.get('text') or '').strip(), (n.get('content-desc') or '').strip()):
+                  m = re.match(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]', n.get('bounds') or '')
+                  if m:
+                      x1, y1, x2, y2 = map(int, m.groups())
+                      print(str((x1 + x2) // 2) + ' ' + str((y1 + y2) // 2))
+                      sys.exit(0)
+          print("NOTFOUND")
+          PYEOF
+            )
+            if [ "$xy" = "NOTFOUND" ] || [ "$xy" = "PARSEFAIL" ] || [ -z "$xy" ]; then
+              echo "TAP TARGET NOT FOUND: $1"; return 1
+            fi
+            echo "tapping '$1' at $xy"
+            # shellcheck disable=SC2086
+            adb shell input tap $xy
+          }
+          SHEOF
+          . /tmp/tap_exact.sh
           adb shell pm clear com.apexforge.genesisplayer
           adb logcat -c
           adb shell am start -n com.apexforge.genesisplayer/.MainActivity
@@ -533,37 +564,6 @@ jobs:
           sleep 3
           # Golden Phase 1: the app now opens on the Crate, so open the
           # Now Playing tab first; the Like/Dislike assertion is unchanged.
-          cat > /tmp/tap_exact.sh << 'SHEOF'
-          tap_exact() {  # $1 = exact text or content-desc to tap
-            adb shell uiautomator dump /sdcard/ui_tap.xml > /dev/null 2>&1
-            adb pull /sdcard/ui_tap.xml /tmp/ui_tap.xml > /dev/null 2>&1
-            local xy
-            xy=$(python3 - "$1" << 'PYEOF'
-          import sys, re, xml.etree.ElementTree as ET
-          want = sys.argv[1]
-          try:
-              root = ET.parse('/tmp/ui_tap.xml').getroot()
-          except Exception:
-              print("PARSEFAIL"); sys.exit(0)
-          for n in root.iter('node'):
-              if want in ((n.get('text') or '').strip(), (n.get('content-desc') or '').strip()):
-                  m = re.match(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]', n.get('bounds') or '')
-                  if m:
-                      x1, y1, x2, y2 = map(int, m.groups())
-                      print(str((x1 + x2) // 2) + ' ' + str((y1 + y2) // 2))
-                      sys.exit(0)
-          print("NOTFOUND")
-          PYEOF
-            )
-            if [ "$xy" = "NOTFOUND" ] || [ "$xy" = "PARSEFAIL" ] || [ -z "$xy" ]; then
-              echo "TAP TARGET NOT FOUND: $1"; return 1
-            fi
-            echo "tapping '$1' at $xy"
-            # shellcheck disable=SC2086
-            adb shell input tap $xy
-          }
-          SHEOF
-          . /tmp/tap_exact.sh
           tap_exact "Now Playing" || { echo "NOW PLAYING TAB NOT FOUND (FB2)"; exit 1; }
           sleep 3
           adb shell uiautomator dump /sdcard/ui.xml > /dev/null
