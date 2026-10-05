@@ -663,7 +663,28 @@ jobs:
           adb shell uiautomator dump /sdcard/ui.xml > /dev/null
           adb pull /sdcard/ui.xml /tmp/ui_np.xml > /dev/null
           grep -q 'content-desc="Ember visualizer"' /tmp/ui_np.xml \
-            || { echo "EMBER VISUALIZER VIEW NOT PRESENT"; exit 1; }
+            || {
+              echo "EMBER VISUALIZER VIEW NOT PRESENT"
+              echo "--- W2 DIAG: dump stats ---"
+              python3 - << 'PYEOF'
+          import re, xml.etree.ElementTree as ET
+          try:
+              root = ET.parse('/tmp/ui_np.xml').getroot()
+              nodes = list(root.iter('node'))
+              print("W2-DIAG node count: %d" % len(nodes))
+              cds = sorted({n.get('content-desc') for n in nodes if n.get('content-desc')})
+              print("W2-DIAG content-descs (%d):" % len(cds))
+              for cd in cds[:60]:
+                  print("  cd=%r" % cd[:80])
+              texts = [n.get('text') for n in nodes if n.get('text') and 'Now Playing' in n.get('text')]
+              print("W2-DIAG 'Now Playing' text nodes: %d" % len(texts))
+              pkgs = {n.get('package') for n in nodes if n.get('package')}
+              print("W2-DIAG packages: %s" % sorted(pkgs))
+          except Exception as e:
+              print("W2-DIAG parse failed: %s" % e)
+          PYEOF
+              exit 1
+            }
           echo "VISUALIZER VIEW PRESENT"
           adb shell screencap -p /sdcard/brkn_nowplaying.png || true
           adb pull /sdcard/brkn_nowplaying.png /tmp/brkn_nowplaying.png || true
