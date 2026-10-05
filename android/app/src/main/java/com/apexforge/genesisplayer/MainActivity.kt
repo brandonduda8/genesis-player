@@ -44,7 +44,7 @@ import com.apexforge.genesisplayer.ui.CrateScreen
 import com.apexforge.genesisplayer.ui.EqScreen
 import com.apexforge.genesisplayer.ui.GenesisTheme
 import com.apexforge.genesisplayer.ui.MiniPlayerBar
-import com.apexforge.genesisplayer.ui.NowPlayingScreen
+import com.apexforge.genesisplayer.ui.theme.deepspace.DeepSpaceNowPlaying
 import com.apexforge.genesisplayer.ui.PlaylistsScreen
 import com.apexforge.genesisplayer.ui.ApolloScreen
 import com.apexforge.genesisplayer.ui.rememberPlayerPulse
@@ -355,7 +355,7 @@ fun GenesisApp() {
                     modifier = Modifier.padding(pad)
                 )
                 "playlists" -> PlaylistsScreen(controller, pulse, Modifier.padding(pad))
-                "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
+                "nowplaying" -> DeepSpaceNowPlaying(controller, modifier = Modifier.padding(pad))
                 "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
                 "eq" -> EqScreen(Modifier.padding(pad))
             }
@@ -363,7 +363,7 @@ fun GenesisApp() {
         // Full-screen overlay above everything; swipe down collapses it.
         if (showNowPlaying) {
             Box(Modifier.fillMaxSize()) {
-                NowPlayingScreen(
+                DeepSpaceNowPlaying(
                     controller = controller,
                     onCollapse = { showNowPlaying = false }
                 )

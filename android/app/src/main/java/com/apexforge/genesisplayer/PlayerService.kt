@@ -34,6 +34,7 @@ import com.apexforge.genesisplayer.data.CrossfadeMath
 import com.apexforge.genesisplayer.data.HistoryStore
 import com.apexforge.genesisplayer.data.HistorySync
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.ui.theme.deepspace.FftAudioTap
 import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.data.SoundCloudResolver
@@ -104,7 +105,7 @@ class PlayerService : MediaSessionService() {
             ): AudioSink? {
                 return DefaultAudioSink.Builder(context)
                     .setEnableFloatOutput(true)
-                    .setAudioProcessors(arrayOf<AudioProcessor>(dsp))
+                    .setAudioProcessors(arrayOf<AudioProcessor>(dsp, FftAudioTap))
                     .build()
             }
         }
