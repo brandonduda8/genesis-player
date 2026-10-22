@@ -1,0 +1,9 @@
+# Navidrome adapter and production migration plan
+
+- Own the UI and streaming *experience* in AURUM PULSE. Navidrome remains separate GPLv3 personal-media backend. Respect GPL license obligations if modifying/redistributing it; do not claim the entire third-party product as Genesis code.
+- Deploy **only** after approval to a machine with verified memory headroom, owned audio and restorable persistent volume. Never install on the existing OpenClaw gateway or expose 4533 publicly by default.
+- Approved production pattern: navidrome container with read-only `music` volume, writable dedicated `data` volume, pinned release digest, non-root user, internal network, Genesis authenticated ingress, isolated service credentials, TLS, no public admin, backup+restore rehearsal.
+- This prototype's `server/subsonic.py` uses a per-request salted OpenSubsonic token over HTTPS or local loopback, allows only `search3` and `stream` (+ safe ping/getSong reservation), disables redirects, caps JSON and avoids exposing credentials in browser URLs.
+- The preview server serves **only on 127.0.0.1** and has no login. It is not a production service. Do not change bind to 0.0.0.0, enable Tailscale Serve, or put behind a domain without real server-side identity, CSRF/session/token review, rate limits and logging/privacy policy.
+- Validate byte range, seek, artwork authorization, token expiration, multiple listeners, audio interruption, buffering, and codec transcoding on real target host. Source bitrate may be self-reported and must not be labeled VERIFIED_LOSSLESS by this adapter.
+- Future Nextcloud/Jellyfin/Symfonium adapters are optional. They must supply exact source rights, test receipts and playback capability. Spotify/TIDAL streaming catalogs require contracts/entitlements; Navidrome does not confer them.
