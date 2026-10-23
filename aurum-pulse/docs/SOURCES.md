@@ -14,3 +14,11 @@
 - TIDAL UX comparison: study public user-facing Daily Discovery/My Mix features only; do NOT clone copyrighted source code or privileged APIs.
 
 Everything labeled code-only or owner-reported must be revalidated against the actual installed Android APK and production host before claiming live operation. Sources may change after audit date.
+
+
+## On-demand artist ancestry (Aurum Roots)
+- MusicBrainz API docs (noncommercial free, User-Agent and 1 request/second limit): https://musicbrainz.org/doc/MusicBrainz_API
+- MusicBrainz artist relationships: https://musicbrainz.org/relationships/artist-artist
+- Wikidata property P737, influenced by: https://www.wikidata.org/wiki/Property:P737
+- ListenBrainz artist radio metadata: https://listenbrainz.readthedocs.io/en/latest/users/api/core.html
+These are supported upstream docs, not proof that an individual artist has complete influence metadata or that a record is streamable.

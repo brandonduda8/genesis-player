@@ -34,3 +34,16 @@ A prototype having a vibrant interface is NOT production/enterprise acceptance. 
 - **PASSED:** 27 JS pure-engine tests; 26 Python local/adapter tests; inline Chromium rendering smoke for welcome/mobile/Sound Lab without page exceptions.
 - **NOT VERIFIED:** HTTP-network Chromium e2e due to sandbox navigation policy; real user phone sound, production server, Navidrome auth+playback, legal stream access, old DSP branch build, private login, audio quality measurement, native onboarding, Ruflo agent execution.
 - **RELEASE VERDICT: NO-GO production.** Next stage requires G0 and Android G1 before announcing 10/10.
+
+
+## Artist-first onboarding and Aurum Roots additional gates (2026-10-23)
+- [x] Four-step browser onboarding; 2–5 favorite artists; editable mood selection and profile export; synthetically tested DOM flow.
+- [x] Source-specific `documented-influence`, `documented-relationship`, `algorithmic-similar` provenance; no unverified claims of musical inspiration or guaranteed playback.
+- [x] Backend uses strict HTTPS public metadata host allowlist, explicit user-triggered requests, bounded responses, no redirect, cache, MusicBrainz pacing, structured errors.
+- [x] Offline mocked metadata tests plus mobile/desktop offline Chromium smoke (no JavaScript errors).
+- [ ] Real third-party MusicBrainz + Wikidata + ListenBrainz data integration verified on deployment-approved host with rate-limit/terms review.
+- [ ] Independent authenticated threat/privacy review, commercial API rights, cross-device sync and identity disambiguation.
+- [ ] Authorized catalog and audio entitlements integrated; real phone audition/discovery metrics and user acceptance.
+- [ ] Native Android Aurum updated with same onboarding and Roots feature; not installed or tested on user's phone.
+
+**No source-data relationship or local fixture test establishes artist inspiration as objectively true, or establishes licensed playback.**

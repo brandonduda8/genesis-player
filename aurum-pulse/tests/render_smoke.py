@@ -27,8 +27,27 @@ with sync_playwright() as P:
   page.screenshot(path=str(ROOT/f'aurum-pulse-{name}.png'),full_page=True)
   if name=='desktop':
    assert page.locator('#welcome').is_visible()
-   page.locator('#next-step').click();page.locator('#next-step').click()
+   page.locator('#next-step').click()
+   page.screenshot(path=str(ROOT/'aurum-pulse-pick-artists.png'),full_page=True)
+   page.locator('.suggestion-chip').filter(has_text='Yung Gravy').click()
+   page.locator('.suggestion-chip').filter(has_text='Mac Miller').click()
+   assert '2 of 5' in page.locator('#welcome-content').inner_text()
+   page.locator('#next-step').click() # music moods
+   page.locator('#next-step').click() # final name
    page.locator('#listener-name').fill('Listener');page.locator('#next-step').click()
+   assert page.locator('#discover').get_attribute('class')=='view active'
+   assert page.locator('.artist-pill').filter(has_text='Yung Gravy').is_visible()
+   page.screenshot(path=str(ROOT/'aurum-pulse-roots.png'),full_page=True)
+   # Synthetic metadata response for UI testing ONLY: not a claim about real artists.
+   page.evaluate("""window.fetch=async (url)=>{if(String(url).startsWith('/api/roots/artist'))return {
+      ok:true,json:async()=>({status:'SOURCE_LINKED_RESULTS',query:'Yung Gravy',
+      artist:{name:'Yung Gravy',mbid:'00000000-0000-0000-0000-000000000001',tags:['test'],source:'https://musicbrainz.org/artist/00000000-0000-0000-0000-000000000001'},
+      connections:[{artist:'Test Inspiration',kind:'documented-influence',source:'Mock fixture',why:'Synthetic fixture; not a real influence.',sourceUrl:'https://www.wikidata.org/wiki/Q1',playable:false}],
+      explanation:'Test fixture only',partial:[],playable:false})};return {ok:false,json:async()=>({error:'TEST_OFFLINE'})};};""")
+   page.locator('#roots-favorites .artist-pill').filter(has_text='Yung Gravy').click()
+   page.wait_for_timeout(120)
+   assert 'Test Inspiration' in page.locator('#roots-results').inner_text(), 'Renders source-linked mock relationship'
+   assert 'Synthetic fixture' in page.locator('#roots-results').inner_text()
    assert not page.locator('#welcome').is_visible()
    page.locator('[data-view="sound"]').click();page.wait_for_timeout(150)
    page.locator('#bass').fill('4');assert page.locator('#bass-value').inner_text()=='+4 dB'

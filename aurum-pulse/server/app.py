@@ -17,6 +17,12 @@ try:
 except ImportError:
     from subsonic import Config, ConfigError, Subsonic, SAFE_ID, UpstreamError
 
+try:
+    from .roots import RootsService, RootsError
+except ImportError:
+    from roots import RootsService, RootsError
+
+ROOTS = RootsService()
 WEB_ROOT=Path(__file__).resolve().parent.parent/'web'
 
 class Handler(SimpleHTTPRequestHandler):
@@ -55,7 +61,19 @@ class Handler(SimpleHTTPRequestHandler):
                 state='BLOCKED_CREDENTIALS'
             self.json_response({'service':'aurum-pulse','version':'0.1.0','mode':'LOOPBACK_PREVIEW',
                  'navidrome':state,'catalog':'ORIGINAL_GOLD_BLOCKED_RECOVERY',
+                 'roots':'ON_DEMAND_METADATA_NO_AUDIO',
                  'message':'Local audio playback ready; Navidrome live playback is not automatically implied.'})
+            return
+        if path=='/api/roots/artist':
+            args=parse_qs(parts.query,keep_blank_values=True)
+            artist=args.get('q',[''])[0]
+            try:
+                self.json_response(ROOTS.explore(artist))
+            except ValueError:
+                self.json_response({'error':'INVALID_ARTIST_NAME'},400)
+            except RootsError:
+                self.json_response({'error':'METADATA_UPSTREAM_UNAVAILABLE',
+                    'message':'Artist roots are temporarily unavailable. Saved favorite artists remain on this device.'},503)
             return
         if path=='/api/navidrome/search':
             try:

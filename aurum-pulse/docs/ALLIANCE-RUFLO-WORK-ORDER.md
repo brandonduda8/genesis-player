@@ -29,3 +29,14 @@ Present the full work order in issue #9 and explicit recipient mailboxes where a
 
 ## Completion bar
 One phone install accepted by owner, native player+web/service synchronized only through authenticated APIs, actual Navidrome playback or clearly blocked, explainable approved Gold, quality badges truly measured, no filler, no broken playlists, tested mobile audio route, credential security, backup/rollback, and one independent repeatable QA report. Call 10/10 only when measured quality & satisfaction gates actually pass.
+
+
+## New owner requirement — AURUM ROOTS (2026-10-23)
+The user clarified the core product: **pick a few favorite artists at onboarding and discover the artists who influenced them, their collaborations, roots, descendants and surprising adjacent sounds**, with practical access to good music even when a streaming subscription lapses. This is more important than generic genre cards.
+
+**Claude / Ruflo coding specialist:** review the real `aurum-pulse/web` favorite-artist onboarding and `server/roots.py` source relationship adapter. Fix real defects in a narrow draft patch, add identity disambiguation and CI tests, and preserve the existing Android Aurum Media3/DSP repairs in issue #8.
+**Zane / data engineer:** independently confirm MusicBrainz API/Wikidata P737/ListenBrainz radio rate limits, entitlements, caching, legal source search and server allocations. Do not assume any streaming catalog is free.
+**Aadity / music researcher:** curate an owner-reviewable positive seed list; identify roots and successors through verifiable artist sources, and choose ten top candidate songs each with a reason and legal listen path. No auto-append to Gold.
+**Muse / Apollo / curator:** design progressive taste learning that uses repeated skips, favorites, manual exclusions, and artist graph hops; disclose recommendation uncertainty.
+**Guardian + Astra / QA:** inspect SSRF/CSP/HTTPS, privacy, commercial licensing and false-influence assertions; use synthetic fixture tests, independently verify one real pilot family tree before claiming accuracy.
+**Swarm/Ruflo caution:** coordinate via existing Genesis mission contract; tasks staged in a GitHub draft PR are not evidence an agent received or executed them. No installs, deployments, merges, spend or extra host permissions authorized.

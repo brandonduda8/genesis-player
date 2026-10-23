@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {MODES,PRESETS,BASE_PROFILE,clean,songKey,artistKey,isBlocked,accessibleQueue,filterTracks,safeProfile,qualityLabel,clampDb,percent,describeService} from '../web/engine.mjs';
+import {MODES,FAVORITE_SUGGESTIONS,PRESETS,BASE_PROFILE,clean,songKey,artistKey,isBlocked,accessibleQueue,filterTracks,safeProfile,validateFavoriteArtist,normalizedFavorites,qualityLabel,clampDb,percent,describeService} from '../web/engine.mjs';
 const make=(artist,title,playable=true)=>({artist,title,playable});
 test('4 mood lanes and curated seeds exist',()=>{assert.equal(MODES.length,4);for(const x of MODES)assert.ok(x.seeds.length>=3)});
 test('profile starts un-onboarded',()=>assert.equal(BASE_PROFILE().onboarded,false));
@@ -11,7 +11,7 @@ test('song exclusion works across case',()=>assert.equal(isBlocked(make('Doobie'
 test('unrelated music survives blocks',()=>assert.equal(isBlocked(make('Doobie','Track'),[artistKey('MGK')]),false));
 test('excluded songs never appear in queue',()=>{const t=[make('A','Love'),make('B','Hate'),make('C','Unplayed',false)];assert.deepEqual(accessibleQueue(t,[songKey('B','Hate')]).map(t=>t.artist),['A']);});
 test('search respects exclusions',()=>{const t=[make('B','Song'),make('A','Song')];assert.deepEqual(filterTracks(t,'song',[artistKey('B')]).map(t=>t.artist),['A']);});
-test('malformed profile restored safely',()=>assert.equal(safeProfile(null).schema,1));
+test('malformed profile restored safely',()=>assert.equal(safeProfile(null).schema,2));
 test('unknown modes denied',()=>assert.deepEqual(safeProfile({modes:['nonsense','rage']}).modes,['rage']));
 test('duplicate modes removed',()=>assert.deepEqual(safeProfile({modes:['rage','rage']}).modes,['rage']));
 test('unsafe corrupted preferences discarded',()=>assert.deepEqual(safeProfile({blocks:[{},'song:x|y','nonsense']}).blocks,['song:x|y']));
@@ -28,3 +28,14 @@ test('EQ >= -6dB',()=>assert.equal(clampDb(-100),-6));
 test('volume percentage clamps',()=>assert.equal(percent(300),100));
 test('unknown service label does not become connected',()=>assert.equal(describeService('TRUST_ME'),'UNKNOWN'));
 test('unknown profile cannot self-assert onboarded',()=>assert.equal(safeProfile({onboarded:'true'}).onboarded,false));
+
+// AURUM ROOTS: personal artist selections stay private, normalized and portable.
+test('artist suggestions include energetic and emotional anchors',()=>{assert.ok(FAVORITE_SUGGESTIONS.includes('Yung Gravy'));assert.ok(FAVORITE_SUGGESTIONS.includes('Mac Miller'));});
+test('empty profile starts with no preselected artist',()=>assert.deepEqual(BASE_PROFILE().favoriteArtists,[]));
+test('legacy v1 profile safely migrates to v2',()=>{const p=safeProfile({schema:1,onboarded:true,nickname:'Pilot'});assert.equal(p.schema,2);assert.deepEqual(p.favoriteArtists,[]);assert.equal(p.nickname,'Pilot');});
+test('favorite artist deduplication ignores case and spaces',()=>assert.deepEqual(normalizedFavorites(['Mac Miller','mac   miller','Yung Gravy']),['Mac Miller','Yung Gravy']));
+test('favorite list is capped',()=>assert.equal(normalizedFavorites(Array.from({length:20},(_,i)=>'Artist '+i)).length,8));
+test('rejects invalid artist strings',()=>{for(const bad of [null,{},'', 'X', 'a'.repeat(81),'evil\nheader', '/etc/secrets'])assert.equal(validateFavoriteArtist(bad),null);});
+test('favorite excludes blocked artists at migration',()=>assert.deepEqual(safeProfile({favoriteArtists:['Mac Miller','Yung Gravy'],blocks:[artistKey('Mac Miller')]}).favoriteArtists,['Yung Gravy']));
+test('multiple favorite artists persist',()=>assert.deepEqual(safeProfile({favoriteArtists:['Yung Gravy','Mac Miller']}).favoriteArtists,['Yung Gravy','Mac Miller']));
+test('no artist favorite grants audio playback',()=>assert.deepEqual(accessibleQueue([],[]),[]));
