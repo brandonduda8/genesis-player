@@ -5,16 +5,26 @@ import android.util.Log
 import androidx.media3.session.MediaController
 import org.json.JSONArray
 import org.json.JSONObject
-import java.net.HttpURLConnection
 import java.net.URL
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
+import java.text.Normalizer
+import java.util.Locale
 import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 private const val TAG = "GenesisPlayer"
+
+/** Stable content identity: rejects survive catalog ID changes and title punctuation. */
+internal object SongIdentity {
+    fun key(artist: String, title: String): String? {
+        fun normalize(value: String): String =
+            Normalizer.normalize(value, Normalizer.Form.NFKC)
+                .lowercase(Locale.ROOT)
+                .replace(Regex("[^\\p{L}\\p{N}]+"), " ")
+                .trim()
+        val a = normalize(artist)
+        val t = normalize(title)
+        return if (a.isBlank() || t.isBlank()) null else "song:$a|$t"
+    }
+}
 
 /**
  * Like/dislike ratings, persisted on-device across launches.
@@ -32,22 +42,36 @@ object RatingsStore {
     private const val PREFS = "genesis_ratings"
     private const val K_RATINGS = "ratings"
     private const val K_OUTBOX = "outbox"
+    private const val K_REJECTED = "rejected_song_keys"
 
     /** Tailnet-only Apollo taste receiver (tailscale serve, TLS by tailscaled).
      *  Reachable ONLY from enrolled tailnet devices — never public, by design.
-     *  The serve cert comes from the tailnet's internal CA, which Android does
-     *  not trust by default; TasteSync uses a trust manager scoped to this one
-     *  hardcoded host (the WireGuard tailnet itself is the auth boundary). */
+     *  The endpoint MUST present a certificate trusted by Android for this
+     *  exact hostname. Tailnet membership alone is not certificate validation;
+     *  failed connections leave the outbox queued instead of weakening TLS. */
     const val TASTE_URL = "https://htch-runtime.tail63e556.ts.net:18801/rate"
 
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    /** rating for a track id: "like", "dislike", or null. */
+    /** No silent re-entry for rejected content after catalog IDs change. */
+    private fun rejectedKeys(context: Context): MutableSet<String> {
+        val out = mutableSetOf<String>()
+        val values = JSONArray(prefs(context).getString(K_REJECTED, "[]") ?: "[]")
+        for (i in 0 until values.length()) {
+            values.optString(i).takeIf { it.startsWith("song:") }?.let(out::add)
+        }
+        return out
+    }
+
+    /** Rating for a track. Permanent content rejection always overrides stale ID likes. */
     fun get(context: Context, trackId: String): String? {
         return try {
             val root = JSONObject(prefs(context).getString(K_RATINGS, "{}") ?: "{}")
-            root.optJSONObject(trackId)?.optString("r", null)
+            val direct = root.optJSONObject(trackId)?.optString("r", null)
+            val t = Library.track(trackId)
+            val key = t?.let { SongIdentity.key(it.artist, it.title) }
+            if (key != null && key in rejectedKeys(context)) "dislike" else direct
         } catch (e: Exception) {
             Log.w(TAG, "RatingsStore: read failed (${e.message})")
             null
@@ -74,20 +98,29 @@ object RatingsStore {
      * Record a rating (null clears it). Persists immediately, enqueues a sync
      * event, and kicks the fire-and-forget sender. Returns the stored value.
      */
+    @Synchronized
     fun set(context: Context, trackId: String, rating: String?): String? {
         val app = context.applicationContext
-        var track: Track? = null
         try {
+            require(rating == null || rating == "like" || rating == "dislike")
             val p = prefs(app)
             val root = JSONObject(p.getString(K_RATINGS, "{}") ?: "{}")
+            val rejects = rejectedKeys(app)
+            val track = Library.track(trackId)
+            val key = track?.let { SongIdentity.key(it.artist, it.title) }
+            if (key != null) {
+                if (rating == "dislike") rejects.add(key)
+                // Only explicit owner action (Like or Clear) unblocks identical content.
+                else rejects.remove(key)
+            }
             if (rating == null) {
                 root.remove(trackId)
             } else {
                 root.put(trackId, JSONObject().put("r", rating).put("ts", System.currentTimeMillis()))
             }
-            p.edit().putString(K_RATINGS, root.toString()).apply()
+            p.edit().putString(K_RATINGS, root.toString())
+                .putString(K_REJECTED, JSONArray(rejects.sorted()).toString()).apply()
             if (rating != null) {
-                track = Library.track(trackId)
                 enqueue(app, track, trackId, rating)
             }
             Log.i(TAG, "RatingsStore: rating=$rating track=$trackId")
@@ -183,23 +216,8 @@ object RatingsStore {
 
 /** Fire-and-forget sender: pushes unsynced ratings to the tailnet taste receiver. */
 object TasteSync {
-    /**
-     * Trust manager scoped to the single hardcoded tailnet serve host.
-     * The tailnet's internal CA is not in Android's trust store; the
-     * WireGuard tailnet (authenticated peers, encrypted transport) is the
-     * auth boundary, and this manager is never used for any other host.
-     */
-    private fun tailnetSsl(): SSLContext {
-        val permissive = object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
-            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
-        }
-        return SSLContext.getInstance("TLS").apply {
-            init(null, arrayOf<TrustManager>(permissive), SecureRandom())
-        }
-    }
-
+    /** Android's default HTTPS CA and hostname verification are mandatory.
+     * Invalid certificates keep ratings locally queued; no trust-all override. */
     fun syncNow(context: Context) {
         val app = context.applicationContext
         // Synchronous attempt line: emitted on the CALLER thread at rating
@@ -215,12 +233,10 @@ object TasteSync {
                     Log.i(TAG, "TasteSync: nothing pending, skipping network attempt")
                     return@Thread
                 }
-                val ssl = tailnetSsl()
                 val sent = mutableListOf<JSONObject>()
                 for (e in events) {
                     try {
                         val c = (URL(RatingsStore.TASTE_URL).openConnection() as HttpsURLConnection).apply {
-                            sslSocketFactory = ssl.socketFactory
                             connectTimeout = 8000
                             readTimeout = 8000
                             requestMethod = "POST"
