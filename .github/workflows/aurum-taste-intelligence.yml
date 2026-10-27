@@ -1,0 +1,31 @@
+name: aurum-taste-intelligence
+on:
+  push:
+    paths:
+      - 'aurum-pulse/web/**'
+      - 'aurum-pulse/tests/**'
+      - '.github/workflows/aurum-taste-intelligence.yml'
+  pull_request:
+    paths:
+      - 'aurum-pulse/web/**'
+      - 'aurum-pulse/tests/**'
+      - '.github/workflows/aurum-taste-intelligence.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pure-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run deterministic taste and profile tests
+        run: node --test aurum-pulse/tests/engine.test.mjs aurum-pulse/tests/taste-intelligence.test.mjs
+      - name: Syntax checks
+        run: |
+          node --check aurum-pulse/web/engine.mjs
+          node --check aurum-pulse/web/taste-intelligence.mjs
+          node --check aurum-pulse/web/app.mjs
