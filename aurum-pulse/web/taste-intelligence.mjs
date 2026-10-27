@@ -50,7 +50,7 @@ function score(track,profile,weights){
 export function rankCandidates(tracks,profile={},history=[],options={}){
  const blocks=Array.isArray(profile.blocks)?profile.blocks:[];
  const seen=new Set(),weights=signals(history),eligible=[];
- const lane=options.lane||'discovery',max=clamp(Math.floor(finite(options.limit,50)),1,200);
+ const lane=options.lane||'discovery',max=clamp(Math.floor(finite(options.limit,50)),1,20000);
  for(const t of Array.isArray(tracks)?tracks.slice(0,20000):[]){
   if(!t||typeof t.artist!=='string'||typeof t.title!=='string'||!clean(t.artist)||!clean(t.title))continue;
   if(isBlocked(t,blocks))continue;
