@@ -14,9 +14,9 @@ test('unverified music cannot enter Gold',()=>{
  assert.equal(rankCandidates([x],{},[],{lane:'gold'}).length,0);
  assert.equal(rankCandidates([t('A','B',{ownerApproved:true})],{},[],{lane:'gold'}).length,0);
 });
-test('owner-approved playable rights-verified song can enter Gold',()=>{
+test('legacy boolean assertions alone cannot publish Gold',()=>{
  const x=t('A','B',{ownerApproved:true,rightsVerified:true});
- assert.equal(rankCandidates([x],{},[],{lane:'gold'}).length,1);
+ assert.equal(rankCandidates([x],{},[],{lane:'gold'}).length,0);
 });
 test('discovery never claims source is verified without evidence',()=>{
  const x=rankCandidates([t('A','B')])[0];

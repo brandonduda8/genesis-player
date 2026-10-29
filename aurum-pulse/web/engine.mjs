@@ -11,7 +11,8 @@ export const BASE_PROFILE=()=>({schema:2,onboarded:false,nickname:'Listener',mod
 export const clean=x=>String(x??'').normalize('NFKC').toLocaleLowerCase('en-US').replace(/[\u0300-\u036f]/g,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim().replace(/\s+/g,' ');
 export const artistKey=artist=>`artist:${clean(artist)}`;
 export const songKey=(artist,title)=>`song:${clean(artist)}|${clean(title)}`;
-export const isBlocked=(track,blocks)=>{const b=new Set(blocks);return b.has(songKey(track.artist,track.title))||b.has(artistKey(track.artist));};
+export const BLOCK_ALL='policy:locked';
+export const isBlocked=(track,blocks)=>{if(!Array.isArray(blocks))return true;const b=new Set(blocks);return b.has(BLOCK_ALL)||b.has(songKey(track.artist,track.title))||b.has(artistKey(track.artist));};
 export const accessibleQueue=(tracks,blocks)=>tracks.filter(t=>!isBlocked(t,blocks)&&t.playable===true);
 export const filterTracks=(tracks,query,blocks)=>tracks.filter(t=>!isBlocked(t,blocks)&&`${clean(t.artist)} ${clean(t.title)}`.includes(clean(query)));
 export function validateFavoriteArtist(artist){
@@ -31,8 +32,9 @@ export function normalizedFavorites(items,limit=8){
 export function safeProfile(input){
  const d=BASE_PROFILE();if(!input||typeof input!=='object'||Array.isArray(input))return d;
  const modes=Array.isArray(input.modes)?input.modes.filter(x=>MODES.some(m=>m.id===x)).slice(0,4):d.modes;
- const validateKeys=(values)=>Array.isArray(values)?[...new Set(values.filter(x=>typeof x==='string'&&x.length<=250&&/^(?:artist|song):/.test(x)))].slice(-3000):[];
- const blocks=validateKeys(input.blocks);
+ const validateKeys=(values,limit=3000)=>Array.isArray(values)?[...new Set(values.filter(x=>typeof x==='string'&&x.length<=600&&/^(?:artist|song):/.test(x)))].slice(-limit):[];
+ // A reject is a policy constraint, not a disposable recommendation-history entry.
+ const blocks=input.blocks===undefined?[]:!Array.isArray(input.blocks)||input.blocks.length>50000||input.blocks.includes(BLOCK_ALL)?[BLOCK_ALL]:validateKeys(input.blocks,50000);
  return {schema:2,onboarded:input.onboarded===true,nickname:typeof input.nickname==='string'&&input.nickname.trim()?input.nickname.trim().slice(0,42):'Listener',modes:[...new Set(modes)],favoriteArtists:normalizedFavorites(input.favoriteArtists).filter(a=>!blocks.includes(artistKey(a))),likes:validateKeys(input.likes),blocks,volume:Number.isFinite(input.volume)?Math.max(0,Math.min(100,Math.round(input.volume))):72,preset:Object.hasOwn(PRESETS,input.preset)?input.preset:'Studio',eqBypass:input.eqBypass===true};
 }
 export const qualityLabel=(t)=> t?.qualityVerified===true?t.qualityLabel||'MEASURED':t?.playable?'LOCAL · FIDELITY UNKNOWN':'NOT VERIFIED';
