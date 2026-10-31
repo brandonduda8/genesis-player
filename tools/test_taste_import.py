@@ -20,7 +20,7 @@ class TasteImport(unittest.TestCase):
     def test_keys_ignore_case_spaces_accents_and_topic_suffix(self):
         self.assertEqual(ti.key("Witchouse40k"), ti.key("Witchouse 40k"))
         self.assertEqual(ti.key("Beyoncé - Topic"), ti.key("beyonce"))
-        self.assertEqual(ti.key("$uicideboy$"), "$uicideboy$")
+        self.assertEqual(ti.key("$ample $tar"), "$ample$tar")
         self.assertNotEqual(ti.key("Some Star"), ti.key("Some Star 2"))
 
     def test_only_youtube_music_entries_count_and_nothing_private_is_kept(self):
