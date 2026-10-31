@@ -108,3 +108,25 @@ streams. A track can be saved for offline play **only when its source's licence 
 
 The offline library works on airplane mode. Storage is capped, can be wiped from Settings, and each track shows a
 badge (`OFFLINE`, `STREAM`, `FLAC`, `320`), stated honestly.
+
+## 7. P4 started: taste import (2026-10-31)
+
+Brandon sent his Takeout export (watch and search history; no playlist files). Tools:
+
+- `tools/taste_import.py`: reads only the YouTube Music entries and builds a recency-weighted taste profile, with a
+  90-day half-life. The profile holds aggregates only: no URLs, no per-play timestamps, and non-music viewing is never
+  read.
+- `tools/audius_match.py`: for each top artist, searches Audius and takes tracks **only from the artist's own
+  verified account**. Same-name unverified accounts come back as `NEEDS_REVIEW`. It writes a candidate list and never
+  edits `tracks.json` directly.
+
+Both are stdlib-only, with 8 unit tests on synthetic fixtures.
+
+**First finding (aggregate):** the current Aurum catalog covers about **5% of Brandon's YouTube Music plays** and
+**8 of his top 100 artists**. That is the measured reason the selection "isn't what he designed".
+
+**Privacy:** his profile and the candidate list are personal data. They are git-ignored here, because this repo is
+public, and they live on the device or in a private repo.
+
+**Next:** run `audius_match.py` from a host with normal egress (zane-box via the egress door, which is a GHOST job).
+Review the candidates, rebuild the catalog around his artists, and seed For You from the profile.
