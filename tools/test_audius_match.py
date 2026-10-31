@@ -45,8 +45,8 @@ class AudiusMatch(unittest.TestCase):
         self.assertEqual(r["unverified_same_name"], [{"handle": "kk", "track_count": 40}])
 
     def test_different_names_never_match_and_errors_are_reported(self):
-        users = {"mgk": [{"id": "z", "name": "mgk fan page", "is_verified": True}]}
-        self.assertEqual(am.match_artist("mgk", fake_api(users, {}))["status"], "NOT_ON_AUDIUS")
+        users = {"Some Star": [{"id": "z", "name": "Some Star fan page", "is_verified": True}]}
+        self.assertEqual(am.match_artist("Some Star", fake_api(users, {}))["status"], "NOT_ON_AUDIUS")
         err = am.match_artist("Anyone", fake_api({}, {}, fail=("/users/search",)))
         self.assertEqual(err["status"], "ERROR")
         self.assertIn("network down", err["error"])

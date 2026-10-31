@@ -21,7 +21,7 @@ class TasteImport(unittest.TestCase):
         self.assertEqual(ti.key("Witchouse40k"), ti.key("Witchouse 40k"))
         self.assertEqual(ti.key("Beyoncé - Topic"), ti.key("beyonce"))
         self.assertEqual(ti.key("$uicideboy$"), "$uicideboy$")
-        self.assertNotEqual(ti.key("mgk"), ti.key("mgk2"))
+        self.assertNotEqual(ti.key("Some Star"), ti.key("Some Star 2"))
 
     def test_only_youtube_music_entries_count_and_nothing_private_is_kept(self):
         hist = [play("Song A", "Artist One", "2026-10-30T10:00:00Z"),
