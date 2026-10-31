@@ -80,3 +80,31 @@ Sources ──► Resolver (per-source, verified-only) ──► Media3 ExoPlaye
 - No YouTube audio.
 - No scraped credentials in new code (Q-POL-001 pending).
 - API key signups (Jamendo, SoundCloud) are account actions, so they need Brandon's tap.
+
+## 6. YouTube Premium Lite (Brandon's subscription) and offline play
+
+**What Premium Lite can and can't do for Aurum:**
+- **It can't be an audio source.** Lite removes ads from videos, but it excludes YouTube Music and music offline
+  play. Even full Premium downloads are locked (encrypted) inside the YouTube app. Pulling audio out of YouTube into
+  another app breaks YouTube's terms whichever plan Brandon pays for, and it could get his Google account suspended.
+  Aurum never does it.
+- **It can be the taste source.** Brandon's YouTube data is his own: playlists, liked videos and watch history. A
+  Google Takeout export ("YouTube and YouTube Music": playlists, history) gives Aurum every artist and song he plays.
+  P4 imports it into the taste DB. That is metadata only; no audio comes from YouTube.
+  - An optional live sync could use the YouTube Data API v3 with his OAuth (free quota). Creating the Google Cloud
+    project is an account action, so it's Brandon's tap. Takeout needs no setup.
+
+**Offline player with streaming (P3b):** Media3's `DownloadManager` plus an encrypted, app-private cache. Every track
+streams. A track can be saved for offline play **only when its source's licence allows it**:
+
+| Source | Stream | Offline |
+|---|---|---|
+| Brandon's own files | yes | yes (already local) |
+| Internet Archive (Live Music Archive, netlabels) | yes | yes; the archive permits downloads |
+| Creative Commons catalogs (FMA, Jamendo) | yes | yes, per each track's CC licence (attribution shown) |
+| Audius tracks the artist marked downloadable | yes | yes, for personal offline play in the app only; never re-shared |
+| Other Audius tracks, SoundCloud | yes | **no**: stream-only, per the adapter rules |
+| YouTube | no | no |
+
+The offline library works on airplane mode. Storage is capped, can be wiped from Settings, and each track shows a
+badge (`OFFLINE`, `STREAM`, `FLAC`, `320`), stated honestly.
