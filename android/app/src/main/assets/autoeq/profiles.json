@@ -1,0 +1,11 @@
+{
+  "_doc": "Headphone correction catalog (AutoEq, MIT, commit 7ae0f56). status MEASURED = this exact model was measured; ESTIMATED = closest measured sibling, applied at reduced default strength because siblings can differ (520BT vs 510BT differ by up to 6.5 dB above 5 kHz).",
+  "default_for_brandon": "jbl_tune_530bt_est",
+  "profiles": [
+    {"id": "jbl_tune_530bt_est", "label": "JBL Tune 530BT (estimated from Tune 520BT)", "file": "jbl_tune_520bt.txt", "status": "ESTIMATED", "default_strength": 0.5, "source": "Rtings, Bruel & Kjaer 5128"},
+    {"id": "jbl_tune_520bt", "label": "JBL Tune 520BT", "file": "jbl_tune_520bt.txt", "status": "MEASURED", "default_strength": 1.0, "source": "Rtings, Bruel & Kjaer 5128"},
+    {"id": "jbl_tune_510bt", "label": "JBL Tune 510BT", "file": "jbl_tune_510bt.txt", "status": "MEASURED", "default_strength": 1.0, "source": "Rtings, HMS II.3"},
+    {"id": "beats_studio3_wireless", "label": "Beats Studio3 Wireless", "file": "beats_studio3_wireless.txt", "status": "MEASURED", "default_strength": 1.0, "source": "oratory1990"},
+    {"id": "beats_studio_buds", "label": "Beats Studio Buds", "file": "beats_studio_buds.txt", "status": "MEASURED", "default_strength": 1.0, "source": "oratory1990"}
+  ]
+}

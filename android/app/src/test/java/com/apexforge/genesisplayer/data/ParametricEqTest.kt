@@ -76,6 +76,21 @@ class ParametricEqTest {
     }
 
     @Test
+    fun estimatedSiblingProfileAtHalfStrengthHalvesTheCorrectionAndNeedsLessHeadroom() {
+        val p = ParametricEq.parseAutoEq("JBL Tune 520BT", asset("jbl_tune_520bt.txt"))
+        assertEquals(-6.4, p.preampDb, 1e-9)
+        assertEquals(10, p.filters.size)
+        val half = ParametricEq.scaled(p.filters, 0.5)
+        for (f in listOf(30.0, 1000.0, 5000.0, 16_000.0)) {
+            val full = ParametricEq.responseDb(p.filters, f, fs)
+            assertEquals("half strength at $f Hz", full / 2, ParametricEq.responseDb(half, f, fs), 0.35)
+        }
+        assertTrue(ParametricEq.safePreampDb(half, fs) > ParametricEq.safePreampDb(p.filters, fs))
+        assertTrue(ParametricEq.scaled(p.filters, 0.0).all { it.gainDb == 0.0 })
+        assertEquals(p.filters, ParametricEq.scaled(p.filters, 7.0)) // clamped to 1.0
+    }
+
+    @Test
     fun flatProfileIsBitTransparent() {
         val buf = FloatArray(1024) { i -> sin(i * 0.1).toFloat() * 0.5f }
         val copy = buf.copyOf()

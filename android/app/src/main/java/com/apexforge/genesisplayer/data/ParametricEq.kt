@@ -43,6 +43,16 @@ object ParametricEq {
         return Profile(name, pre, filters)
     }
 
+    /**
+     * Correction strength 0..1: every filter's gain is scaled (Q and Fc kept), so 0 = flat and 1 = the full measured
+     * correction. Used for ESTIMATED profiles (a measured sibling model, not the listener's exact headphone), which
+     * default to 0.5 so a sibling's differences can't over-correct.
+     */
+    fun scaled(filters: List<Filter>, strength: Double): List<Filter> {
+        val k = strength.coerceIn(0.0, 1.0)
+        return filters.map { it.copy(gainDb = it.gainDb * k) }
+    }
+
     fun coeffs(f: Filter, sampleRate: Double): Coeffs {
         val a = 10.0.pow(f.gainDb / 40.0)
         val w0 = 2.0 * PI * f.fc / sampleRate
