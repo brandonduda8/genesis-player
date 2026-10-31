@@ -39,8 +39,8 @@ class AudiusMatch(unittest.TestCase):
         self.assertFalse(any("/users/fan1/" in c for c in f.calls))  # the fan account's tracks are never fetched
 
     def test_unverified_same_name_needs_review_and_takes_no_tracks(self):
-        users = {"Krazy Kane": [{"id": "u", "name": "Krazy Kane", "handle": "kk", "is_verified": False, "track_count": 40}]}
-        r = am.match_artist("Krazy Kane", fake_api(users, {"u": [{"id": "X"}]}))
+        users = {"Sample Artist": [{"id": "u", "name": "Sample Artist", "handle": "kk", "is_verified": False, "track_count": 40}]}
+        r = am.match_artist("Sample Artist", fake_api(users, {"u": [{"id": "X"}]}))
         self.assertEqual((r["status"], r["tracks"]), ("NEEDS_REVIEW", []))
         self.assertEqual(r["unverified_same_name"], [{"handle": "kk", "track_count": 40}])
 
