@@ -12,8 +12,8 @@ android {
         applicationId 'com.apexforge.genesisplayer'
         minSdk 26
         targetSdk 34
-        versionCode 4
-        versionName '2.1-deepspace'
+        versionCode 5
+        versionName '2.2-deepspace'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
@@ -50,6 +50,7 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer:$media3"
     implementation "androidx.media3:media3-session:$media3"
     implementation "androidx.media3:media3-common:$media3"
+    implementation "androidx.media3:media3-datasource:$media3"
 
     implementation platform('androidx.compose:compose-bom:2024.10.00')
     implementation 'androidx.compose.ui:ui'
@@ -69,6 +70,8 @@ dependencies {
     // JVM fast lane (src/test): pure-logic unit tests, no emulator.
     // Run with `gradle testDebugUnitTest`; gated before the emulator boots.
     testImplementation 'junit:junit:4.13.2'
+    // Real org.json for the JVM lane (android.jar ships only stubs). Test-only; not in the APK.
+    testImplementation 'org.json:json:20240303'
 
     // API-34 instrumented tests: tap-to-play queue repair (QueuePlannerTest,
     // TapLatencyTest). Run on the emulator via connectedDebugAndroidTest.

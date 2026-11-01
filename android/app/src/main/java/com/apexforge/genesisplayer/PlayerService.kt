@@ -20,6 +20,7 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
@@ -39,6 +40,9 @@ import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.data.SoundCloudResolver
 import com.apexforge.genesisplayer.data.TasteSync
+import com.apexforge.genesisplayer.data.vault.RoutingDataSource
+import com.apexforge.genesisplayer.data.vault.Vault
+import com.apexforge.genesisplayer.data.vault.VaultDataSource
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.atomic.AtomicInteger
@@ -109,9 +113,14 @@ class PlayerService : MediaSessionService() {
                     .build()
             }
         }
+        // WO-AURUM-2.2 §3: WAKE_MODE_NETWORK holds a partial CPU wake lock + Wi-Fi lock ONLY while playing, so
+        // streams don't starve with the screen off; ExoPlayer releases both on pause/stop (battery-sane).
+        // The routing source factory plays `aurumvault://` (encrypted offline copies) and everything else as before.
         val p = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
+            .setWakeMode(C.WAKE_MODE_NETWORK)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(RoutingDataSource.Factory(this)))
             .setRenderersFactory(renderersFactory)
             .build()
         player = p
@@ -256,6 +265,15 @@ class PlayerService : MediaSessionService() {
      */
     private fun itemFor(trackId: String): MediaItem? {
         val t = Library.track(trackId) ?: return null
+        // WO-AURUM-2.2 §4: an encrypted offline copy wins — it plays with no network (airplane mode).
+        val local = try { Vault.entry(this, t.id) } catch (e: Exception) { Log.w(TAG, "vault: ${e.message}"); null }
+        if (local != null) {
+            val meta = MediaMetadata.Builder().setTitle(t.title).setArtist(t.artist)
+            if (t.artworkUrl.isNotEmpty()) meta.setArtworkUri(Uri.parse(t.artworkUrl))
+            Log.i(TAG, "vault: playing offline copy of ${t.id}")
+            return MediaItem.Builder().setMediaId(t.id).setUri(VaultDataSource.uriFor(local.fileId))
+                .setMediaMetadata(meta.build()).build()
+        }
         val uri = if (t.soundcloudUrl.isNotEmpty()) {
             val r = SoundCloudResolver.resolve(this@PlayerService, t.soundcloudUrl)
             if (r == null) {
@@ -584,6 +602,8 @@ class PlayerService : MediaSessionService() {
             val p2 = ExoPlayer.Builder(this)
                 .setAudioAttributes(attrs, false) // no audio-focus fights with player1
                 .setHandleAudioBecomingNoisy(false)
+                .setWakeMode(C.WAKE_MODE_NETWORK)
+                .setMediaSourceFactory(DefaultMediaSourceFactory(RoutingDataSource.Factory(this)))
                 .build()
             player2 = p2
             p2.setMediaItem(item)
@@ -854,6 +874,7 @@ class PlayerService : MediaSessionService() {
             // it is not a production command and stays unregistered in
             // release builds.
             if (BuildConfig.DEBUG) builder.add(SessionCommand(ACTION_QUEUE_DUMP, Bundle.EMPTY))
+            if (BuildConfig.DEBUG) builder.add(SessionCommand(ACTION_VAULT_TEST, Bundle.EMPTY))
             val commands = builder.build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(commands)
@@ -914,6 +935,7 @@ class PlayerService : MediaSessionService() {
                 ACTION_AUTOPLAY_SET -> cmdSetAutoplay(args.getBoolean("enabled", true))
                 // DEBUG-only proof hook; ignored in release builds (the
                 // command isn't even registered there).
+                ACTION_VAULT_TEST -> if (BuildConfig.DEBUG) vaultTest(args)
                 ACTION_QUEUE_DUMP -> if (BuildConfig.DEBUG) cmdQueueDump(
                     args.getInt("move_from", -1),
                     args.getInt("move_to", -1)
@@ -970,6 +992,54 @@ class PlayerService : MediaSessionService() {
         }
     }
 
+    /**
+     * WO-AURUM-2.2 §3: swiping the app away from Recents must NOT stop music that is playing; the foreground
+     * service and its notification stay. If nothing is playing there is nothing to keep, so the service ends
+     * instead of lingering.
+     */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val p = player
+        if (p == null || !p.playWhenReady || p.mediaItemCount == 0) {
+            Log.i(TAG, "task removed while idle: stopping service")
+            stopSelf()
+        } else {
+            Log.i(TAG, "task removed while playing: playback continues in the foreground service")
+        }
+    }
+
+    /** DEBUG-only CI hook (never registered in release): vault proofs for the 2.2 battery. */
+    private fun vaultTest(args: Bundle) {
+        when (args.getString("mode", "")) {
+            "seed_play" -> Vault.seedTone(this, "vault-ci-tone", args.getInt("seconds", 240)) { err ->
+                mainHandler.post {
+                    val e = Vault.entry(this, "vault-ci-tone")
+                    if (err != null || e == null) { Log.e(TAG, "VaultCI: seed failed: $err"); return@post }
+                    val p = player ?: return@post
+                    p.setMediaItem(MediaItem.Builder().setMediaId("vault-ci-tone").setUri(VaultDataSource.uriFor(e.fileId))
+                        .setMediaMetadata(MediaMetadata.Builder().setTitle(e.title).setArtist(e.artist).build()).build())
+                    p.prepare(); p.play()
+                    Log.i(TAG, "VaultCI: seeded+playing file=${e.fileId} plain=${e.plainBytes} cipher=${e.cipherBytes}")
+                }
+            }
+            "fill" -> { // seed N tones to prove the cap evicts oldest-first
+                val n = args.getInt("count", 3); val secs = args.getInt("seconds", 60)
+                (1..n).forEach { i -> Vault.seedTone(this, "vault-ci-fill-$i", secs) { err -> Log.i(TAG, "VaultCI: fill $i -> ${err ?: "ok"} evicted=${Vault.lastEvictions.map { it.trackId }}") } }
+            }
+            "cap" -> { Vault.setCap(this, args.getLong("bytes", 0L)); Log.i(TAG, "VaultCI: cap -> ${args.getLong("bytes", 0L)}") }
+            "download" -> {
+                val t = Library.track(args.getString("id", "")) ?: run { Log.e(TAG, "VaultCI: no such track"); return }
+                Vault.download(this, t) { err -> Log.i(TAG, "VaultCI: download ${t.id} -> ${err ?: "stored"}") }
+            }
+            "clear" -> Vault.clearAll(this)
+            "play" -> playTracks(arrayListOf(args.getString("id", "")), 0) // normal path: itemFor prefers the vault
+            else -> {}
+        }
+        Thread {
+            val all = Vault.all(this)
+            Log.i(TAG, "VaultCI: dump count=${all.size} used=${Vault.usedBytes(this)} cap=${Vault.capBytes(this)} ids=${all.map { it.trackId }}")
+        }.start()
+    }
+
     override fun onDestroy() {
         mainHandler.removeCallbacks(xfadeTick)
         abortCrossfade("destroy")
@@ -1001,6 +1071,7 @@ class PlayerService : MediaSessionService() {
         const val ACTION_XFADE_SET = "GENESIS_XFADE_SET"
         const val ACTION_AUTOPLAY_SET = "GENESIS_AUTOPLAY_SET"
         const val ACTION_QUEUE_DUMP = "GENESIS_QUEUE_DUMP"
+        const val ACTION_VAULT_TEST = "GENESIS_VAULT_TEST"
 
         /** Live audio-effects controller, set when ExoPlayer's audio session attaches. */
         var fx: AudioFxController? = null

@@ -1,0 +1,163 @@
+name: aurum-2.2
+
+# WO-AURUM-2.2-BACKGROUND-OFFLINE: build + prove 2.2-deepspace on GitHub's free runner ($0 lane).
+#  1. JVM unit tests (vault crypto, eviction, download permission).
+#  2. Build the 2.1-deepspace base (8ad3bbb) and 2.2 debug with the SAME runner debug key, so the in-place update
+#     test is a real `adb install -r` over 2.1 data.
+#  3. Device battery (.github/scripts/aurum22/battery.sh) + instrumented tests (Keystore, encrypted playback,
+#     cap, audio focus).
+#  4. Release APK: signed with the stable AURUM key ONLY if its secrets are configured, and only accepted if the
+#     certificate equals the expected fingerprint; otherwise an UNSIGNED release is uploaded for Zane to sign.
+#     No key material is printed or uploaded.
+
+on:
+  push:
+    branches: [claude/aurum-2.2-background-vault]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aurum-22-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASE_SHA: 8ad3bbb
+  EXPECTED_CERT: 2A:44:37:02:DF:C0:78:6F:47:E0:A1:81:57:CD:F0:EE:4A:1A:A7:05:63:30:F3:E5:ED:84:BE:0F:B3:A0:CD:5B
+
+jobs:
+  aurum22:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Android packages
+        run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
+          CT=$(ls -d "$ANDROID_HOME"/cmdline-tools/* | head -1)
+          export PATH="$CT/bin:$PATH"
+          echo "$CT/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/build-tools/34.0.0" >> $GITHUB_PATH
+          yes | sdkmanager --licenses > /dev/null
+          sdkmanager "platform-tools" "platforms;android-34" "platforms;android-35" "build-tools;34.0.0" "build-tools;35.0.0" "emulator" "system-images;android-34;google_apis;x86_64"
+
+      - name: Gradle 8.7
+        run: |
+          curl -sSL -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.7-bin.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+
+      - name: Unit tests (JVM)
+        working-directory: android
+        run: /tmp/gradle-8.7/bin/gradle testDebugUnitTest --no-daemon
+
+      - name: Build 2.1-deepspace base (${{ env.BASE_SHA }})
+        run: |
+          git worktree add /tmp/base "$BASE_SHA"
+          grep -E "versionCode|versionName" /tmp/base/android/app/build.gradle
+          (cd /tmp/base/android && /tmp/gradle-8.7/bin/gradle assembleDebug --no-daemon -q)
+          cp /tmp/base/android/app/build/outputs/apk/debug/app-debug.apk /tmp/base-2.1-debug.apk
+
+      - name: Build 2.2 (debug, androidTest, release)
+        working-directory: android
+        run: /tmp/gradle-8.7/bin/gradle assembleDebug assembleDebugAndroidTest assembleRelease --no-daemon
+
+      - name: Permission diff vs 2.1
+        run: |
+          mkdir -p /tmp/aurum22
+          aapt2 dump permissions /tmp/base-2.1-debug.apk | sort > /tmp/aurum22/perms-2.1.txt
+          aapt2 dump permissions android/app/build/outputs/apk/debug/app-debug.apk | sort > /tmp/aurum22/perms-2.2.txt
+          diff /tmp/aurum22/perms-2.1.txt /tmp/aurum22/perms-2.2.txt | tee /tmp/aurum22/perms.diff || true
+          ADDED=$(grep '^>' /tmp/aurum22/perms.diff | grep -v "android.permission.WAKE_LOCK" || true)
+          REMOVED=$(grep '^<' /tmp/aurum22/perms.diff || true)
+          [ -z "$ADDED$REMOVED" ] || { echo "UNEXPECTED PERMISSION CHANGE"; exit 1; }
+          echo "permission delta: +WAKE_LOCK only (ExoPlayer WAKE_MODE_NETWORK; held only while playing)"
+          aapt2 dump badging android/app/build/outputs/apk/release/app-release-unsigned.apk | head -1
+
+      - name: Boot emulator
+        run: bash .github/scripts/boot_emulator.sh
+
+      - name: Device battery (update over 2.1, screen-off, keys, vault, airplane, cap)
+        env:
+          BASE_APK: /tmp/base-2.1-debug.apk
+          NEW_APK: android/app/build/outputs/apk/debug/app-debug.apk
+          OUT: /tmp/aurum22
+        run: bash .github/scripts/aurum22/battery.sh
+
+      - name: Instrumented tests (Keystore, encrypted ExoPlayer playback, cap, audio focus)
+        if: always()
+        working-directory: android
+        run: |
+          set +e
+          /tmp/gradle-8.7/bin/gradle connectedDebugAndroidTest --no-daemon \
+            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest
+          RC=$?
+          python3 ../.github/scripts/junit_summary.py app/build/outputs/androidTest-results "Aurum 2.2 instrumented"
+          SRC=$?
+          [ $RC -eq 0 ] && [ $SRC -eq 0 ]
+
+      - name: Release APK (stable AURUM key if configured, else unsigned for Zane)
+        if: always()
+        env:
+          KS_B64: ${{ secrets.AURUM_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.AURUM_KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ secrets.AURUM_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.AURUM_KEY_PASS }}
+        run: |
+          mkdir -p /tmp/release
+          U=android/app/build/outputs/apk/release/app-release-unsigned.apk
+          zipalign -p -f 4 "$U" /tmp/release/aurum-2.2-deepspace-release-unsigned.apk
+          if [ -n "$KS_B64" ]; then
+            umask 077; echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/aurum.jks"
+            apksigner sign --ks "$RUNNER_TEMP/aurum.jks" --ks-pass env:KS_PASS --ks-key-alias "$KEY_ALIAS" \
+              --key-pass env:KEY_PASS --out /tmp/release/aurum-2.2-deepspace.apk /tmp/release/aurum-2.2-deepspace-release-unsigned.apk
+            rm -f "$RUNNER_TEMP/aurum.jks"
+            CERT=$(apksigner verify --print-certs /tmp/release/aurum-2.2-deepspace.apk | grep -m1 "SHA-256 digest" | awk '{print $NF}' | tr a-f A-F | sed 's/../&:/g; s/:$//')
+            echo "signer: $CERT"
+            if [ "$CERT" != "$EXPECTED_CERT" ]; then echo "SIGNER MISMATCH: not the AURUM key; refusing"; rm -f /tmp/release/aurum-2.2-deepspace.apk; exit 1; fi
+            echo "SIGNER MATCHES the stable AURUM key" | tee /tmp/release/signing.txt
+          else
+            echo "AURUM signing secrets not configured in this repo: shipping the UNSIGNED release for Zane to sign with the AURUM key (apksigner), then verify $EXPECTED_CERT" | tee /tmp/release/signing.txt
+          fi
+          cd /tmp/release && sha256sum *.apk | tee SHA256SUMS.txt
+
+      - name: Build log
+        if: always()
+        run: |
+          {
+            echo "WO-AURUM-2.2 build log"
+            echo "host: GitHub Actions ubuntu-latest (free runner, \$0); run ${{ github.run_id }} attempt ${{ github.run_attempt }}"
+            echo "commit: ${{ github.sha }}  base 2.1: $BASE_SHA"
+            echo "commands: gradle testDebugUnitTest; gradle assembleDebug assembleDebugAndroidTest assembleRelease; battery.sh; connectedDebugAndroidTest; zipalign; apksigner (only with AURUM secrets)"
+            echo "offline cap default: 2 GiB (VaultIndex.DEFAULT_CAP_BYTES = 2147483648), user-choosable 512 MB / 1 / 2 / 4 / 8 GB"
+            echo "permission delta vs 2.1: +android.permission.WAKE_LOCK (ExoPlayer WAKE_MODE_NETWORK, held only while playing)"
+            echo "versions: $(aapt2 dump badging android/app/build/outputs/apk/debug/app-debug.apk | head -1)"
+          } > /tmp/aurum22/build-log.txt
+          cat /tmp/aurum22/build-log.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aurum-2.2-evidence
+          path: |
+            /tmp/aurum22
+            android/app/build/reports/androidTests/connected
+            android/app/build/reports/tests
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aurum-2.2-release
+          path: /tmp/release
+          if-no-files-found: ignore

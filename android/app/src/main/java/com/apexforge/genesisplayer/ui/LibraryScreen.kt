@@ -67,6 +67,7 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
     var openPlaylist by remember { mutableStateOf<String?>(null) }
     var openSnapPlaylist by remember { mutableStateOf<String?>(null) }
     var radioFor by remember { mutableStateOf<Pair<String, String>?>(null) } // (id, title)
+    var vaultOpen by remember { mutableStateOf(false) } // WO-AURUM-2.2 §4 vault manager
     val snapshot = SnapshotStore.current() // Compose state: re-renders on fetch
 
     val q = query.trim().lowercase()
@@ -171,6 +172,7 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                 }
                 Spacer(Modifier.height(12.dp))
             }
+            VaultBar { vaultOpen = true }
         }
 
         // ---- Search results ----
@@ -378,16 +380,18 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
         item { Spacer(Modifier.height(24.dp)) }
     }
 
-    // Long-press -> Start radio (catalog ids only).
+    if (vaultOpen) VaultManagerDialog { vaultOpen = false }
+
+    // Long-press -> Start radio + offline actions (catalog ids only).
     radioFor?.let { (id, title) ->
         AlertDialog(
             onDismissRequest = { radioFor = null },
             confirmButton = {},
             containerColor = CardDark,
-            title = { Text("Start radio", color = PhoenixGold) },
+            title = { Text(title, color = PhoenixGold, maxLines = 2, overflow = TextOverflow.Ellipsis) },
             text = {
                 Column {
-                    Text("Build a queue like \"$title\"?", color = Color.White, fontSize = 14.sp)
+                    Text("Radio builds a queue like this track.", color = Color.White, fontSize = 14.sp)
                     Spacer(Modifier.height(12.dp))
                     TextButton(
                         onClick = {
@@ -402,6 +406,7 @@ fun LibraryScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                         Text("Start radio", color = EmberOrange, fontSize = 15.sp,
                             modifier = Modifier.fillMaxWidth())
                     }
+                    OfflineActions(id)
                     TextButton(
                         onClick = { radioFor = null },
                         modifier = Modifier.fillMaxWidth()
