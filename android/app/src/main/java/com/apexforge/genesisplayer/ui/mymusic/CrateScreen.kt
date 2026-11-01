@@ -52,6 +52,7 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
     val online = rememberOnline()
     val model = MyMusic.model ?: run { Box(modifier.fillMaxSize()) { Text("Import your history first", color = Aurum.Dim) }; return }
     var section by remember { mutableIntStateOf(0) }
+    var vaultOpen by remember { mutableStateOf(false) }
     val main = remember { Handler(Looper.getMainLooper()) }
     val perm = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok -> if (ok) MyMusic.scanLocal(context) }
@@ -99,6 +100,8 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
                 }
             }
         }
+        com.apexforge.genesisplayer.ui.VaultBar { vaultOpen = true }
+        if (vaultOpen) com.apexforge.genesisplayer.ui.VaultManagerDialog(onChanged = { OfflineCrate.publish() }) { vaultOpen = false }
         val labels = listOf("Sanctuary", "Can save", "Exact · online", "Alternate · online", "YouTube only")
         ScrollableTabRow(selectedTabIndex = section, edgePadding = 0.dp, containerColor = Color.Transparent, contentColor = Aurum.Gold) {
             labels.forEachIndexed { i, l -> Tab(selected = section == i, onClick = { section = i }, text = { Text(l) }) }

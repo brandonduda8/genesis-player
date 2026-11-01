@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
         handleTestXfade(intent)
         handleTestQueueDump(intent)
         handleTestImport(intent)
+        handleTestVault(intent)
         setContent { GenesisTheme { AurumApp() } }
     }
 
@@ -89,6 +90,7 @@ class MainActivity : ComponentActivity() {
         handleTestXfade(intent)
         handleTestQueueDump(intent)
         handleTestImport(intent)
+        handleTestVault(intent)
     }
 
     private var testController: MediaController? = null
@@ -169,6 +171,7 @@ class MainActivity : ComponentActivity() {
         const val TEST_XFADE_ACTION = "com.apexforge.genesisplayer.TEST_XFADE"
         const val TEST_QUEUE_DUMP_ACTION = "com.apexforge.genesisplayer.TEST_QUEUE_DUMP"
         const val TEST_IMPORT_ACTION = "com.apexforge.genesisplayer.TEST_IMPORT"
+        const val TEST_VAULT_ACTION = "com.apexforge.genesisplayer.TEST_VAULT"
     }
 
     /**
@@ -275,6 +278,21 @@ class MainActivity : ComponentActivity() {
             },
             "TEST_QUEUE_DUMP fired move=$from->$to"
         )
+    }
+
+    /** DEBUG-ONLY 2.2 vault proof hook (mode=seed_play|fill|cap|play|clear|dump). Release builds ignore it. */
+    private fun handleTestVault(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_VAULT_ACTION) return
+        val args = Bundle().apply {
+            putString("mode", intent.getStringExtra("mode") ?: "dump")
+            putInt("seconds", intent.getIntExtra("seconds", 240))
+            putInt("count", intent.getIntExtra("count", 3))
+            putLong("bytes", intent.getLongExtra("bytes", 0L))
+            putString("id", intent.getStringExtra("id") ?: "")
+            putString("url", intent.getStringExtra("url") ?: "")
+        }
+        sendTestCommand(PlayerService.ACTION_VAULT_TEST, args, "TEST_VAULT fired mode=${args.getString("mode")}")
     }
 
     /** Shared DEBUG-hook plumbing: build a controller, send one custom command. */

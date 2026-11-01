@@ -15,6 +15,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
@@ -29,6 +30,9 @@ import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.data.SoundCloudResolver
 import com.apexforge.genesisplayer.data.TasteSync
+import com.apexforge.genesisplayer.data.vault.RoutingDataSource
+import com.apexforge.genesisplayer.data.vault.Vault
+import com.apexforge.genesisplayer.data.vault.VaultDataSource
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.atomic.AtomicInteger
@@ -76,6 +80,11 @@ class PlayerService : MediaSessionService() {
         val p = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
+            // WO-AURUM-2.2 §3: WAKE_MODE_NETWORK holds a partial CPU wake lock + Wi-Fi lock ONLY while playing, so
+            // streams don't starve with the screen off; ExoPlayer releases both on pause/stop (battery-sane).
+            .setWakeMode(C.WAKE_MODE_NETWORK)
+            // `aurumvault://` = encrypted offline copies, decrypted in memory; every other URI plays as before.
+            .setMediaSourceFactory(DefaultMediaSourceFactory(RoutingDataSource.Factory(this)))
             .build()
         player = p
         p.addListener(object : Player.Listener {
@@ -541,6 +550,8 @@ class PlayerService : MediaSessionService() {
             val p2 = ExoPlayer.Builder(this)
                 .setAudioAttributes(attrs, false) // no audio-focus fights with player1
                 .setHandleAudioBecomingNoisy(false)
+                .setWakeMode(C.WAKE_MODE_NETWORK)
+                .setMediaSourceFactory(DefaultMediaSourceFactory(RoutingDataSource.Factory(this)))
                 .build()
             player2 = p2
             p2.setMediaItem(item)
@@ -811,6 +822,7 @@ class PlayerService : MediaSessionService() {
             // it is not a production command and stays unregistered in
             // release builds.
             if (BuildConfig.DEBUG) builder.add(SessionCommand(ACTION_QUEUE_DUMP, Bundle.EMPTY))
+            if (BuildConfig.DEBUG) builder.add(SessionCommand(ACTION_VAULT_TEST, Bundle.EMPTY))
             val commands = builder.build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(commands)
@@ -871,6 +883,7 @@ class PlayerService : MediaSessionService() {
                 ACTION_AUTOPLAY_SET -> cmdSetAutoplay(args.getBoolean("enabled", true))
                 // DEBUG-only proof hook; ignored in release builds (the
                 // command isn't even registered there).
+                ACTION_VAULT_TEST -> if (BuildConfig.DEBUG) vaultTest(args)
                 ACTION_QUEUE_DUMP -> if (BuildConfig.DEBUG) cmdQueueDump(
                     args.getInt("move_from", -1),
                     args.getInt("move_to", -1)
@@ -881,6 +894,77 @@ class PlayerService : MediaSessionService() {
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
+
+    /**
+     * WO-AURUM-2.2 §3: swiping the app away from Recents must NOT stop music that is playing; the foreground
+     * service and its notification stay. If nothing is playing there is nothing to keep, so the service ends.
+     */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val p = player
+        if (p == null || !p.playWhenReady || p.mediaItemCount == 0) {
+            Log.i(TAG, "task removed while idle: stopping service")
+            stopSelf()
+        } else {
+            Log.i(TAG, "task removed while playing: playback continues in the foreground service")
+        }
+    }
+
+    /** DEBUG-only CI hook (never registered in release): vault proofs for the 2.2 battery. */
+    private fun vaultTest(args: Bundle) {
+        when (args.getString("mode", "")) {
+            "seed_play" -> Vault.seedTone(this, "vault-ci-tone", args.getInt("seconds", 240)) { err ->
+                mainHandler.post {
+                    val e = Vault.entry(this, "vault-ci-tone")
+                    if (err != null || e == null) { Log.e(TAG, "VaultCI: seed failed: $err"); return@post }
+                    val p = player ?: return@post
+                    p.setMediaItem(MediaItem.Builder().setMediaId("vault-ci-tone").setUri(VaultDataSource.uriFor(e.fileId))
+                        .setMediaMetadata(MediaMetadata.Builder().setTitle(e.title).setArtist(e.artist).build()).build())
+                    p.prepare(); p.play()
+                    Log.i(TAG, "VaultCI: seeded+playing file=${e.fileId} plain=${e.plainBytes} cipher=${e.cipherBytes}")
+                }
+            }
+            "fill" -> {
+                val n = args.getInt("count", 3); val secs = args.getInt("seconds", 60)
+                (1..n).forEach { i -> Vault.seedTone(this, "vault-ci-fill-$i", secs) { err -> Log.i(TAG, "VaultCI: fill $i -> ${err ?: "ok"} evicted=${Vault.lastEvictions.map { it.trackId }}") } }
+            }
+            "cap" -> { Vault.setCap(this, args.getLong("bytes", 0L)); Log.i(TAG, "VaultCI: cap -> ${args.getLong("bytes", 0L)}") }
+            "play" -> playTracks(arrayListOf(args.getString("id", "")), 0)
+            "download_url" -> Thread { // the Offline Crate's real path: permitted URL -> encryptor, no plaintext
+                val id = args.getString("id", ""); val url = args.getString("url", "")
+                val err = try {
+                    com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.saveFromUrl(this, id, "CI permitted download", "Audius", url)
+                } catch (e: Exception) { e.message ?: "error" }
+                Log.i(TAG, "VaultCI: download $id -> ${err ?: "stored"}")
+            }.start()
+            "play_url" -> mainHandler.post { // network streams through the normal Media3 path (screen-off proof)
+                val p = player ?: return@post
+                val urls = args.getString("url", "").split('|').filter { it.startsWith("https://") }
+                p.setMediaItems(urls.mapIndexed { i, u -> MediaItem.Builder().setMediaId("ci-stream-$i").setUri(u)
+                    .setMediaMetadata(MediaMetadata.Builder().setTitle("CI stream ${i + 1}").setArtist("Audius").build()).build() })
+                p.prepare(); p.play()
+                Log.i(TAG, "VaultCI: streaming ${urls.size} url(s)")
+            }
+            "play_entry" -> {
+                val id = args.getString("id", "")
+                Thread {
+                    val e = Vault.entry(this, id)
+                    mainHandler.post {
+                        val p = player ?: return@post
+                        if (e == null) { Log.e(TAG, "VaultCI: no entry $id"); return@post }
+                        p.setMediaItem(MediaItem.Builder().setMediaId(id).setUri(VaultDataSource.uriFor(e.fileId)).build())
+                        p.prepare(); p.play()
+                        Log.i(TAG, "vault: playing offline copy of $id")
+                    }
+                }.start()
+            }
+            "clear" -> Vault.clearAll(this)
+            else -> {}
+        }
+        Thread {
+            val all = Vault.all(this)
+            Log.i(TAG, "VaultCI: dump count=${all.size} used=${Vault.usedBytes(this)} cap=${Vault.capBytes(this)} ids=${all.map { it.trackId }}")
+        }.start()
+    }
 
     override fun onDestroy() {
         mainHandler.removeCallbacks(xfadeTick)
@@ -912,6 +996,7 @@ class PlayerService : MediaSessionService() {
         const val ACTION_XFADE_SET = "GENESIS_XFADE_SET"
         const val ACTION_AUTOPLAY_SET = "GENESIS_AUTOPLAY_SET"
         const val ACTION_QUEUE_DUMP = "GENESIS_QUEUE_DUMP"
+        const val ACTION_VAULT_TEST = "GENESIS_VAULT_TEST"
 
         /** Live audio-effects controller, set when ExoPlayer's audio session attaches. */
         var fx: AudioFxController? = null
