@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.mymusic.BackgroundRoute
+import com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate
 import com.apexforge.genesisplayer.data.mymusic.ApolloEngine
 import com.apexforge.genesisplayer.data.mymusic.MyMusic
 
@@ -134,10 +136,25 @@ private fun errorText(code: Int) = when (code) {
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun YouTubePlayerScreen(onCollapse: () -> Unit) {
+fun YouTubePlayerScreen(onCollapse: () -> Unit, onPlayAurum: (List<String>, Int) -> Unit) {
     val context = LocalContext.current
     val main = remember { Handler(Looper.getMainLooper()) }
     val track = YtQueue.current()
+    val backgroundQueue = remember(
+        YtQueue.keys.toList(),
+        YtQueue.index,
+        OfflineCrate.version.intValue,
+        MyMusic.version.intValue
+    ) {
+        BackgroundRoute.select(
+            YtQueue.keys.toList(),
+            YtQueue.index,
+            resolveExactOrOffline = { OfflineCrate.aurumTrackId(context, it) },
+            canPlayInAurum = { id ->
+                Library.track(id)?.let { it.youtubeId.isEmpty() && it.streamUrl.isNotBlank() } == true
+            }
+        )
+    }
     val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     Column(Modifier.fillMaxSize().background(Color(0xFF0B0B10)).statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -209,6 +226,46 @@ fun YouTubePlayerScreen(onCollapse: () -> Unit) {
                 IconButton(onClick = { key?.let { if (liked) MyMusic.clearRating(context, it) else MyMusic.like(context, it) } }) {
                     Icon(Icons.Filled.Favorite, "Love it", tint = if (liked) Color(0xFFFF5C8A) else Color.White)
                 }
+            }
+            // The embedded YouTube player must remain visible. When an actual
+            // local/permitted match exists, explicitly switch to Aurum's Media3
+            // foreground audio service. No video extraction or hidden iframe.
+            if (backgroundQueue != null) {
+                Button(
+                    onClick = {
+                        YtQueue.web?.evaluateJavascript("pause()", null)
+                        YtQueue.playing = false
+                        YtQueue.open = false
+                        onPlayAurum(backgroundQueue.trackIds, backgroundQueue.startIndex)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Filled.Headphones, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Continue listening in background")
+                }
+                Text(
+                    "Aurum will play your available offline or permitted exact match. " +
+                        "The original YouTube video stays in YouTube.",
+                    color = Color(0xFF8A8AA0),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            } else {
+                OutlinedButton(
+                    onClick = { YtQueue.openInYouTubeMusic(context) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Filled.OpenInNew, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Continue in YouTube Music")
+                }
+                Text(
+                    "This YouTube song has no playable Aurum audio match yet. " +
+                        "Background listening in YouTube Music depends on your account plan. " +
+                        "Check Crate → Sanctuary for music that plays with Aurum closed.",
+                    color = Color(0xFF8A8AA0),
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = YtQueue.shuffle, onClick = { YtQueue.toggleShuffle() }, label = { Text("Shuffle") },
