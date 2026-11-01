@@ -70,8 +70,15 @@ object MyMusic {
         val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
             if (c.moveToFirst()) c.getString(0) else null
         } ?: uri.lastPathSegment ?: "import"
-        val r = context.contentResolver.openInputStream(uri)?.use { Takeout.read(name, it) }
+        val raw = context.contentResolver.openInputStream(uri)?.buffered()
             ?: throw IllegalStateException("could not open $name")
+        raw.mark(64)
+        val head = ByteArray(40).let { b -> String(b, 0, maxOf(0, raw.read(b)), Charsets.UTF_8) }
+        raw.reset()
+        if (head.replace(Regex("\\s"), "").startsWith("{\"aurum_transfer\"")) {
+            return raw.use { restoreTransfer(context, it.readBytes().toString(Charsets.UTF_8)) }
+        }
+        val r = raw.use { Takeout.read(name, it) }
         require(r.events.isNotEmpty()) {
             "No YouTube Music plays found in $name. Pick the Takeout .zip or watch-history.json (JSON format)."
         }
@@ -80,6 +87,35 @@ object MyMusic {
         imported = merged
         model = ApolloEngine.build(merged.events, merged.searches, merged.playlists, System.currentTimeMillis())
         publish()
+        return r.audit
+    }
+
+    /**
+     * 2.2: restore the library, Apollo feedback and Crate matches from an Aurum 2.2 Preview transfer file
+     * (tools/transfer_from_preview.sh). It carries listening data only, never audio. Every part is decoded and
+     * validated before anything is written, so a bad file changes nothing.
+     */
+    private fun restoreTransfer(context: Context, text: String): ImportAudit {
+        val o = org.json.JSONObject(text)
+        require(o.optInt("aurum_transfer") == 1) { "unsupported transfer file" }
+        val musicText = o.getString("my_music")
+        val r = MyMusicCodec.decode(musicText)
+        require(r.events.isNotEmpty()) { "the transfer file has no plays" }
+        val fbText = o.optString("feedback", "").ifEmpty { null }?.also { MyMusicCodec.decodeFeedback(it) }
+        val crateText = o.optString("crate", "").ifEmpty { null }?.also {
+            com.apexforge.genesisplayer.data.mymusic.crate.CrateMatcher.decode(it)
+        }
+        val merged = imported?.let { old -> merge(old, r) } ?: r
+        File(context.filesDir, DATA).writeText(MyMusicCodec.encode(merged))
+        fbText?.let { File(context.filesDir, FEEDBACK).writeText(it); feedback = MyMusicCodec.decodeFeedback(it) }
+        imported = merged
+        model = ApolloEngine.build(merged.events, merged.searches, merged.playlists, System.currentTimeMillis())
+        crateText?.let {
+            File(context.filesDir, "aurum_crate.json").writeText(it)
+            com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.load(context)
+        }
+        publish()
+        Log.i(TAG, "restored from Preview transfer: ${merged.events.size} plays")
         return r.audit
     }
 

@@ -73,8 +73,9 @@ jobs:
           (cd /tmp/base/android && /tmp/gradle-8.7/bin/gradle assembleDebug --no-daemon -q)
           cp /tmp/base/android/app/build/outputs/apk/debug/app-debug.apk /tmp/base-2.1-debug.apk
           git worktree add /tmp/pulse "$PULSE_SHA"
-          (cd /tmp/pulse/android && /tmp/gradle-8.7/bin/gradle assembleDebug --no-daemon -q)
+          (cd /tmp/pulse/android && /tmp/gradle-8.7/bin/gradle assembleDebug assemblePreview --no-daemon -q)
           cp /tmp/pulse/android/app/build/outputs/apk/debug/app-debug.apk /tmp/pulse-2.2-aurum-debug.apk
+          cp /tmp/pulse/android/app/build/outputs/apk/preview/app-preview.apk /tmp/pulse-2.2-aurum-preview.apk
 
       - name: Build 2.2 (debug, androidTest, release)
         working-directory: android
@@ -103,6 +104,7 @@ jobs:
         env:
           BASE_APK: /tmp/base-2.1-debug.apk
           PULSE_APK: /tmp/pulse-2.2-aurum-debug.apk
+          PREVIEW_APK: /tmp/pulse-2.2-aurum-preview.apk
           NEW_APK: android/app/build/outputs/apk/debug/app-debug.apk
           OUT: /tmp/aurum22
         run: bash .github/scripts/aurum22/battery.sh

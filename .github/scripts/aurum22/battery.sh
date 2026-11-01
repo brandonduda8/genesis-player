@@ -9,6 +9,7 @@ OUT=${OUT:-/tmp/aurum22}
 mkdir -p "$OUT"
 R="$OUT/results.txt"; : > "$R"
 here=$(cd "$(dirname "$0")" && pwd)
+ROOT=$(cd "$here/../../.." && pwd)
 pass() { echo "PASS  $*" | tee -a "$R"; }
 fail() { echo "FAIL  $*" | tee -a "$R"; }
 info() { echo "INFO  $*" | tee -a "$R"; }
@@ -221,6 +222,37 @@ adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode clear >/dev/null; sleep 
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode dump >/dev/null; sleep 3
 adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | grep -qE "cap=2147483648 ids=\[(owned:legacy-[0-9a-f]+)?\]" \
   && pass "clear-all removes every download (your own imported file stays); cap back to the 2 GB default" || fail "clear-all/default cap (see log)"
+
+# ---------------------------------------------------------------- 7. move a library from the Preview, nothing uninstalled
+echo "=== 7. Preview -> 2.2 transfer (tools/transfer_from_preview.sh) ==="
+if [ -n "${PREVIEW_APK:-}" ] && [ -f "$PREVIEW_APK" ]; then
+  PRE=$PKG.preview
+  adb install -r "$PREVIEW_APK" >/dev/null && info "installed the Aurum 2.2 Preview ($PRE) next to 2.2"
+  adb push "$ROOT/.github/fixtures/synthetic-watch-history.json" /data/local/tmp/watch-history.json >/dev/null
+  adb shell "cat /data/local/tmp/watch-history.json | run-as $PRE sh -c 'mkdir -p files && cat > files/watch-history.json'"
+  adb logcat -c
+  adb shell am start -S -n $PRE/$PKG.MainActivity -a $PKG.TEST_IMPORT --es path /data/data/$PRE/files/watch-history.json >/dev/null
+  for _ in $(seq 1 40); do adb logcat -d -s GenesisPlayer:* | grep -q "TEST_IMPORT" && break; sleep 1; done
+  adb logcat -d -s GenesisPlayer:* | grep -m1 TEST_IMPORT | sed 's/^/INFO  preview: /' | tee -a "$R"
+  sleep 3; adb shell am force-stop $PRE
+  PRE_SHA=$(adb exec-out run-as $PRE cat files/aurum_my_music.json | sha256sum | cut -d' ' -f1)
+  if bash "$ROOT/tools/transfer_from_preview.sh" > "$OUT/transfer.txt" 2>&1; then
+    pass "transfer script: $(grep -m1 Wrote "$OUT/transfer.txt")"
+    adb shell cat /sdcard/Download/aurum-transfer.json > "$OUT/transfer.json"
+    LC_ALL=C grep -aqE 'RIFF....WAVE|ID3|fLaC|OggS|ftypM4A' "$OUT/transfer.json" && fail "transfer file carries audio" || pass "transfer file is listening data only (no audio signature)"
+    rm -f "$OUT/transfer.json" # personal-data shaped; not kept as CI evidence
+    adb shell "cat /sdcard/Download/aurum-transfer.json | run-as $PKG sh -c 'cat > files/aurum-transfer.json'"
+    adb shell rm /sdcard/Download/aurum-transfer.json
+    adb logcat -c
+    adb shell am start -S -n $ACT -a $PKG.TEST_IMPORT --es path /data/data/$PKG/files/aurum-transfer.json >/dev/null
+    for _ in $(seq 1 40); do adb logcat -d -s GenesisPlayer:* | grep -q "TEST_IMPORT" && break; sleep 1; done
+    imp=$(adb logcat -d -s GenesisPlayer:* | grep -m1 TEST_IMPORT)
+    echo "$imp" | grep -q "TEST_IMPORT ok plays=240" && pass "2.2 restored the Preview's library from the transfer file (240 plays)" || fail "restore: $imp"
+    runas 'rm -f files/aurum-transfer.json'
+  else fail "transfer script: $(tail -3 "$OUT/transfer.txt")"; fi
+  adb shell pm list packages | grep -q "^package:$PRE$" && [ "$(adb exec-out run-as $PRE cat files/aurum_my_music.json | sha256sum | cut -d' ' -f1)" = "$PRE_SHA" ] \
+    && pass "the Preview is still installed and its library is byte-identical" || fail "the Preview or its data changed"
+else info "no PREVIEW_APK given: transfer test skipped"; fi
 
 adb logcat -d > "$OUT/logcat.txt"
 grep -i "FATAL EXCEPTION" -A8 "$OUT/logcat.txt" | grep -q "$PKG" && fail "a crash was logged" || pass "no crash during the battery"
