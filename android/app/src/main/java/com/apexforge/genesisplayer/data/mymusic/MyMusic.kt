@@ -8,6 +8,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.LocalAudioLibrary
 import com.apexforge.genesisplayer.data.Playlist
 import com.apexforge.genesisplayer.data.Track
 import java.io.File
@@ -134,6 +135,24 @@ object MyMusic {
                 }
             } catch (e: SecurityException) {
                 Log.w(TAG, "no permission to read audio files yet")
+            }
+            // Files chosen explicitly through Android's picker are usable even if
+            // READ_MEDIA_AUDIO was denied. No file copies, network calls or uploads.
+            val picked = LocalAudioLibrary.tracks(app)
+            picked.forEach { audio ->
+                if (out.none { it.streamUrl == audio.uri }) {
+                    val hash = java.security.MessageDigest.getInstance("SHA-256")
+                        .digest(audio.uri.toByteArray(Charsets.UTF_8))
+                        .take(12).joinToString("") { "%02x".format(it) }
+                    out.add(Track(
+                        id = "saf:$hash",
+                        artist = "On-device audio",
+                        title = audio.title,
+                        streamUrl = audio.uri,
+                        artworkUrl = "",
+                        durationS = 0
+                    ))
+                }
             }
             localTracks = out
             publish()
