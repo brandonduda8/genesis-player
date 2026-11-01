@@ -1,6 +1,10 @@
 package com.apexforge.genesisplayer
 
+import android.app.PictureInPictureParams
 import android.content.ComponentName
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.util.Rational
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +31,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -63,6 +75,30 @@ import com.apexforge.genesisplayer.data.SnapshotStore
 import com.google.common.util.concurrent.MoreExecutors
 
 class MainActivity : ComponentActivity() {
+    var inAurumPip by mutableStateOf(false)
+        private set
+
+    /** Only the native Media3 audio source may enter the floating player. */
+    fun floatNativePlayer() {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            android.widget.Toast.makeText(this, "Floating player unavailable on this device", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
+        try {
+            enterPictureInPictureMode(
+                PictureInPictureParams.Builder()
+                    .setAspectRatio(Rational(1, 1))
+                    .build()
+            )
+        } catch (e: Exception) {
+            Log.w("AurumPulse", "Could not enter floating player: ${e.message}")
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        inAurumPip = isInPictureInPictureMode
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Aurum Pulse 2: the library is the owner's own YouTube history + the phone's audio files (MyMusic).
@@ -324,6 +360,11 @@ private data class Tab(val id: String, val name: String, val icon: ImageVector)
 fun AurumApp() {
     val context = LocalContext.current
     val controller = rememberPlayerController()
+    val activity = context as? MainActivity
+    if (activity?.inAurumPip == true) {
+        AurumFloatingDock(controller)
+        return
+    }
     val version = com.apexforge.genesisplayer.data.mymusic.MyMusic.version.intValue // read eagerly
     var importing by remember { mutableStateOf(!com.apexforge.genesisplayer.data.mymusic.MyMusic.hasData(context)) }
     var tab by remember { mutableStateOf(0) }
@@ -382,12 +423,12 @@ fun AurumApp() {
                 "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
                 "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad), onPlayAurum = playLocal)
                 "crate" -> com.apexforge.genesisplayer.ui.mymusic.CrateScreen(playLocal, Modifier.padding(pad))
-                "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
+                "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad), onFloat = { if (controller?.isPlaying == true) activity?.floatNativePlayer() })
                 "eq" -> EqScreen(Modifier.padding(pad))
             } }
         }
         if (showNowPlaying) {
-            Box(Modifier.fillMaxSize()) { NowPlayingScreen(controller = controller, onCollapse = { showNowPlaying = false }) }
+            Box(Modifier.fillMaxSize()) { NowPlayingScreen(controller = controller, onCollapse = { showNowPlaying = false }, onFloat = { if (controller?.isPlaying == true) activity?.floatNativePlayer() }) }
         }
         if (yt.open && yt.current() != null) {
             // Media3 and YouTube never play at once.
@@ -396,6 +437,44 @@ fun AurumApp() {
                 onCollapse = { yt.open = false },
                 onPlayAurum = playLocal
             )
+        }
+    }
+}
+
+/** Small surface that remains on-screen while the native audio service works. */
+@Composable
+private fun AurumFloatingDock(controller: MediaController?) {
+    var title by remember { mutableStateOf("Aurum Pulse") }
+    var artist by remember { mutableStateOf("Your music, always close.") }
+    var playing by remember { mutableStateOf(false) }
+    LaunchedEffect(controller) {
+        while (true) {
+            title = controller?.mediaMetadata?.title?.toString() ?: "Aurum Pulse"
+            artist = controller?.mediaMetadata?.artist?.toString() ?: "Offline / permitted audio"
+            playing = controller?.isPlaying == true
+            delay(750L)
+        }
+    }
+    Column(
+        Modifier.fillMaxSize().background(Color(0xFF0B0A0D)).padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("AURUM PULSE", fontSize = 12.sp, color = Color(0xFFF5B942))
+        Text(title, color = Color.White, maxLines = 1)
+        Text(artist, color = Color(0xFFC39B70), fontSize = 11.sp, maxLines = 1)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { controller?.seekToPreviousMediaItem() }) {
+                Icon(Icons.Filled.SkipPrevious, contentDescription = "Previous", tint = Color.White)
+            }
+            IconButton(onClick = { if (playing) controller?.pause() else controller?.play() }) {
+                Icon(
+                    if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    contentDescription = if (playing) "Pause" else "Play", tint = Color(0xFFF5B942)
+                )
+            }
+            IconButton(onClick = { controller?.seekToNextMediaItem() }) {
+                Icon(Icons.Filled.SkipNext, contentDescription = "Next", tint = Color.White)
+            }
         }
     }
 }
