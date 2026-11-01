@@ -335,11 +335,12 @@ fun AurumApp() {
         return
     }
     val tabs = listOf(
+        // Aurum naming: Apollo (intelligence) · Signal Archive · Crate (vault + offline sanctuary) · Pulse Chamber · Sound Forge
         Tab("apollo", "Apollo", Icons.Filled.Psychology),
-        Tab("library", "Library", Icons.Filled.LibraryMusic),
+        Tab("library", "Archive", Icons.Filled.LibraryMusic),
         Tab("crate", "Crate", Icons.Filled.Inventory2),
-        Tab("nowplaying", "Now Playing", Icons.Filled.PlayCircle),
-        Tab("eq", "EQ", Icons.Filled.GraphicEq)
+        Tab("nowplaying", "Chamber", Icons.Filled.PlayCircle),
+        Tab("eq", "Forge", Icons.Filled.GraphicEq)
     )
     val playLocal: (List<String>, Int) -> Unit = { ids, i ->
         yt.web?.evaluateJavascript("pause()", null)
@@ -358,7 +359,8 @@ fun AurumApp() {
                             .clickable { yt.open = true }.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.PlayCircle, null, tint = com.apexforge.genesisplayer.ui.EmberOrange)
                             Spacer(Modifier.width(10.dp))
-                            Text("${cur.title} · ${cur.artist} (paused, tap to open)", maxLines = 1)
+                            Text("${cur.title} · ${cur.artist} · paused · tap for the Pulse Chamber", maxLines = 1,
+                                color = com.apexforge.genesisplayer.ui.mymusic.Aurum.Text)
                         }
                     }
                     MiniPlayerBar(controller = controller, onOpen = { showNowPlaying = true })
@@ -376,13 +378,13 @@ fun AurumApp() {
                 }
             }
         ) { pad ->
-            when (tabs[tab].id) {
+            androidx.compose.animation.Crossfade(targetState = tabs[tab].id, label = "aurum-tab") { id -> when (id) {
                 "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
                 "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad), onPlayAurum = playLocal)
                 "crate" -> com.apexforge.genesisplayer.ui.mymusic.CrateScreen(playLocal, Modifier.padding(pad))
                 "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
                 "eq" -> EqScreen(Modifier.padding(pad))
-            }
+            } }
         }
         if (showNowPlaying) {
             Box(Modifier.fillMaxSize()) { NowPlayingScreen(controller = controller, onCollapse = { showNowPlaying = false }) }

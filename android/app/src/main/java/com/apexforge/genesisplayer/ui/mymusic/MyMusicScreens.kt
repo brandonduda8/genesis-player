@@ -67,9 +67,15 @@ fun ImportScreen(modifier: Modifier = Modifier, onDone: () -> Unit = {}) {
     }
     LazyColumn(modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item {
-            Text("Aurum Pulse", style = MaterialTheme.typography.headlineLarge, color = Gold, fontWeight = FontWeight.Bold)
-            Text("Built from YOUR YouTube listening. No catalog, no filler: every song here is one you actually played.",
-                color = Color.White, style = MaterialTheme.typography.bodyLarge)
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                PulseMark(132.dp)
+                Overline("Aurum Pulse", Aurum.Gold)
+                Text(Aurum.TAGLINE, style = MaterialTheme.typography.headlineMedium, color = Aurum.Text,
+                    fontWeight = FontWeight.Black, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                Text("A living vault for your music, built from your own YouTube listening. No catalog, no filler: every " +
+                    "song here is one you actually played.", color = Aurum.Dim, style = MaterialTheme.typography.bodyMedium,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
+            }
         }
         item {
             Card(colors = CardDefaults.cardColors(containerColor = CardBg)) {
@@ -89,7 +95,15 @@ fun ImportScreen(modifier: Modifier = Modifier, onDone: () -> Unit = {}) {
             }
         }
         error?.let { item { Text(it, color = Color(0xFFFF6B6B)) } }
-        audit?.let { a -> item { AuditCard(a) } ; item { Button(onClick = onDone) { Text("Open my music") } } }
+        audit?.let { a ->
+            item { Text(Aurum.READY, style = MaterialTheme.typography.headlineSmall, color = Aurum.Gold, fontWeight = FontWeight.Black) }
+            item { AuditCard(a) }
+            item {
+                Button(onClick = onDone, colors = ButtonDefaults.buttonColors(containerColor = Aurum.Gold, contentColor = Aurum.Obsidian)) {
+                    Text("Enter the vault")
+                }
+            }
+        }
     }
 }
 
@@ -123,9 +137,9 @@ fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit) {
     val recent = MyMusic.recentKeys()
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item {
-            Text("Apollo", style = MaterialTheme.typography.headlineLarge, color = Gold, fontWeight = FontWeight.Bold)
+            BrandHeader("Intelligence", "Apollo", Aurum.SIGNAL_LINE)
             Text("${model.songs.size} of your songs · ${model.artists.size} artists · learning from every like, skip and full play",
-                color = Dim, style = MaterialTheme.typography.bodySmall)
+                color = Aurum.Dim, style = MaterialTheme.typography.bodySmall)
         }
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -198,7 +212,9 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
     var query by remember { mutableStateOf("") }
     var mode by remember { mutableIntStateOf(0) }
     var artist by remember { mutableStateOf<String?>(null) }
+    val online = rememberOnline()
     Column(modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        BrandHeader("Signal Archive", "Your archive", Aurum.MEMORY_LINE, Modifier.padding(top = 12.dp))
         OutlinedTextField(value = query, onValueChange = { query = it; artist = null }, singleLine = true,
             leadingIcon = { Icon(Icons.Filled.Search, null) }, placeholder = { Text("Search your songs and artists") },
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
@@ -223,17 +239,22 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
                     val s = model.songs[k] ?: return@itemsIndexed
                     val ctx = LocalContext.current
                     val aurum = com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.aurumTrackId(ctx, k)
+                    val st = com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.status(ctx, k)
                     val badge = when {
-                        aurum?.startsWith("offline:") == true -> " · OFFLINE"
+                        st.worksOffline -> " · OFFLINE"
                         aurum != null -> " · IN AURUM"
                         else -> ""
                     }
                     SongRow(Library.track(k)?.artworkUrl ?: "", s.title, "${s.artist} · ${s.plays} plays$badge") {
-                        if (aurum != null) {
+                        if (!online && !st.worksOffline) {
+                            android.widget.Toast.makeText(ctx, "Offline: \"${s.title}\" needs the internet. " +
+                                "Your sanctuary in the Crate still plays.", android.widget.Toast.LENGTH_SHORT).show()
+                        } else if (aurum != null) {
                             // Your exact recording plays in Aurum (EQ, bass, background); the queue keeps only the
                             // songs from this list that also have an exact or offline copy. Nothing is substituted.
                             val playable = songKeys.mapNotNull { key ->
                                 com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.aurumTrackId(ctx, key) }
+                                .filter { online || it.startsWith("offline:") } // offline: only what truly plays offline
                             onPlayAurum(playable, playable.indexOf(aurum).coerceAtLeast(0))
                         } else YtQueue.play(songKeys, i)
                     }

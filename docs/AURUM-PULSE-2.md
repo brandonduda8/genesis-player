@@ -84,3 +84,37 @@ APIs is an artist name; history never leaves the phone.
 - `CrateMatcherTest` (9, synthetic).
 - `CrateContractTest`: live Audius and Archive with neutral queries; CI only, non-blocking.
 - The emulator smoke test runs the real matcher on the 4 synthetic artists until it reads "Checked 4 of 4 artists".
+
+## 2.2: Brand + offline evolution (WO-CLAUDE-AURUM-PULSE-BRAND-OFFLINE-002)
+
+**Brand: "your living music vault"**
+- **Palette:** molten gold `#F5B942`, ember `#FF7A2F`, obsidian `#0B0A0D`, charcoal, bronze labels, celestial violet
+  (reserved). It's set in `Theme.kt`, so the older screens (Pulse Chamber, Sound Forge, mini-player) inherit it.
+- **Type hierarchy:** heavy, tightened headlines; letter-spaced bronze overlines; gold emotional lines.
+- **Kit:** `ui/mymusic/AurumBrand.kt` (`BrandHeader`, `GoldCard`, `Pill`, an animated `PulseMark`).
+- **Names:**
+  - Apollo (Intelligence) · Signal Archive · Crate (vault + Offline Sanctuary) · Pulse Chamber · Sound Forge.
+  - Tab labels: Apollo · Archive · Crate · Chamber · Forge, with a crossfade between tabs.
+- **Copy:**
+  - The welcome screen: "Your sound. Turned alive.", then "Your music vault is ready."
+  - Section lines: "Built from your signal." · "Music that remembers you." · "Your crate. Your pulse. Your world." ·
+    "Offline when the world isn't."
+
+**Offline**
+- **Add music files:** the owner picks audio files they own. They're copied into app-private storage and play in
+  Aurum (EQ, background, lock screen).
+- **Sanctuary first:** saved permitted tracks, imported files and phone files. Everything there plays with no internet.
+- **One honest status per song** (`SongStatus`, unit-tested): OFFLINE · CAN SAVE · ONLINE · EXACT · ALT VERSION ·
+  YOUTUBE · NOT CHECKED. Badges appear on every row.
+- **Rule tightened:** only the EXACT recording with permission can be saved. Alternates never enter the offline vault.
+- **Live online/offline indicator.** Offline, a song that needs the internet says so instead of failing. The Archive's
+  offline queue holds only what truly plays offline.
+
+**Unchanged:** the Media3 engine (background, lock-screen controls, queue), the EQ, Apollo, the importer, the matching
+rules, and the legal boundaries.
+
+**Still needs work:**
+- **The Pulse Chamber's own layout:** only renamed and recoloured here, not redesigned.
+- **Celestial / "Golden Mode" theme switch:** not built.
+- **Real-device check:** YouTube embeds, Audius streams, saving with EQ, and the lock screen with imported files.
+- **Matching coverage:** for the owner's own artists. Their real numbers show on the phone.

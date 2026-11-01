@@ -97,7 +97,9 @@ object OfflineCrate {
 
     fun download(context: Context, songKeys: List<String>) {
         val app = context.applicationContext
-        val todo = songKeys.filter { matches[it]?.downloadable == true && !offlineFile(app, it).exists() }
+        // only the EXACT recording, and only with permission: alternates never enter the offline vault
+        val todo = songKeys.filter { k -> matches[k]?.let { it.kind == MatchKind.EXACT && it.downloadable } == true &&
+            !offlineFile(app, k).exists() }
         if (todo.isEmpty()) return
         downloading.value = downloading.value + todo
         dl.execute {
@@ -121,6 +123,8 @@ object OfflineCrate {
     }
 
     fun isOffline(context: Context, songKey: String) = offlineFile(context, songKey).exists()
+
+    fun status(context: Context, songKey: String): SongStatus = SongStatus.of(isOffline(context, songKey), matches[songKey])
 
     /**
      * Which Aurum (Media3) track plays this song: the offline copy, else the EXACT stream. Alternate versions are

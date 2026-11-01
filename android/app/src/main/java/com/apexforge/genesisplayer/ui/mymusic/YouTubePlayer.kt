@@ -144,7 +144,10 @@ fun YouTubePlayerScreen(onCollapse: () -> Unit) {
             IconButton(onClick = { YtQueue.web?.evaluateJavascript("pause()", null); onCollapse() }) {
                 Icon(Icons.Filled.KeyboardArrowDown, "Collapse (pauses)", tint = Color.White)
             }
-            Text("Playing from your YouTube history", color = Color(0xFFB0B0C0), style = MaterialTheme.typography.labelMedium)
+            Column {
+                Overline("Pulse Chamber · YouTube", Aurum.Gold)
+                Text("Official YouTube player · needs the internet", color = Aurum.Dim, style = MaterialTheme.typography.labelSmall)
+            }
         }
         AndroidView(
             modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),

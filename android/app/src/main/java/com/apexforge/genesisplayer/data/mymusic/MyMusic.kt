@@ -140,6 +140,55 @@ object MyMusic {
         }
     }
 
+    // ---------- music the owner imports into the vault (files they own; copied into app-private storage) ----------
+    private val ownedMeta = java.util.concurrent.ConcurrentHashMap<String, Pair<String, String>>()
+
+    fun ownedDir(context: Context) = File(context.filesDir, "owned").also { it.mkdirs() }
+
+    /** Copy the picked audio files into the vault. Returns how many were added. Blocking: call off the main thread. */
+    fun importAudio(context: Context, uris: List<Uri>): Int {
+        var n = 0
+        for (uri in uris) {
+            try {
+                val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
+                    if (c.moveToFirst()) c.getString(0) else null
+                } ?: "track-${System.currentTimeMillis()}.mp3"
+                val safe = name.replace(Regex("[^A-Za-z0-9 ._()&'-]"), "_").take(150)
+                val dest = File(ownedDir(context), safe)
+                if (dest.exists()) continue
+                val part = File(dest.path + ".part")
+                context.contentResolver.openInputStream(uri)?.use { inp -> part.outputStream().use { inp.copyTo(it) } } ?: continue
+                if (part.renameTo(dest)) n++
+            } catch (e: Exception) {
+                Log.w(TAG, "could not import a file: ${e.message}")
+            }
+        }
+        publish()
+        return n
+    }
+
+    fun removeOwned(context: Context, id: String) {
+        File(ownedDir(context), id.removePrefix("owned:")).delete()
+        publish()
+    }
+
+    fun ownedTracks(context: Context): List<Track> = ownedDir(context).listFiles { f -> f.isFile && !f.name.endsWith(".part") }
+        .orEmpty().sortedBy { it.name.lowercase() }.map { f ->
+            val (title, artist) = ownedMeta.getOrPut(f.path) {
+                val r = android.media.MediaMetadataRetriever()
+                try {
+                    r.setDataSource(f.path)
+                    (r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_TITLE) ?: f.nameWithoutExtension) to
+                        (r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "Your file")
+                } catch (e: Exception) {
+                    f.nameWithoutExtension to "Your file"
+                } finally {
+                    try { r.release() } catch (_: Exception) {}
+                }
+            }
+            Track("owned:${f.name}", artist, title, Uri.fromFile(f).toString(), "", 0)
+        }
+
     // ---------- the app's Library ----------
     fun mixes(): List<Mix> {
         val m = model ?: return emptyList()
@@ -157,9 +206,10 @@ object MyMusic {
                 artworkUrl = "https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg", durationS = 0, youtubeId = s.videoId)
         }.orEmpty()
         val crate = appContext?.let { com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.tracks(it) }.orEmpty()
+        val owned = appContext?.let { ownedTracks(it) }.orEmpty()
         val playlists = mixes().map { Playlist(it.name, it.songKeys) } +
             (if (localTracks.isNotEmpty()) listOf(Playlist("On this phone", localTracks.map { it.id })) else emptyList())
-        Library.applyRemote(yt + crate + localTracks, playlists)
+        Library.applyRemote(yt + crate + owned + localTracks, playlists)
         version.intValue = version.intValue + 1
     }
 }

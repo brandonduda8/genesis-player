@@ -6,6 +6,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 
 /** Live theme palette. Defaults = the bundled Ember / Genesis quantum-fire look. */
 data class ThemePalette(
@@ -34,15 +35,16 @@ data class AppLabels(
  * functions, so a palette swap recomposes the whole UI instantly.
  */
 object RemoteTheme {
+    /** Aurum Pulse palette: molten gold + ember on black obsidian (see ui/mymusic/AurumBrand.kt). */
     fun defaultPalette() = ThemePalette(
-        background = Color(0xFF0A0A0C),
-        surface = Color(0xFF141417),
-        card = Color(0xFF1B1B1F),
-        accent = Color(0xFFFF6A00),
+        background = Color(0xFF0B0A0D),
+        surface = Color(0xFF151318),
+        card = Color(0xFF1C1820),
+        accent = Color(0xFFFF7A2F),
         gold = Color(0xFFF5B942),
-        text = Color(0xFFFFFFFF),
-        textDim = Color(0xFF9A9AA0),
-        ember = Color(0xFFFF6A00)
+        text = Color(0xFFF7F1E8),
+        textDim = Color(0xFF9C9488),
+        ember = Color(0xFFFF7A2F)
     )
 
     fun defaultSections() = listOf(
@@ -53,7 +55,7 @@ object RemoteTheme {
     )
 
     fun defaultLabels() = AppLabels(
-        appName = "BRKN Vibes",
+        appName = "Aurum Pulse",
         libraryTitle = "Library",
         librarySubtitle = "{count} tracks — streamed, never downloaded",
         refreshLabel = "⟳ Refresh music"
@@ -89,7 +91,16 @@ fun GenesisTheme(content: @Composable () -> Unit) {
     )
     MaterialTheme(
         colorScheme = scheme,
-        typography = Typography(),
+        typography = Typography().let { t ->
+            // Aurum hierarchy: heavy, slightly tightened headlines; calm body text.
+            t.copy(
+                headlineLarge = t.headlineLarge.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Black, letterSpacing = (-0.5).sp),
+                headlineMedium = t.headlineMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Black, letterSpacing = (-0.3).sp),
+                headlineSmall = t.headlineSmall.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                titleLarge = t.titleLarge.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                titleMedium = t.titleMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
+            )
+        },
         content = content
     )
 }

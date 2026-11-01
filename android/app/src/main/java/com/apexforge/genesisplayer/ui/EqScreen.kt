@@ -63,7 +63,8 @@ fun EqScreen(modifier: Modifier = Modifier) {
 
     LazyColumn(modifier = modifier.fillMaxSize().padding(16.dp)) {
         item {
-            Text("Amplify", style = MaterialTheme.typography.headlineMedium, color = PhoenixGold)
+            Text("SOUND FORGE", color = com.apexforge.genesisplayer.ui.mymusic.Aurum.Bronze, fontSize = 11.sp, letterSpacing = 2.4.sp)
+            Text("Shape your sound", style = MaterialTheme.typography.headlineMedium, color = PhoenixGold)
             Text("Real system DSP — bass, EQ and loudness on the live audio session",
                 color = TextDim, fontSize = 13.sp)
             Spacer(Modifier.height(12.dp))

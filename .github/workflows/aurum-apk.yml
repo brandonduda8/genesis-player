@@ -71,6 +71,8 @@ jobs:
           adb logcat -c
           adb shell am start -W -n $PKG/.MainActivity
           sleep 6; adb exec-out screencap -p > /tmp/aurum_1_first_run.png
+          adb shell uiautomator dump /sdcard/ui0.xml >/dev/null; adb pull /sdcard/ui0.xml /tmp/ui0.xml
+          grep -q 'Your sound. Turned alive.' /tmp/ui0.xml
           # Put the synthetic Takeout in the app's PRIVATE files dir (debug build: run-as), as a phone download would
           # be read through the picker; scoped storage denies the app files the shell creates under Android/data.
           adb push .github/fixtures/synthetic-watch-history.json /data/local/tmp/watch-history.json
@@ -85,14 +87,14 @@ jobs:
           adb shell uiautomator dump /sdcard/ui.xml >/dev/null; adb pull /sdcard/ui.xml /tmp/ui.xml
           grep -o 'text="Apollo"' /tmp/ui.xml | head -1
           grep -q 'Play For You' /tmp/ui.xml
-          B=$(python3 -c "import re;x=open('/tmp/ui.xml').read();m=re.search(r'text=\"Library\"[^>]*bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]',x);print((int(m[1])+int(m[3]))//2,(int(m[2])+int(m[4]))//2)")
+          B=$(python3 -c "import re;x=open('/tmp/ui.xml').read();m=re.search(r'text=\"Archive\"[^>]*bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]',x);print((int(m[1])+int(m[3]))//2,(int(m[2])+int(m[4]))//2)")
           adb shell input tap $B; sleep 3; adb exec-out screencap -p > /tmp/aurum_3_library.png
           adb shell uiautomator dump /sdcard/ui2.xml >/dev/null; adb pull /sdcard/ui2.xml /tmp/ui2.xml
           grep -q 'Sample Artist' /tmp/ui2.xml
           C=$(python3 -c "import re;x=open('/tmp/ui2.xml').read();m=re.search(r'text=\"Crate\"[^>]*bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]',x);print((int(m[1])+int(m[3]))//2,(int(m[2])+int(m[4]))//2)")
           adb shell input tap $C; sleep 3
           adb shell uiautomator dump /sdcard/ui3.xml >/dev/null; adb pull /sdcard/ui3.xml /tmp/ui3.xml
-          grep -q 'Offline Crate' /tmp/ui3.xml
+          grep -q 'OFFLINE CRATE' /tmp/ui3.xml
           M=$(python3 -c "import re;x=open('/tmp/ui3.xml').read();m=re.search(r'text=\"Match my library\"[^>]*bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]',x);print((int(m[1])+int(m[3]))//2,(int(m[2])+int(m[4]))//2)")
           adb shell input tap $M
           for i in $(seq 1 45); do sleep 2; adb shell uiautomator dump /sdcard/ui4.xml >/dev/null 2>&1; adb pull /sdcard/ui4.xml /tmp/ui4.xml >/dev/null 2>&1; grep -qE 'Checked 4 of 4 artists|Stopped' /tmp/ui4.xml && break; done
