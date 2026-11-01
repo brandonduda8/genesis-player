@@ -88,6 +88,7 @@ class MainActivity : ComponentActivity() {
         handleTestSleep(intent)
         handleTestXfade(intent)
         handleTestQueueDump(intent)
+        handleTestImport(intent)
     }
 
     private var testController: MediaController? = null
