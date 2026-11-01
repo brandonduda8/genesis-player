@@ -1,6 +1,6 @@
 name: aurum-2.2
 
-# WO-AURUM-2.2-BACKGROUND-OFFLINE: build + prove 2.2-deepspace on GitHub's free runner ($0 lane).
+# WO-AURUM-2.2-BACKGROUND-OFFLINE: build + prove Aurum 2.2 on GitHub's free runner ($0 lane).
 #  1. JVM unit tests (vault crypto, eviction, download permission).
 #  2. Build the 2.1-deepspace base (8ad3bbb), the pre-vault Aurum Pulse build (PULSE_SHA, plaintext offline files)
 #     and 2.2 debug with the SAME runner debug key, so both update tests are real `adb install -r` over old data.
@@ -131,15 +131,15 @@ jobs:
         run: |
           U=android/app/build/outputs/apk/release/app-release-unsigned.apk
           [ -f "$U" ] || { echo "no release APK was built (an earlier step failed)"; exit 1; }
-          zipalign -p -f 4 "$U" /tmp/release/aurum-2.2-deepspace-release-unsigned.apk
+          zipalign -p -f 4 "$U" /tmp/release/aurum-2.2-release-unsigned.apk
           if [ -n "$KS_B64" ]; then
             umask 077; echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/aurum.jks"
             apksigner sign --ks "$RUNNER_TEMP/aurum.jks" --ks-pass env:KS_PASS --ks-key-alias "$KEY_ALIAS" \
-              --key-pass env:KEY_PASS --out /tmp/release/aurum-2.2-deepspace.apk /tmp/release/aurum-2.2-deepspace-release-unsigned.apk
+              --key-pass env:KEY_PASS --out /tmp/release/aurum-2.2.apk /tmp/release/aurum-2.2-release-unsigned.apk
             rm -f "$RUNNER_TEMP/aurum.jks"
-            CERT=$(apksigner verify --print-certs /tmp/release/aurum-2.2-deepspace.apk | grep -m1 "SHA-256 digest" | awk '{print $NF}' | tr a-f A-F | sed 's/../&:/g; s/:$//')
+            CERT=$(apksigner verify --print-certs /tmp/release/aurum-2.2.apk | grep -m1 "SHA-256 digest" | awk '{print $NF}' | tr a-f A-F | sed 's/../&:/g; s/:$//')
             echo "signer: $CERT"
-            if [ "$CERT" != "$EXPECTED_CERT" ]; then echo "SIGNER MISMATCH: not the AURUM key; refusing"; rm -f /tmp/release/aurum-2.2-deepspace.apk; exit 1; fi
+            if [ "$CERT" != "$EXPECTED_CERT" ]; then echo "SIGNER MISMATCH: not the AURUM key; refusing"; rm -f /tmp/release/aurum-2.2.apk; exit 1; fi
             echo "SIGNER MATCHES the stable AURUM key" | tee /tmp/release/signing.txt
           else
             echo "AURUM signing secrets not configured in this repo: shipping the UNSIGNED release for Zane to sign with the AURUM key (apksigner), then verify $EXPECTED_CERT" | tee /tmp/release/signing.txt
