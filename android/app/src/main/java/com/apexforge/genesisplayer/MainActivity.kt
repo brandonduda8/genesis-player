@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Psychology
 import androidx.media3.common.Player
@@ -41,6 +42,7 @@ import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.RemoteCatalog
 import com.apexforge.genesisplayer.data.RemoteConfig
 import com.apexforge.genesisplayer.ui.CrateScreen
+import com.apexforge.genesisplayer.ui.OfflineScreen
 import com.apexforge.genesisplayer.ui.EqScreen
 import com.apexforge.genesisplayer.ui.GenesisTheme
 import com.apexforge.genesisplayer.ui.MiniPlayerBar
@@ -314,6 +316,7 @@ fun GenesisApp() {
     fun label(id: String, fallback: String) = byId[id]?.label?.takeIf { it.isNotBlank() } ?: fallback
     val tabs = buildList {
         add(Tab("crate", label("crate", "Crate"), Icons.Filled.LibraryMusic))
+        add(Tab("offline", "Offline", Icons.Filled.Folder))
         add(Tab("playlists", label("playlists", "Playlists"), Icons.AutoMirrored.Filled.QueueMusic))
         add(Tab("apollo", label("apollo", "Apollo"), Icons.Filled.Psychology))
         if (byId["nowplaying"]?.visible == true) {
@@ -354,6 +357,7 @@ fun GenesisApp() {
                     onAskApollo = { tab = tabs.indexOfFirst { it.id == "apollo" } },
                     modifier = Modifier.padding(pad)
                 )
+                "offline" -> OfflineScreen(controller, Modifier.padding(pad))
                 "playlists" -> PlaylistsScreen(controller, pulse, Modifier.padding(pad))
                 "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
                 "apollo" -> ApolloScreen(controller, Modifier.padding(pad))
