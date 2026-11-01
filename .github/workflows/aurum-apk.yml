@@ -65,10 +65,12 @@ jobs:
           adb logcat -c
           adb shell am start -W -n $PKG/.MainActivity
           sleep 6; adb exec-out screencap -p > /tmp/aurum_1_first_run.png
-          DIR=/sdcard/Android/data/$PKG/files
-          adb shell mkdir -p $DIR
-          adb push .github/fixtures/synthetic-watch-history.json $DIR/watch-history.json
-          adb shell am start -S -n $PKG/.MainActivity -a $PKG.TEST_IMPORT --es path $DIR/watch-history.json
+          # Put the synthetic Takeout in the app's PRIVATE files dir (debug build: run-as), as a phone download would
+          # be read through the picker; scoped storage denies the app files the shell creates under Android/data.
+          adb push .github/fixtures/synthetic-watch-history.json /data/local/tmp/watch-history.json
+          adb shell "cat /data/local/tmp/watch-history.json | run-as $PKG sh -c 'mkdir -p files && cat > files/watch-history.json'"
+          adb shell run-as $PKG ls -l files/
+          adb shell am start -S -n $PKG/.MainActivity -a $PKG.TEST_IMPORT --es path /data/data/$PKG/files/watch-history.json
           for i in $(seq 1 40); do adb logcat -d -s GenesisPlayer | grep -q "TEST_IMPORT" && break; sleep 1; done
           adb logcat -d -s GenesisPlayer | grep TEST_IMPORT | tee /tmp/import.log
           grep -q "TEST_IMPORT ok plays=240" /tmp/import.log
@@ -83,6 +85,9 @@ jobs:
           grep -q 'Sample Artist' /tmp/ui2.xml
           ! adb logcat -d | grep -E "FATAL EXCEPTION.*|AndroidRuntime: Process: $PKG" | tee /tmp/crash.log | grep -q .
           adb shell pidof $PKG
+      - name: Logcat on failure
+        if: failure()
+        run: adb logcat -d -s GenesisPlayer AurumMyMusic AndroidRuntime System.err | tail -80
       - name: Upload smoke screenshots
         if: always()
         uses: actions/upload-artifact@v4

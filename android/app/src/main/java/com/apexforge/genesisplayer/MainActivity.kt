@@ -150,7 +150,7 @@ class MainActivity : ComponentActivity() {
                 val a = com.apexforge.genesisplayer.data.mymusic.MyMusic.importUri(app, android.net.Uri.fromFile(java.io.File(path)))
                 Log.i("GenesisPlayer", "TEST_IMPORT ok plays=${a.keptPlays} skipped=${a.skipped}")
             } catch (e: Exception) {
-                Log.e("GenesisPlayer", "TEST_IMPORT failed", e)
+                Log.e("GenesisPlayer", "TEST_IMPORT failed: ${e.javaClass.name}: ${e.message}", e)
             }
         }.start()
     }
