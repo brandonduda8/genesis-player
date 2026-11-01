@@ -12,8 +12,8 @@ android {
         applicationId 'com.apexforge.genesisplayer'
         minSdk 26
         targetSdk 34
-        versionCode 2
-        versionName '1.1-apollo'
+        versionCode 3
+        versionName '2.0-mymusic'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
@@ -68,6 +68,8 @@ dependencies {
     // JVM fast lane (src/test): pure-logic unit tests, no emulator.
     // Run with `gradle testDebugUnitTest`; gated before the emulator boots.
     testImplementation 'junit:junit:4.13.2'
+    // Real org.json on the JVM (Android's stub throws in unit tests): the Takeout importer + Apollo v2 tests need it.
+    testImplementation 'org.json:json:20240303'
 
     // API-34 instrumented tests: tap-to-play queue repair (QueuePlannerTest,
     // TapLatencyTest). Run on the emulator via connectedDebugAndroidTest.

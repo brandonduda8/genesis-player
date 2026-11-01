@@ -7,6 +7,16 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.filled.PhoneAndroid
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,23 +65,18 @@ import com.google.common.util.concurrent.MoreExecutors
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Aurum Pulse 2: the library is the owner's own YouTube history + the phone's audio files (MyMusic).
+        // The old bundled/remote catalog, Fresh Signals drops and machine snapshots are no longer music sources.
         Library.load(this)
-        // Re-apply persisted remote state first (instant, offline-safe), then
-        // fetch live in the background. Neither fetch ever blocks launch.
-        RemoteCatalog.applyCache(this)
-        RemoteConfig.applyCache(this)
-        title = com.apexforge.genesisplayer.ui.RemoteTheme.labels.value.appName
-        RemoteCatalog.checkForUpdates(this)
-        RemoteConfig.checkForUpdates(this)
-        ApolloDrops.poll(this) // Phase 1: Fresh Signals poll at launch (Refresh Music re-polls).
-        SnapshotStore.fetch(this, "launch") // BRKN wave 3: machine-owned snapshot (graceful offline).
+        title = "Aurum Pulse"
         handleTestPlay(intent)
         handleTestRefresh(intent)
         handleTestRate(intent)
         handleTestSleep(intent)
         handleTestXfade(intent)
         handleTestQueueDump(intent)
-        setContent { GenesisTheme { GenesisApp() } }
+        handleTestImport(intent)
+        setContent { GenesisTheme { AurumApp() } }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -130,6 +135,25 @@ class MainActivity : ComponentActivity() {
         }, MoreExecutors.directExecutor())
     }
 
+    /**
+     * DEBUG-ONLY hook for the CI emulator smoke test: imports a Takeout file the gate pushed into this app's own
+     * external files dir (extra "path"), through the exact production import code. Release builds ignore it.
+     */
+    private fun handleTestImport(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_IMPORT_ACTION) return
+        val path = intent.getStringExtra("path") ?: return
+        val app = applicationContext
+        Thread {
+            try {
+                val a = com.apexforge.genesisplayer.data.mymusic.MyMusic.importUri(app, android.net.Uri.fromFile(java.io.File(path)))
+                Log.i("GenesisPlayer", "TEST_IMPORT ok plays=${a.keptPlays} skipped=${a.skipped}")
+            } catch (e: Exception) {
+                Log.e("GenesisPlayer", "TEST_IMPORT failed", e)
+            }
+        }.start()
+    }
+
     override fun onDestroy() {
         testController?.release()
         testController = null
@@ -143,6 +167,7 @@ class MainActivity : ComponentActivity() {
         const val TEST_SLEEP_ACTION = "com.apexforge.genesisplayer.TEST_SLEEP"
         const val TEST_XFADE_ACTION = "com.apexforge.genesisplayer.TEST_XFADE"
         const val TEST_QUEUE_DUMP_ACTION = "com.apexforge.genesisplayer.TEST_QUEUE_DUMP"
+        const val TEST_IMPORT_ACTION = "com.apexforge.genesisplayer.TEST_IMPORT"
     }
 
     /**
@@ -293,6 +318,83 @@ fun MediaController.sendGenesis(action: String, args: Bundle = Bundle()) {
 
 private data class Tab(val id: String, val name: String, val icon: ImageVector)
 
+/** Aurum Pulse 2 navigation: Apollo (home), Library, Phone, Now Playing (phone audio), EQ; YouTube player overlay. */
+@Composable
+fun AurumApp() {
+    val context = LocalContext.current
+    val controller = rememberPlayerController()
+    val version by com.apexforge.genesisplayer.data.mymusic.MyMusic.version
+    var importing by remember { mutableStateOf(!com.apexforge.genesisplayer.data.mymusic.MyMusic.hasData(context)) }
+    var tab by remember { mutableStateOf(0) }
+    var showNowPlaying by remember { mutableStateOf(false) }
+    val yt = com.apexforge.genesisplayer.ui.mymusic.YtQueue
+    if (importing) {
+        com.apexforge.genesisplayer.ui.mymusic.ImportScreen(Modifier.fillMaxSize().statusBarsPadding(),
+            onDone = { importing = false; tab = 0 })
+        return
+    }
+    val tabs = listOf(
+        Tab("apollo", "Apollo", Icons.Filled.Psychology),
+        Tab("library", "Library", Icons.Filled.LibraryMusic),
+        Tab("phone", "Phone", Icons.Filled.PhoneAndroid),
+        Tab("nowplaying", "Now Playing", Icons.Filled.PlayCircle),
+        Tab("eq", "EQ", Icons.Filled.GraphicEq)
+    )
+    val playLocal: (List<String>, Int) -> Unit = { ids, i ->
+        yt.web?.evaluateJavascript("pause()", null)
+        controller?.sendGenesis(PlayerService.ACTION_PLAY_IDS, Bundle().apply {
+            putStringArrayList("ids", ArrayList(ids)); putInt("index", i)
+        })
+        showNowPlaying = true
+    }
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            bottomBar = {
+                Column {
+                    val cur = yt.current()
+                    if (cur != null && !yt.open && version >= 0) {
+                        Row(Modifier.fillMaxWidth().background(com.apexforge.genesisplayer.ui.CardDark)
+                            .clickable { yt.open = true }.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.PlayCircle, null, tint = com.apexforge.genesisplayer.ui.EmberOrange)
+                            Spacer(Modifier.width(10.dp))
+                            Text("${cur.title} · ${cur.artist} (paused, tap to open)", maxLines = 1)
+                        }
+                    }
+                    MiniPlayerBar(controller = controller, onOpen = { showNowPlaying = true })
+                    NavigationBar(containerColor = com.apexforge.genesisplayer.ui.SurfaceDark) {
+                        tabs.forEachIndexed { i, t ->
+                            NavigationBarItem(
+                                selected = tab == i, onClick = { tab = i },
+                                icon = { Icon(t.icon, contentDescription = t.name) }, label = { Text(t.name) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = com.apexforge.genesisplayer.ui.EmberOrange,
+                                    selectedTextColor = com.apexforge.genesisplayer.ui.EmberOrange,
+                                    indicatorColor = com.apexforge.genesisplayer.ui.CardDark))
+                        }
+                    }
+                }
+            }
+        ) { pad ->
+            when (tabs[tab].id) {
+                "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
+                "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad))
+                "phone" -> com.apexforge.genesisplayer.ui.mymusic.PhoneTab(playLocal, Modifier.padding(pad))
+                "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
+                "eq" -> EqScreen(Modifier.padding(pad))
+            }
+        }
+        if (showNowPlaying) {
+            Box(Modifier.fillMaxSize()) { NowPlayingScreen(controller = controller, onCollapse = { showNowPlaying = false }) }
+        }
+        if (yt.open && yt.current() != null) {
+            // Media3 and YouTube never play at once.
+            LaunchedEffect(yt.keys.toList(), yt.index) { controller?.pause() }
+            com.apexforge.genesisplayer.ui.mymusic.YouTubePlayerScreen(onCollapse = { yt.open = false })
+        }
+    }
+}
+
+/** The pre-2.0 navigation (Crate / server Apollo / catalog playlists). Kept compiled for the old CI gate; not launched. */
 @Composable
 fun GenesisApp() {
     val controller = rememberPlayerController()

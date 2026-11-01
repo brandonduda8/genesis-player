@@ -19,7 +19,13 @@ data class Track(
      */
     val soundcloudUrl: String = "",
     /** Mood tag from the remote catalog (empty when unknown). Feeds [EnergyRules]. */
-    val mood: String = ""
+    val mood: String = "",
+    /**
+     * YouTube video id (Aurum Pulse 2: the owner's own history). Played ONLY through the official YouTube embed or
+     * handed to the YouTube Music app. It is never treated as an audio stream, so [streamUrl] stays empty and the
+     * Media3 service skips it.
+     */
+    val youtubeId: String = ""
 )
 
 data class Playlist(val name: String, val trackIds: List<String>)
@@ -43,11 +49,15 @@ object Library {
 
     private val byId = mutableMapOf<String, Track>()
 
-    /** Bundled catalog from assets. Safe to call repeatedly. */
+    /**
+     * Aurum Pulse 2: there is NO bundled catalog. The library is the owner's own imported YouTube history plus the
+     * audio files on the phone (see data.mymusic.MyMusic). Until an import exists, the library is empty.
+     */
     fun load(context: Context) {
         if (::tracks.isInitialized) return
-        val json = context.assets.open("tracks.json").bufferedReader().use { it.readText() }
-        applyJson(JSONObject(json))
+        applyRemote(emptyList(), emptyList())
+        if (!::forYou.isInitialized) forYou = emptyList()
+        com.apexforge.genesisplayer.data.mymusic.MyMusic.load(context)
     }
 
     /**
