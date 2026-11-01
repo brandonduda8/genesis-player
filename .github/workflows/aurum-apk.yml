@@ -85,6 +85,7 @@ jobs:
             android/app/build/outputs/apk/preview/app-preview.apk
             android/signing-report.txt
       - name: Upload stable-signed release APK
+        if: hashFiles('android/app/build/outputs/apk/release/app-release.apk') != ''
         uses: actions/upload-artifact@v4
         with:
           name: aurum-pulse-2-release-apk
