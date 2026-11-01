@@ -2,6 +2,7 @@ package com.apexforge.genesisplayer.ui.mymusic
 
 import android.Manifest
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.LocalAudioLibrary
 import com.apexforge.genesisplayer.data.mymusic.MyMusic
 import com.apexforge.genesisplayer.data.mymusic.crate.MatchKind
 import com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate
@@ -49,6 +51,15 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
     var section by remember { mutableIntStateOf(0) }
     val perm = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok -> if (ok) MyMusic.scanLocal(context) }
+    val pickAudio = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenMultipleDocuments()
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            val added = LocalAudioLibrary.add(context, uris)
+            MyMusic.scanLocal(context)
+            Toast.makeText(context, "Added $added offline tracks", Toast.LENGTH_SHORT).show()
+        }
+    }
     LaunchedEffect(Unit) { MyMusic.scanLocal(context) }
 
     val ranked = remember(v1, v2) { model.songs.values.sortedByDescending { it.heat }.map { it.key } }
@@ -102,6 +113,9 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
                     }
                 }) { list, i -> onPlayAurum(list.map { OfflineCrate.aurumTrackId(context, it) ?: "crate:$it" }, i) }
             3 -> Column(Modifier.fillMaxSize()) {
+                TextButton(onClick = { pickAudio.launch(arrayOf("audio/*")) }) {
+                    Text("Add audio files from phone (no storage permission needed)", color = CGold)
+                }
                 if (phone.isEmpty()) TextButton(onClick = { ask.launch(perm) }) { Text("Also show music files already on this phone") }
                 LazyColumn(Modifier.fillMaxSize()) {
                     itemsIndexed(offline, key = { _, k -> "o$k" }) { i, k ->
