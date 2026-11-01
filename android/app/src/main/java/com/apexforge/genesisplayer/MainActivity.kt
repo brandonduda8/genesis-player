@@ -392,7 +392,10 @@ fun AurumApp() {
         if (yt.open && yt.current() != null) {
             // Media3 and YouTube never play at once.
             LaunchedEffect(yt.keys.toList(), yt.index) { controller?.pause() }
-            com.apexforge.genesisplayer.ui.mymusic.YouTubePlayerScreen(onCollapse = { yt.open = false })
+            com.apexforge.genesisplayer.ui.mymusic.YouTubePlayerScreen(
+                onCollapse = { yt.open = false },
+                onPlayAurum = playLocal
+            )
         }
     }
 }
