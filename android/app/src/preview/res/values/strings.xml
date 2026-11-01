@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Side-by-side preview build: a distinct name so it is never confused with the installed Aurum. -->
+    <string name="app_name">Aurum 2.2 Preview</string>
+</resources>

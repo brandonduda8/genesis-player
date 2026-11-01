@@ -17,10 +17,34 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
+    // Stable signing (issue #18): the release key lives ONLY in GitHub Secrets / the owner's machine, never in git.
+    // CI writes it to a temp file and passes these env vars; without them the release build is left unsigned, so CI
+    // fails loudly. It never silently falls back to a throwaway key.
+    def ks = System.getenv("AURUM_KEYSTORE_FILE")
+    signingConfigs {
+        if (ks != null && new File(ks).exists()) {
+            aurumRelease {
+                storeFile file(ks)
+                storePassword System.getenv("AURUM_KEYSTORE_PASS")
+                keyAlias System.getenv("AURUM_KEY_ALIAS")
+                keyPassword System.getenv("AURUM_KEY_PASS")
+            }
+        }
+    }
+
     buildTypes {
         debug {}
         release {
             minifyEnabled false
+            if (ks != null && new File(ks).exists()) signingConfig signingConfigs.aurumRelease
+        }
+        // Side-by-side preview: its own app id, so it installs NEXT TO any existing Aurum without uninstalling it.
+        // Debug-signed, so it isn't for in-place upgrades; it's for trying 2.2 today with zero risk to the installed app.
+        preview {
+            initWith debug
+            applicationIdSuffix ".preview"
+            versionNameSuffix "-preview"
+            matchingFallbacks = ['debug']
         }
     }
 

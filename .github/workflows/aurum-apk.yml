@@ -47,6 +47,28 @@ jobs:
           /tmp/gradle-8.7/bin/gradle assembleDebug --no-daemon
           sha256sum app/build/outputs/apk/debug/app-debug.apk | tee apk.sha256
           ls -l app/build/outputs/apk/debug/app-debug.apk
+      - name: Build side-by-side preview + stable-signed release (if the owner's key is configured)
+        working-directory: android
+        env:
+          AURUM_KS_B64: ${{ secrets.AURUM_KEYSTORE_B64 }}
+          AURUM_KEYSTORE_PASS: ${{ secrets.AURUM_KEYSTORE_PASS }}
+          AURUM_KEY_ALIAS: ${{ secrets.AURUM_KEY_ALIAS }}
+          AURUM_KEY_PASS: ${{ secrets.AURUM_KEY_PASS }}
+        run: |
+          /tmp/gradle-8.7/bin/gradle assemblePreview --no-daemon
+          if [ -n "$AURUM_KS_B64" ]; then
+            umask 077
+            echo "$AURUM_KS_B64" | base64 -d > "$RUNNER_TEMP/aurum.jks"
+            AURUM_KEYSTORE_FILE="$RUNNER_TEMP/aurum.jks" /tmp/gradle-8.7/bin/gradle assembleRelease --no-daemon
+            rm -f "$RUNNER_TEMP/aurum.jks"
+          else
+            echo "::warning::No stable release key configured (secrets AURUM_KEYSTORE_B64 / _PASS / AURUM_KEY_ALIAS / AURUM_KEY_PASS). Release APK NOT built. See docs/INSTALL-AND-VERIFY.md"
+          fi
+          AS=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner
+          for f in app/build/outputs/apk/*/*.apk; do
+            echo "== $f"; sha256sum "$f" | cut -d' ' -f1
+            "$AS" verify --print-certs "$f" | grep -E "certificate DN|certificate SHA-256" || echo "UNSIGNED"
+          done | tee signing-report.txt
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
@@ -54,6 +76,22 @@ jobs:
           path: |
             android/app/build/outputs/apk/debug/app-debug.apk
             android/apk.sha256
+            android/signing-report.txt
+      - name: Upload side-by-side preview APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurum-pulse-2-preview-apk
+          path: |
+            android/app/build/outputs/apk/preview/app-preview.apk
+            android/signing-report.txt
+      - name: Upload stable-signed release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurum-pulse-2-release-apk
+          if-no-files-found: ignore
+          path: |
+            android/app/build/outputs/apk/release/app-release.apk
+            android/signing-report.txt
       - name: Upload unit test report
         if: always()
         uses: actions/upload-artifact@v4
