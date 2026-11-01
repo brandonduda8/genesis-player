@@ -25,6 +25,7 @@ import com.apexforge.genesisplayer.data.CrossfadeMath
 import com.apexforge.genesisplayer.data.HistoryStore
 import com.apexforge.genesisplayer.data.HistorySync
 import com.apexforge.genesisplayer.data.Library
+import com.apexforge.genesisplayer.data.LocalAudioLibrary
 import com.apexforge.genesisplayer.data.RatingsStore
 import com.apexforge.genesisplayer.data.SnapshotTrack
 import com.apexforge.genesisplayer.data.SoundCloudResolver
@@ -789,6 +790,48 @@ class PlayerService : MediaSessionService() {
         }.apply { isDaemon = true; name = "genesis-queue-up-next" }.start()
     }
 
+
+    /**
+     * Play only files the user explicitly selected via SAF and whose read
+     * permission Android has persisted. The queue never reaches the network
+     * and keeps all existing Media3/AudioFX/lock-screen handling.
+     */
+    private fun playOfflineTracks(uris: List<String>, startIndex: Int) {
+        val allowed = LocalAudioLibrary.tracks(this).associateBy { it.uri }
+        val requested = uris.take(500).distinct()
+        val items = requested.mapNotNull { allowed[it] }
+        if (items.isEmpty()) {
+            toast("No accessible offline audio. Re-add the files in Offline.")
+            return
+        }
+        val chosenUri = uris.getOrNull(startIndex)
+        val start = items.indexOfFirst { it.uri == chosenUri }.coerceAtLeast(0)
+        val mediaItems = items.map { track ->
+            val stableId = java.security.MessageDigest.getInstance("SHA-256")
+                .digest(track.uri.toByteArray(Charsets.UTF_8))
+                .take(12).joinToString("") { "%02x".format(it) }
+            MediaItem.Builder()
+                .setMediaId("offline:$stableId")
+                .setUri(Uri.parse(track.uri))
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(track.title)
+                        .setArtist("On-device music")
+                        .build()
+                )
+                .build()
+        }
+        mainHandler.post {
+            val p = player ?: return@post
+            abortCrossfade("start-offline-queue")
+            p.shuffleModeEnabled = false
+            p.setMediaItems(mediaItems, start, 0L)
+            p.prepare()
+            p.play()
+            Log.i(TAG, "Offline playback: ${mediaItems.size} local files; no network")
+        }
+    }
+
     private inner class SessionCallback : MediaSession.Callback {
         override fun onConnect(
             session: MediaSession,
@@ -797,6 +840,7 @@ class PlayerService : MediaSessionService() {
             // Custom commands are dropped by default — explicitly accept ours.
             val builder = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                 .add(SessionCommand(ACTION_PLAY_IDS, Bundle.EMPTY))
+                .add(SessionCommand(ACTION_PLAY_OFFLINE, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_SHUFFLE_ALL, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_MORE_LIKE_THIS, Bundle.EMPTY))
                 .add(SessionCommand(ACTION_QUEUE_UP_NEXT, Bundle.EMPTY))
@@ -824,6 +868,10 @@ class PlayerService : MediaSessionService() {
             args: Bundle
         ): ListenableFuture<SessionResult> {
             when (customCommand.customAction) {
+                ACTION_PLAY_OFFLINE -> playOfflineTracks(
+                    args.getStringArrayList("uris") ?: emptyList(),
+                    args.getInt("index", 0)
+                )
                 ACTION_PLAY_IDS -> {
                     val ids = args.getStringArrayList("ids") ?: arrayListOf()
                     playTracks(ids, args.getInt("index", 0))
@@ -898,6 +946,7 @@ class PlayerService : MediaSessionService() {
     companion object {
         const val TAG = "GenesisPlayer"
         const val ACTION_PLAY_IDS = "GENESIS_PLAY_IDS"
+        const val ACTION_PLAY_OFFLINE = "GENESIS_PLAY_OFFLINE"
         const val ACTION_SHUFFLE_ALL = "GENESIS_SHUFFLE_ALL"
         const val ACTION_MORE_LIKE_THIS = "GENESIS_MORE_LIKE_THIS"
         const val ACTION_QUEUE_UP_NEXT = "GENESIS_QUEUE_UP_NEXT"
