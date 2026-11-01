@@ -1,0 +1,4333 @@
+[
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-01T18:04:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T04:04:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T04:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f02SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T04:10:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T05:40:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T07:10:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T07:13:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T07:18:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T07:21:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T07:24:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T07:29:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T08:59:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T09:03:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T19:03:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T19:06:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a03SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T20:36:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T20:39:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T20:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f02SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T20:46:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T20:51:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T22:21:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-02T23:51:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T01:21:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T01:25:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T02:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T12:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T12:59:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T14:29:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T14:32:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T14:35:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b03SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-03T14:39:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T00:39:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T00:44:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T00:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T00:54:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T00:58:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T01:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T01:06:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T02:36:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T04:06:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T04:10:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T04:15:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T05:45:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T05:48:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T05:53:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T05:57:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T06:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T06:05:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d03SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T06:08:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T07:38:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T07:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e03SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T07:46:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T07:51:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T07:56:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T07:59:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T08:04:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T18:04:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-04T18:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-05T04:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-05T14:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a03SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:11:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:16:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d03SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:20:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:25:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:29:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b03SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:32:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:35:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T00:39:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T10:39:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T10:44:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T10:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T10:53:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T10:58:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T11:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T11:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T11:11:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T11:16:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T21:16:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T21:20:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T21:23:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-06T21:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T07:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T07:30:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d02SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T09:00:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T09:04:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T09:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T09:12:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T09:16:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T10:46:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T10:50:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T12:20:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-07T22:20:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d03SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T08:20:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T08:25:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T09:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a02SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:00:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:05:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:10:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c03SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:15:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:19:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:23:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c02SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:31:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:34:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:37:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:41:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T10:44:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T12:14:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T12:17:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T13:47:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a02SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T13:51:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T13:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:25:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:30:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:33:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:38:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d02SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:43:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:46:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f03SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:53:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-08T15:57:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T01:57:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T03:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T03:31:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T03:35:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:35:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:38:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c03SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:45:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:53:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T13:57:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T15:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-09T16:57:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-10T02:57:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-10T04:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-10T04:31:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a02SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-10T14:31:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-10T14:35:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-10T14:40:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T00:40:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T00:43:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T00:48:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T00:52:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:22:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f03SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:31:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:34:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:37:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:46:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T02:51:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b03SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T04:21:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T04:26:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T04:30:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c03SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T04:33:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T04:36:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T14:36:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T14:41:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T14:46:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-11T14:50:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T00:50:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T00:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T10:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T20:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T20:59:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T21:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-12T22:32:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T08:32:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T10:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b03SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T10:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T10:11:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T11:41:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f02SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T11:45:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T11:48:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T21:48:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T23:18:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T23:22:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T23:26:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T23:29:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-13T23:33:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T01:03:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T02:33:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T02:37:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T02:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T02:45:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T02:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T12:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a03SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T14:19:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T15:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T17:19:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T18:49:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T18:52:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T18:56:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b03SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T18:59:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T19:03:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-14T19:08:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b03SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T05:08:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b00SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T06:38:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T06:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d03SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T08:12:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T09:42:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T09:45:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f02SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T09:48:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T09:52:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T09:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T11:25:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T12:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a00SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T12:58:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c02SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T13:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T14:32:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d01SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-15T16:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T02:02:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T02:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T03:37:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d02SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T05:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:07:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:11:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f02SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:15:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:19:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a01SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:22:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a02SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:27:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:30:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:34:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b02SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-16T15:37:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T01:37:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T01:40:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e00SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T11:40:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e01SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T21:40:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T21:44:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T21:48:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 2",
+  "titleUrl": "https://music.youtube.com/watch?v=b01SYNTHET1",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T21:52:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f01SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T21:55:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 1",
+  "titleUrl": "https://music.youtube.com/watch?v=a02SYNTHET0",
+  "subtitles": [
+   {
+    "name": "Sample Band Three - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-17T22:00:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c00SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-18T08:00:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 4",
+  "titleUrl": "https://music.youtube.com/watch?v=d00SYNTHET3",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-18T08:04:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 5",
+  "titleUrl": "https://music.youtube.com/watch?v=e03SYNTHET4",
+  "subtitles": [
+   {
+    "name": "Sample Singer Four - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-18T08:09:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 3",
+  "titleUrl": "https://music.youtube.com/watch?v=c01SYNTHET2",
+  "subtitles": [
+   {
+    "name": "Sample Artist Two - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-18T08:14:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube Music",
+  "title": "Watched Track 6",
+  "titleUrl": "https://music.youtube.com/watch?v=f00SYNTHET5",
+  "subtitles": [
+   {
+    "name": "Sample Artist One - Topic",
+    "url": "https://www.youtube.com/channel/x"
+   }
+  ],
+  "time": "2026-10-18T08:19:00.000Z",
+  "products": [
+   "YouTube"
+  ],
+  "activityControls": [
+   "YouTube watch history"
+  ]
+ },
+ {
+  "header": "YouTube",
+  "title": "Watched An ad",
+  "titleUrl": "https://www.youtube.com/watch?v=adadadadada",
+  "time": "2026-10-18T08:19:00.000Z",
+  "details": [
+   {
+    "name": "From Google Ads"
+   }
+  ]
+ }
+]

@@ -1,1 +1,9 @@
 out/
+
+# Personal listening data never goes in this public repo (tools/taste_import.py)
+taste_profile*.json
+audius_candidates*.json
+Takeout/
+*takeout*.zip
+watch-history.json
+search-history.json

@@ -1,0 +1,48 @@
+name: aurum-cert-audit
+# Issue #18 blocker 1 + 3: reproduce the signing certificate and the delivered-file SHA-256 of past Aurum APK
+# artifacts, downloaded through GitHub's own artifact API (the same path the owner downloads from).
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'space-separated aurum-apk run ids'
+        default: '41334286643 41337910594 41340143799'
+  push:
+    branches: ['claude/**']
+    paths: ['.github/workflows/aurum-cert-audit.yml']
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUNS: ${{ github.event.inputs.runs || '41334286643 41337910594 41340143799' }}
+    steps:
+      - name: Download each artifact, hash it, print its signing certificate
+        run: |
+          AS=$(ls -d /usr/local/lib/android/sdk/build-tools/* | sort -V | tail -1)/apksigner
+          printf "| run | delivered file SHA-256 | CI-logged SHA-256 | match | signing cert SHA-256 |\n|---|---|---|---|---|\n" > audit.md
+          for r in $RUNS; do
+            mkdir -p "a/$r"
+            if ! gh run download "$r" -R "$GITHUB_REPOSITORY" -n aurum-pulse-2-debug-apk -D "a/$r"; then
+              echo "| $r | artifact unavailable (expired or missing) | | | |" >> audit.md; continue
+            fi
+            f=$(find "a/$r" -name '*.apk' | head -1)
+            got=$(sha256sum "$f" | cut -d' ' -f1)
+            logged=$(cut -d' ' -f1 "a/$r/apk.sha256" 2>/dev/null || echo "?")
+            cert=$("$AS" verify --print-certs "$f" | grep "certificate SHA-256" | head -1 | awk '{print $NF}')
+            m=$([ "$got" = "$logged" ] && echo MATCH || echo MISMATCH)
+            echo "| $r | $got | $logged | $m | $cert |" >> audit.md
+          done
+          cat audit.md
+          echo; echo "Distinct signing certificates: $(awk -F'|' 'NR>2 && $6!=" " {print $6}' audit.md | sort -u | grep -c .)"
+          cat audit.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aurum-cert-audit
+          path: audit.md

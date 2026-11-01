@@ -27,6 +27,8 @@ object HistorySync {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     fun record(context: Context, trackId: String, event: String) {
+        // Aurum Pulse 2 privacy rule: the owner's own library (song keys) and phone files never leave the phone.
+        if (trackId.startsWith("local:") || trackId.contains('|')) return
         try {
             val app = context.applicationContext
             val p = prefs(app)
