@@ -48,11 +48,19 @@ object CrateNet {
 
     fun audiusTrending(): List<Candidate> = CrateMatcher.parseAudiusTracks(get("$AUDIUS/v1/tracks/trending?limit=5&app_name=$APP"), AUDIUS, APP, null)
 
-    fun archiveSearch(artist: String, rows: Int = 20): List<CrateMatcher.ArchiveItem> {
-        val q = "creator:(\"${artist.replace("\"", "")}\") AND mediatype:(audio) AND licenseurl:(*creativecommons*)"
-        return CrateMatcher.parseArchiveSearch(get("https://archive.org/advancedsearch.php?q=${enc(q)}" +
+    /**
+     * The ONE Archive query used everywhere (the phone and the CI contract test): audio items whose licence URL is a
+     * Creative Commons one. No '/' inside the wildcard: Lucene would read it as a regex.
+     */
+    fun archiveQuery(artist: String?): String =
+        (if (artist != null) "creator:(\"${artist.replace("\"", "")}\") AND " else "") +
+            "mediatype:(audio) AND licenseurl:*creativecommons*"
+
+    fun archiveSearchRaw(query: String, rows: Int): List<CrateMatcher.ArchiveItem> =
+        CrateMatcher.parseArchiveSearch(get("https://archive.org/advancedsearch.php?q=${enc(query)}" +
             "&fl%5B%5D=identifier&fl%5B%5D=creator&fl%5B%5D=licenseurl&rows=$rows&output=json"))
-    }
+
+    fun archiveSearch(artist: String, rows: Int = 20): List<CrateMatcher.ArchiveItem> = archiveSearchRaw(archiveQuery(artist), rows)
 
     fun archiveFiles(item: CrateMatcher.ArchiveItem): List<Candidate> =
         CrateMatcher.parseArchiveFiles(get("https://archive.org/metadata/${enc(item.identifier)}"), item)

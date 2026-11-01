@@ -33,9 +33,7 @@ class CrateContractTest {
 
     @Test fun archiveLicensedSearchAndFiles() {
         on()
-        val docs = CrateMatcher.parseArchiveSearch(CrateNet.get("https://archive.org/advancedsearch.php?q=" +
-            CrateNet.enc("mediatype:(audio) AND licenseurl:(*creativecommons.org/licenses/by*) AND format:(VBR MP3)") +
-            "&fl%5B%5D=identifier&fl%5B%5D=creator&fl%5B%5D=licenseurl&rows=3&output=json"))
+        val docs = CrateNet.archiveSearchRaw(CrateNet.archiveQuery(null), 10) // the production query, minus the artist
         println("ARCHIVE licensed items: ${docs.map { it.identifier }}")
         assertTrue(docs.isNotEmpty())
         val files = docs.asSequence().map { CrateNet.archiveFiles(it) }.firstOrNull { it.isNotEmpty() }.orEmpty()
