@@ -107,7 +107,8 @@ private fun fmt(ms: Long): String {
 fun NowPlayingScreen(
     controller: MediaController?,
     modifier: Modifier = Modifier,
-    onCollapse: (() -> Unit)? = null
+    onCollapse: (() -> Unit)? = null,
+    onFloat: (() -> Unit)? = null
 ) {
     var isPlaying by remember { mutableStateOf(false) }
     var position by remember { mutableLongStateOf(0L) }
@@ -193,6 +194,11 @@ fun NowPlayingScreen(
                 color = TextDim, fontSize = 18.sp,
                 modifier = Modifier.padding(top = 2.dp)
             )
+            if (onFloat != null && isPlaying) {
+                TextButton(onClick = onFloat) {
+                    Text("FLOAT PULSE OVER APPS", color = PhoenixGold)
+                }
+            }
             Spacer(Modifier.height(2.dp))
             // Artwork / vibe flip. Tap flips; horizontal swipe skips.
             Box(
