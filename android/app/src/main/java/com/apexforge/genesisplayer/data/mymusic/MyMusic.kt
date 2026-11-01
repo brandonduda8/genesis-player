@@ -32,12 +32,17 @@ object MyMusic {
     @Volatile var feedback: Feedback = Feedback(); private set
     @Volatile var localTracks: List<Track> = emptyList(); private set
     private val recent = ArrayDeque<String>()
+    @Volatile private var appContext: Context? = null
+
+    /** Re-publish the Library (the Offline Crate calls this when matches or downloads change). */
+    fun refresh() = publish()
 
     fun hasData(context: Context) = File(context.filesDir, DATA).exists()
 
     /** Launch: load the saved import, if any, and build Apollo off the main thread. */
     fun load(context: Context) {
         val app = context.applicationContext
+        appContext = app
         worker.execute {
             try {
                 File(app.filesDir, FEEDBACK).takeIf { it.exists() }?.let { feedback = MyMusicCodec.decodeFeedback(it.readText()) }
@@ -46,6 +51,7 @@ object MyMusic {
                     imported = r
                     model = ApolloEngine.build(r.events, r.searches, r.playlists, System.currentTimeMillis())
                 }
+                com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.load(app)
                 publish()
             } catch (e: Exception) {
                 Log.e(TAG, "load failed", e)
@@ -55,6 +61,7 @@ object MyMusic {
 
     /** Import a Takeout .zip or watch-history.json the owner picked. Blocking; call off the main thread. */
     fun importUri(context: Context, uri: Uri): ImportAudit {
+        appContext = context.applicationContext
         val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
             if (c.moveToFirst()) c.getString(0) else null
         } ?: uri.lastPathSegment ?: "import"
@@ -149,9 +156,10 @@ object MyMusic {
             Track(id = s.key, artist = s.artist, title = s.title, streamUrl = "",
                 artworkUrl = "https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg", durationS = 0, youtubeId = s.videoId)
         }.orEmpty()
+        val crate = appContext?.let { com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.tracks(it) }.orEmpty()
         val playlists = mixes().map { Playlist(it.name, it.songKeys) } +
             (if (localTracks.isNotEmpty()) listOf(Playlist("On this phone", localTracks.map { it.id })) else emptyList())
-        Library.applyRemote(yt + localTracks, playlists)
+        Library.applyRemote(yt + crate + localTracks, playlists)
         version.intValue = version.intValue + 1
     }
 }

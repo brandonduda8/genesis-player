@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.filled.PhoneAndroid
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
@@ -337,7 +337,7 @@ fun AurumApp() {
     val tabs = listOf(
         Tab("apollo", "Apollo", Icons.Filled.Psychology),
         Tab("library", "Library", Icons.Filled.LibraryMusic),
-        Tab("phone", "Phone", Icons.Filled.PhoneAndroid),
+        Tab("crate", "Crate", Icons.Filled.Inventory2),
         Tab("nowplaying", "Now Playing", Icons.Filled.PlayCircle),
         Tab("eq", "EQ", Icons.Filled.GraphicEq)
     )
@@ -378,8 +378,8 @@ fun AurumApp() {
         ) { pad ->
             when (tabs[tab].id) {
                 "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
-                "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad))
-                "phone" -> com.apexforge.genesisplayer.ui.mymusic.PhoneTab(playLocal, Modifier.padding(pad))
+                "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad), onPlayAurum = playLocal)
+                "crate" -> com.apexforge.genesisplayer.ui.mymusic.CrateScreen(playLocal, Modifier.padding(pad))
                 "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
                 "eq" -> EqScreen(Modifier.padding(pad))
             }

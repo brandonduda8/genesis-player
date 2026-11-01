@@ -192,7 +192,7 @@ private fun MixRow(name: String, why: String, keys: List<String>) {
 }
 
 @Composable
-fun LibraryTab(modifier: Modifier = Modifier) {
+fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -> Unit = { _, _ -> }) {
     val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     val model = MyMusic.model ?: run { Box(modifier.fillMaxSize()) { Text("Import your history first", color = Dim) }; return }
     var query by remember { mutableStateOf("") }
@@ -221,7 +221,22 @@ fun LibraryTab(modifier: Modifier = Modifier) {
             LazyColumn(Modifier.fillMaxSize()) {
                 itemsIndexed(songKeys, key = { _, k -> k }) { i, k ->
                     val s = model.songs[k] ?: return@itemsIndexed
-                    SongRow(Library.track(k)?.artworkUrl ?: "", s.title, "${s.artist} · ${s.plays} plays") { YtQueue.play(songKeys, i) }
+                    val ctx = LocalContext.current
+                    val aurum = com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.aurumTrackId(ctx, k)
+                    val badge = when {
+                        aurum?.startsWith("offline:") == true -> " · OFFLINE"
+                        aurum != null -> " · IN AURUM"
+                        else -> ""
+                    }
+                    SongRow(Library.track(k)?.artworkUrl ?: "", s.title, "${s.artist} · ${s.plays} plays$badge") {
+                        if (aurum != null) {
+                            // Your exact recording plays in Aurum (EQ, bass, background); the queue keeps only the
+                            // songs from this list that also have an exact or offline copy. Nothing is substituted.
+                            val playable = songKeys.mapNotNull { key ->
+                                com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.aurumTrackId(ctx, key) }
+                            onPlayAurum(playable, playable.indexOf(aurum).coerceAtLeast(0))
+                        } else YtQueue.play(songKeys, i)
+                    }
                 }
             }
         } else {

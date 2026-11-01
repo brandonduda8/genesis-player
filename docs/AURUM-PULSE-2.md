@@ -55,3 +55,32 @@
   (open API, full EQ path), or YouTube Data API search with the owner's own key in the vault (never in the APK).
 - The old Crate / server-Apollo screens are still compiled for the old CI gate (`gate.yml` on main), but they aren't
   in the navigation.
+
+## 2.1: Offline Crate (approved direction, 2026-11-01)
+
+The owner's history stays the only source of taste. The Crate asks, for each of the owner's songs: is THIS recording,
+by THIS artist, legitimately available somewhere?
+
+| Section | Meaning | Plays in |
+|---|---|---|
+| **Exact** | the same artist account, and the same core title (video dressing and "feat." credits removed) with the same version words | Aurum (Media3: EQ, bass, background) |
+| **Alternate** | the same artist, but a different version (slowed, remix, live and so on), labelled with the difference. **Never auto-substituted.** | Aurum, only when picked explicitly |
+| **Downloadable** | an Audius download enabled by the artist on a **verified** account, or an Internet Archive file under an explicit **Creative Commons / public-domain** licence | it saves to app-private storage |
+| **Offline** | the saved files plus the music files already on the phone (music the owner owns) | Aurum, works offline |
+| **Unavailable** | no legitimate copy found | the official YouTube player, or the YouTube Music hand-off |
+
+**Rules:**
+- **Same artist or nothing:** a song with the same title by anyone else is never offered.
+- **Unverified same-name Audius accounts:** stream only, and labelled.
+- **Archive items without an explicit licence:** ignored.
+
+**In the Library:** songs with an exact or offline copy show **IN AURUM** or **OFFLINE**. Tapping one plays it in Aurum.
+Every other song plays through the official YouTube player.
+
+**Privacy:** matching runs on the phone, artists heaviest-first, and resumes where it stopped. The only data sent to the
+APIs is an artist name; history never leaves the phone.
+
+**Tests:**
+- `CrateMatcherTest` (9, synthetic).
+- `CrateContractTest`: live Audius and Archive with neutral queries; CI only, non-blocking.
+- The emulator smoke test runs the real matcher on the 4 synthetic artists until it reads "Checked 4 of 4 artists".
