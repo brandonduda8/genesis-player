@@ -129,8 +129,9 @@ fun OfflineScreen(controller: MediaController?, modifier: Modifier = Modifier) {
                         controller?.sendGenesis(
                             PlayerService.ACTION_PLAY_OFFLINE,
                             Bundle().apply {
-                                putStringArrayList("uris", ArrayList(visible.map { it.uri }))
-                                putInt("index", index)
+                                val start = (index - 100).coerceAtLeast(0)
+                                putStringArrayList("uris", ArrayList(visible.drop(start).take(500).map { it.uri }))
+                                putInt("index", index - start)
                             }
                         )
                     }
