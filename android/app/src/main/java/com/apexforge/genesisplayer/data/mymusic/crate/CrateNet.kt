@@ -17,7 +17,27 @@ object CrateNet {
 
     fun enc(s: String): String = URLEncoder.encode(s, "UTF-8")
 
-    fun get(url: String, timeoutMs: Int = 15_000): String {
+    /** GET with retries: timeouts, 429 and 5xx are retried with backoff (public APIs blip); other errors fail fast. */
+    fun get(url: String, timeoutMs: Int = 15_000, attempts: Int = 3): String {
+        var last: Exception? = null
+        for (i in 0 until attempts) {
+            try {
+                return getOnce(url, timeoutMs)
+            } catch (e: Transient) {
+                last = e
+            } catch (e: java.net.SocketTimeoutException) {
+                last = e
+            } catch (e: java.net.ConnectException) {
+                last = e
+            }
+            Thread.sleep(600L * (1 shl i))
+        }
+        throw java.io.IOException("unreachable after $attempts tries: ${last?.message}", last)
+    }
+
+    class Transient(msg: String) : java.io.IOException(msg)
+
+    private fun getOnce(url: String, timeoutMs: Int): String {
         val c = URL(url).openConnection() as HttpURLConnection
         c.connectTimeout = timeoutMs
         c.readTimeout = timeoutMs
@@ -25,7 +45,9 @@ object CrateNet {
         c.setRequestProperty("User-Agent", UA)
         c.setRequestProperty("Accept", "application/json")
         try {
-            if (c.responseCode !in 200..299) throw java.io.IOException("HTTP ${c.responseCode} for ${url.substringBefore('?')}")
+            val code = c.responseCode
+            if (code == 429 || code in 500..599) throw Transient("HTTP $code for ${url.substringBefore('?')}")
+            if (code !in 200..299) throw java.io.IOException("HTTP $code for ${url.substringBefore('?')}")
             return c.inputStream.bufferedReader().use { it.readText() }
         } finally {
             c.disconnect()

@@ -61,18 +61,24 @@ object OfflineCrate {
         net.execute {
             try {
                 val artists = model.artists.take(maxArtists).filter { recheck || it.key !in checkedArtists }
+                var unreachable = 0
                 artists.forEachIndexed { i, a ->
                     progress.value = "Checking ${a.name} (${i + 1} of ${artists.size})"
                     val candidates = ArrayList<Candidate>()
-                    try {
+                    // A source that can't be reached is NOT evidence of absence: the artist stays "not checked" and is
+                    // retried next time, instead of being recorded as unavailable.
+                    val reached = try {
                         CrateMatcher.pickArtistAccount(a.name, CrateNet.audiusUsers(a.name))?.let { acct ->
                             candidates += CrateNet.audiusTracksOf(acct)
                         }
-                    } catch (e: Exception) { Log.w(TAG, "Audius unavailable for an artist: ${e.message}") }
-                    try {
                         CrateNet.archiveSearch(a.name).filter { CrateMatcher.sameArtist(it.creator, a.name) }.take(3)
                             .forEach { candidates += CrateNet.archiveFiles(it) }
-                    } catch (e: Exception) { Log.w(TAG, "Archive unavailable for an artist: ${e.message}") }
+                        true
+                    } catch (e: Exception) {
+                        Log.w(TAG, "a source was unreachable; artist left unchecked: ${e.message}")
+                        false
+                    }
+                    if (!reached) { unreachable++; return@forEachIndexed }
                     val next = HashMap(matches)
                     a.songKeys.forEach { k ->
                         val s = model.songs[k] ?: return@forEach
@@ -85,7 +91,7 @@ object OfflineCrate {
                     publish()
                     Thread.sleep(150) // polite to free public APIs
                 }
-                progress.value = null
+                progress.value = if (unreachable > 0) "Stopped: $unreachable artist(s) couldn't be reached. Tap Continue matching to retry them." else null
             } catch (e: Exception) {
                 Log.e(TAG, "matching stopped", e)
                 progress.value = "Stopped: ${e.message}. Tap Match again to resume."
