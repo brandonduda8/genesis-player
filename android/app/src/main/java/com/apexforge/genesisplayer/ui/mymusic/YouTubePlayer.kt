@@ -138,7 +138,7 @@ fun YouTubePlayerScreen(onCollapse: () -> Unit) {
     val context = LocalContext.current
     val main = remember { Handler(Looper.getMainLooper()) }
     val track = YtQueue.current()
-    val version by MyMusic.version
+    val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     Column(Modifier.fillMaxSize().background(Color(0xFF0B0B10)).statusBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { YtQueue.web?.evaluateJavascript("pause()", null); onCollapse() }) {

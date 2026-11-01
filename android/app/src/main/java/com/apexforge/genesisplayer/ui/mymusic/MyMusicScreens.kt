@@ -113,7 +113,7 @@ fun AuditCard(a: ImportAudit) {
 @Composable
 fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit) {
     val context = LocalContext.current
-    val version by MyMusic.version
+    val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     val model = MyMusic.model
     if (model == null) {
         Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
@@ -193,7 +193,7 @@ private fun MixRow(name: String, why: String, keys: List<String>) {
 
 @Composable
 fun LibraryTab(modifier: Modifier = Modifier) {
-    val version by MyMusic.version
+    val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     val model = MyMusic.model ?: run { Box(modifier.fillMaxSize()) { Text("Import your history first", color = Dim) }; return }
     var query by remember { mutableStateOf("") }
     var mode by remember { mutableIntStateOf(0) }
@@ -260,7 +260,7 @@ private fun SongRow(art: String, title: String, sub: String, onClick: () -> Unit
 @Composable
 fun PhoneTab(onPlay: (List<String>, Int) -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val version by MyMusic.version
+    val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     val perm = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok -> if (ok) MyMusic.scanLocal(context) }
     LaunchedEffect(Unit) { MyMusic.scanLocal(context) }

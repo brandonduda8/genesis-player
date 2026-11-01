@@ -324,7 +324,7 @@ private data class Tab(val id: String, val name: String, val icon: ImageVector)
 fun AurumApp() {
     val context = LocalContext.current
     val controller = rememberPlayerController()
-    val version by com.apexforge.genesisplayer.data.mymusic.MyMusic.version
+    val version = com.apexforge.genesisplayer.data.mymusic.MyMusic.version.intValue // read eagerly
     var importing by remember { mutableStateOf(!com.apexforge.genesisplayer.data.mymusic.MyMusic.hasData(context)) }
     var tab by remember { mutableStateOf(0) }
     var showNowPlaying by remember { mutableStateOf(false) }
