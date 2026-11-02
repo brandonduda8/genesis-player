@@ -62,6 +62,30 @@ Check `aapt2 dump badging aurum-2.2.apk`: `package: name='com.apexforge.genesisp
 - [ ] Airplane mode: an offline track plays.
 - [ ] The vault manager shows the 2 GB default cap and lists downloads.
 
-## 6. CI evidence
+## 6. CI evidence (run 41372091238, commit dd3dacf, conclusion: success)
 
-Workflow `aurum-22.yml` on `claude/aurum-2.2`. Results: see the report that delivered this branch, and the `aurum-2.2-evidence` artifact (`results.txt`, `build-log.txt`, permission diffs, logcat).
+https://github.com/brandonduda8/genesis-player/actions/runs/41372091238 . Artifacts: `aurum-2.2-release` (unsigned
+release + SHA256SUMS), `aurum-2.2-evidence` (results.txt, build-log.txt, permission diffs, logcat).
+
+- Release (unsigned, for AURUM signing): `aurum-2.2-release-unsigned.apk`
+  sha256 `44f8b2378a089f3e7c500f856c934f332fae7cf63aefab71d7211f33a2181475`,
+  `package: name='com.apexforge.genesisplayer' versionCode='6' versionName='2.2'`. After signing, the sha256 changes; record the new one.
+- Host: GitHub Actions ubuntu-latest (free, $0). Not zane-box. Offline cap default: 2 GiB (2147483648).
+- Permission delta vs the Aurum Pulse build: **+WAKE_LOCK only**.
+- JVM unit tests: pass (including 11 vault crypto/index tests). Instrumented (API 34): 5/5 pass: Keystore key
+  non-exportable, ciphertext on disk + ExoPlayer playback, cap evicts oldest, too-big refused, audio focus
+  (duck keeps playing / call pauses and stays paused / permanent loss stays paused).
+- Device battery: 32 PASS, 0 FAIL:
+  update over 2.1 in place, versionCode 6, all 6 data files byte-identical; update over the pre-vault Aurum build
+  with the plaintext file encrypted, decrypt+SHA-256 verified, then deleted, and it plays; 3 Audius streams play,
+  **118 s of 120 s advanced with the screen off and app backgrounded**; partial wake lock while playing, none
+  while paused; notification posted; PAUSE / PLAY / HEADSETHOOK / PLAY_PAUSE / NEXT through MediaSessionService
+  dispatch (the Bluetooth/headset path); task removed while playing keeps playing (same process); vault files
+  random (chi-square), index unreadable, no plaintext or .part anywhere, nothing in shared storage; airplane mode
+  plays from the vault; 12 MB cap evicts the oldest first; clear-all keeps imported files; the Preview's library
+  restored into 2.2 (240 plays) with the Preview byte-identical; no crash.
+- Not exercised: a real permitted Audius download. Today none of the 3 Audius tracks in the catalog has
+  downloads enabled by its artist, so it was correctly refused as "streaming only". The download path itself is
+  the same encryptor proven above.
+- CI can't simulate this, so Zane must check it on a phone: raw `input keyevent` media keys were ignored with the screen off on the emulator image;
+  the dispatch path (what real headsets use) works. Confirm on a real Bluetooth headset (§5).
