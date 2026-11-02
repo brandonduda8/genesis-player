@@ -100,6 +100,7 @@ class PlayerService : MediaSessionService() {
             }
 
             override fun onMediaItemTransition(item: MediaItem?, reason: Int) {
+                Log.i(TAG, "transition -> ${item?.mediaId} reason=$reason")
                 val newId = item?.mediaId
                 if (newId != currentId) {
                     currentId = newId

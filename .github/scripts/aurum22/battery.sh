@@ -68,7 +68,7 @@ adb install "$PULSE_APK" >/dev/null && info "installed pre-vault Aurum: $(adb sh
 adb shell am start -n $ACT >/dev/null; sleep 8; adb shell am force-stop $PKG
 python3 - "$OUT/legacy.wav" << 'PYEOF'
 import math, struct, sys
-n = 44100 * 3
+n = 44100 * 30  # 30 s: long enough to watch the position advance
 d = b"".join(struct.pack("<h", int(8000 * math.sin(2 * math.pi * 523 * i / 44100))) for i in range(n))
 open(sys.argv[1], "wb").write(b"RIFF" + struct.pack("<I", 36 + len(d)) + b"WAVEfmt " + struct.pack("<IHHIIHH", 16, 1, 1, 44100, 88200, 2, 16) + b"data" + struct.pack("<I", len(d)) + d)
 PYEOF
@@ -88,7 +88,8 @@ adb logcat -d -s AurumVault:* | grep -q "migrated My Song.wav into the encrypted
 MIG=$(adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | grep -oE "owned:legacy-[0-9a-f]+")
 if [ -n "$MIG" ]; then
   vault --es mode play_entry --es id "$MIG"
-  wait_playing 30 && pass "migrated file plays from the vault" || fail "migrated file did not play"
+  if wait_playing 30; then pass "migrated file plays from the vault"
+  else fail "migrated file did not play"; adb logcat -d -s GenesisPlayer:* | tail -8 | sed 's/^/INFO  log: /' | cut -c1-220 | tee -a "$R"; fi
   adb shell input keyevent KEYCODE_MEDIA_PAUSE; sleep 1
 fi
 
@@ -146,7 +147,7 @@ t0=$(probe | sed 's/.*TITLE=//')
 adb shell cmd media_session dispatch next >/dev/null 2>&1; sleep 8
 t1=$(probe | sed 's/.*TITLE=//')
 if [ "$t1" = "$t0" ]; then adb shell input keyevent KEYCODE_MEDIA_NEXT; sleep 8; t1=$(probe | sed 's/.*TITLE=//'); fi
-[ -n "$t1" ] && [ "$t1" != "$t0" ] && pass "media NEXT -> next track ('$t0' -> '$t1')" || fail "media NEXT did not change track ('$t0' -> '$t1')"
+[ -n "$t1" ] && [ "$t1" != "$t0" ] && pass "media NEXT -> next track ('$t0' -> '$t1')" || { fail "media NEXT did not change track ('$t0' -> '$t1')"; adb logcat -d -s GenesisPlayer:* | grep -E "transition|onPlayerError|skip" | tail -8 | sed 's/^/INFO  log: /' | cut -c1-220 | tee -a "$R"; }
 adb logcat -d | grep -iE "MediaSessionService|MediaSessionStack|MediaButton|dispatchMediaKey|MediaSessionLegacyStub" | tail -15 > "$OUT/media_key_log.txt"
 sed 's/^/INFO  keylog: /' "$OUT/media_key_log.txt" | cut -c1-220 | tee -a "$R"
 adb shell input keyevent KEYCODE_WAKEUP; adb shell input keyevent 82
