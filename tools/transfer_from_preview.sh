@@ -15,16 +15,23 @@ adb get-state >/dev/null
 adb shell run-as "$SRC" true 2>/dev/null || { echo "run-as refused: $SRC is not installed or not debuggable. Nothing copied."; exit 2; }
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
 for f in aurum_my_music.json aurum_feedback.json aurum_crate.json; do
-  adb exec-out run-as "$SRC" cat "files/$f" > "$tmp/$f" 2>/dev/null || : > "$tmp/$f"
+  if adb shell run-as "$SRC" test -f "files/$f" 2>/dev/null; then adb exec-out run-as "$SRC" cat "files/$f" > "$tmp/$f"
+  else : > "$tmp/$f"; fi
 done
 [ -s "$tmp/aurum_my_music.json" ] || { echo "The Preview has no imported library (files/aurum_my_music.json missing). Nothing to move."; exit 3; }
 python3 - "$tmp" << 'PY'
 import json, os, sys
 d = sys.argv[1]
 read = lambda n: open(os.path.join(d, n), encoding="utf-8").read()
-json.loads(read("aurum_my_music.json"))  # must parse
-out = {"aurum_transfer": 1, "my_music": read("aurum_my_music.json"),
-       "feedback": read("aurum_feedback.json"), "crate": read("aurum_crate.json")}
+def part(n, required=False):
+    t = read(n).strip()
+    if not t:
+        if required: sys.exit(f"{n} is empty")
+        return ""
+    json.loads(t)  # every part must be valid JSON, or nothing is written
+    return t
+out = {"aurum_transfer": 1, "my_music": part("aurum_my_music.json", True),
+       "feedback": part("aurum_feedback.json"), "crate": part("aurum_crate.json")}
 json.dump(out, open(os.path.join(d, "aurum-transfer.json"), "w"))
 PY
 adb push "$tmp/aurum-transfer.json" /sdcard/Download/aurum-transfer.json >/dev/null

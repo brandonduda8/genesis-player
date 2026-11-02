@@ -50,7 +50,7 @@ cat "$OUT/data_before.txt" | awk '{print $2}' > "$OUT/files_before.txt"
 echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-[ "$VC" = "versionCode=5" ] && pass "$VC $VN" || fail "expected versionCode=5, got $VC $VN"
+[ "$VC" = "versionCode=6" ] && pass "$VC $VN" || fail "expected versionCode=6, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
   pass "every 2.1 data file byte-identical after the update ($(wc -l < "$OUT/data_before.txt") files, sha256)"
@@ -97,7 +97,8 @@ echo "=== 2. background + screen off ==="
 adb logcat -c
 [ -n "$STREAMS" ] || fail "no Audius stream URL in the catalog to test with"
 vault --es mode play_url --es url "$STREAMS"
-if wait_playing 60; then pass "network stream playing through Media3 ($(echo "$STREAMS" | tr '|' '\n' | wc -l) Audius URLs)"; else fail "stream never played"; log 30; fi
+python3 "$here/probe.py" --raw >/dev/null
+if wait_playing 60; then pass "network stream playing through Media3 ($(echo "$STREAMS" | tr '|' '\n' | wc -l) Audius URLs)"; else fail "stream never played"; log 30; echo "--- session block ---"; head -c 3000 "$OUT/session_raw.txt"; fi
 adb shell input keyevent KEYCODE_HOME; sleep 2
 adb shell input keyevent KEYCODE_SLEEP; sleep 3
 adb shell dumpsys power | grep -iE "PARTIAL_WAKE_LOCK.*(genesis|ExoPlayer|AudioMix)|mWakefulness" > "$OUT/power_playing.txt"
@@ -175,10 +176,26 @@ FILES=$(runas 'ls files/vault' | tr -d '\r' | grep -E '^[0-9a-f-]{36}$')
 n=0; bad=0
 for f in $FILES; do
   n=$((n+1))
-  runas "head -c 4 files/vault/$f" | grep -q AVLT || { bad=1; info "$f lacks AVLT header"; }
-  if runas "cat files/vault/$f" | LC_ALL=C grep -aqE 'RIFF....WAVE|ID3|fLaC|OggS|ftypM4A'; then bad=1; info "$f contains an audio signature"; fi
+  adb exec-out run-as $PKG cat "files/vault/$f" > "$OUT/vf.bin"
+  # Header must be AVLT; the body must be statistically random. Audio (even compressed) is far from uniform,
+  # and a plaintext leak would put a container magic right after the 17-byte header. (Searching a 20 MB random
+  # file for 3-byte strings like "ID3" finds them by pure chance, so that is NOT used as the test.)
+  if ! python3 - "$OUT/vf.bin" << 'PYEOF'
+import collections, math, sys
+b = open(sys.argv[1], "rb").read()
+assert b[:4] == b"AVLT", "no AVLT header"
+body = b[17:]
+assert not any(body.startswith(m) for m in (b"RIFF", b"ID3", b"fLaC", b"OggS", b"\x00\x00\x00\x20ftyp")), "container magic after header"
+c = collections.Counter(body); n = len(body); e = n / 256
+chi = sum((c.get(i, 0) - e) ** 2 / e for i in range(256))
+# uniform bytes: chi-square ~ 255 +/- 23; generous bound 400. A WAV/MP3 gives tens of thousands or more.
+print(f"{sys.argv[1]}: {n} bytes, chi-square vs uniform = {chi:.0f}")
+assert chi < 400, f"not random-looking (chi-square {chi:.0f})"
+PYEOF
+  then bad=1; info "$f failed the ciphertext check"; fi
 done
-[ "$n" -ge 1 ] && [ "$bad" = "0" ] && pass "$n vault file(s): opaque uuid names, AVLT header, no RIFF/ID3/fLaC/OggS/M4A signature anywhere" || fail "ciphertext check: files=$n bad=$bad"
+rm -f "$OUT/vf.bin"
+[ "$n" -ge 1 ] && [ "$bad" = "0" ] && pass "$n vault file(s): opaque uuid names, AVLT header, bytes indistinguishable from random (chi-square)" || fail "ciphertext check: files=$n bad=$bad"
 runas 'grep -l "Vault test tone" files/vault/index.bin' >/dev/null 2>&1 && fail "index.bin is not encrypted" || pass "index.bin holds no readable titles"
 leak=$(runas 'find . -type f -path "*/owned/*" -o -type f -path "*/offline/*"' | tr -d '\r')
 [ -z "$leak" ] && pass "no legacy plaintext offline/ or owned/ files remain" || fail "legacy plaintext remains: $leak"
