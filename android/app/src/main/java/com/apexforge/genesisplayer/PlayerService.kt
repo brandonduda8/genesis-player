@@ -944,18 +944,15 @@ class PlayerService : MediaSessionService() {
                 p.prepare(); p.play()
                 Log.i(TAG, "VaultCI: streaming ${urls.size} url(s)")
             }
-            "play_entry" -> {
+            "play_entry" -> { // synchronous: the CI controller unbinds right after sending, so act before returning
                 val id = args.getString("id", "")
-                Thread {
-                    val e = Vault.entry(this, id)
-                    mainHandler.post {
-                        val p = player ?: return@post
-                        if (e == null) { Log.e(TAG, "VaultCI: no entry $id"); return@post }
-                        p.setMediaItem(MediaItem.Builder().setMediaId(id).setUri(VaultDataSource.uriFor(e.fileId)).build())
-                        p.prepare(); p.play()
-                        Log.i(TAG, "vault: playing offline copy of $id")
-                    }
-                }.start()
+                val e = Vault.entry(this, id)
+                val p = player
+                if (e == null || p == null) { Log.e(TAG, "VaultCI: no entry $id (player=${p != null})") } else {
+                    p.setMediaItem(MediaItem.Builder().setMediaId(id).setUri(VaultDataSource.uriFor(e.fileId)).build())
+                    p.prepare(); p.play()
+                    Log.i(TAG, "vault: playing offline copy of $id")
+                }
             }
             "clear" -> Vault.clearAll(this)
             else -> {}

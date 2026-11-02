@@ -117,25 +117,44 @@ grep -q "pkg=$PKG" "$OUT/notification.txt" && pass "media notification posted (l
 
 # ---------------------------------------------------------------- 3. hardware / headset media keys (screen still off)
 echo "=== 3. media keys ==="
-adb shell input keyevent KEYCODE_MEDIA_PAUSE; sleep 3
-s=$(field "$(probe)" STATE); [ "$s" = "2" ] && pass "KEYCODE_MEDIA_PAUSE -> paused" || fail "MEDIA_PAUSE gave state=$s"
+# Bluetooth/headset buttons reach apps through MediaSessionService's media-key dispatch; `cmd media_session
+# dispatch` drives exactly that path. `input keyevent` (the raw input path) is tried as a fallback and reported.
+adb shell dumpsys media_session | grep -iE "media button session|Media button receiver|Sessions Stack" -A2 | head -12 > "$OUT/media_button_route.txt"
+sed 's/^/INFO  route: /' "$OUT/media_button_route.txt" | head -6 | tee -a "$R"
+key() { # $1 = dispatch name, $2 = KEYCODE; echoes the path that changed state
+  local before; before=$(field "$(probe)" STATE)
+  adb shell cmd media_session dispatch "$1" >/dev/null 2>&1; sleep 3
+  [ "$(field "$(probe)" STATE)" != "$before" ] && { echo dispatch; return; }
+  adb shell input keyevent "$2"; sleep 3
+  [ "$(field "$(probe)" STATE)" != "$before" ] && { echo keyevent; return; }
+  echo none
+}
+via=$(key pause KEYCODE_MEDIA_PAUSE); s=$(field "$(probe)" STATE)
+[ "$s" = "2" ] && pass "media PAUSE -> paused (via $via)" || fail "media PAUSE: state=$s via=$via"
 sleep 3
 adb shell dumpsys power | grep -iE "PARTIAL_WAKE_LOCK" | grep -iE "genesis|ExoPlayer" > "$OUT/power_paused.txt"
-[ -s "$OUT/power_paused.txt" ] && fail "wake lock still held while paused: $(head -2 "$OUT/power_paused.txt")" || pass "no app wake lock while paused (battery-sane)"
-adb shell input keyevent KEYCODE_MEDIA_PLAY; sleep 3
-s=$(field "$(probe)" STATE); [ "$s" = "3" ] && pass "KEYCODE_MEDIA_PLAY -> playing" || fail "MEDIA_PLAY gave state=$s"
-adb shell input keyevent KEYCODE_HEADSETHOOK; sleep 3
-s=$(field "$(probe)" STATE); [ "$s" = "2" ] && pass "KEYCODE_HEADSETHOOK (single press) -> toggles to paused" || fail "HEADSETHOOK gave state=$s"
-adb shell input keyevent KEYCODE_MEDIA_PLAY_PAUSE; sleep 3
-s=$(field "$(probe)" STATE); [ "$s" = "3" ] && pass "KEYCODE_MEDIA_PLAY_PAUSE -> playing" || fail "PLAY_PAUSE gave state=$s"
+if [ "$s" = "2" ]; then
+  [ -s "$OUT/power_paused.txt" ] && fail "wake lock still held while paused: $(head -2 "$OUT/power_paused.txt")" || pass "no app wake lock while paused (battery-sane)"
+fi
+via=$(key play KEYCODE_MEDIA_PLAY); s=$(field "$(probe)" STATE)
+[ "$s" = "3" ] && pass "media PLAY -> playing (via $via)" || fail "media PLAY: state=$s via=$via"
+via=$(key headsethook KEYCODE_HEADSETHOOK); s=$(field "$(probe)" STATE)
+[ "$s" = "2" ] && pass "HEADSETHOOK single press -> paused (via $via)" || fail "HEADSETHOOK: state=$s via=$via"
+via=$(key play-pause KEYCODE_MEDIA_PLAY_PAUSE); s=$(field "$(probe)" STATE)
+[ "$s" = "3" ] && pass "PLAY_PAUSE -> playing (via $via)" || fail "PLAY_PAUSE: state=$s via=$via"
 t0=$(probe | sed 's/.*TITLE=//')
-adb shell input keyevent KEYCODE_MEDIA_NEXT; sleep 8
+adb shell cmd media_session dispatch next >/dev/null 2>&1; sleep 8
 t1=$(probe | sed 's/.*TITLE=//')
-[ -n "$t1" ] && [ "$t1" != "$t0" ] && pass "KEYCODE_MEDIA_NEXT -> next track ('$t0' -> '$t1')" || fail "MEDIA_NEXT did not change track ('$t0' -> '$t1')"
+if [ "$t1" = "$t0" ]; then adb shell input keyevent KEYCODE_MEDIA_NEXT; sleep 8; t1=$(probe | sed 's/.*TITLE=//'); fi
+[ -n "$t1" ] && [ "$t1" != "$t0" ] && pass "media NEXT -> next track ('$t0' -> '$t1')" || fail "media NEXT did not change track ('$t0' -> '$t1')"
+adb logcat -d | grep -iE "MediaSessionService|MediaSessionStack|MediaButton|dispatchMediaKey|MediaSessionLegacyStub" | tail -15 > "$OUT/media_key_log.txt"
+sed 's/^/INFO  keylog: /' "$OUT/media_key_log.txt" | cut -c1-220 | tee -a "$R"
 adb shell input keyevent KEYCODE_WAKEUP; adb shell input keyevent 82
 
 # ---------------------------------------------------------------- 4. swipe away from Recents while playing
 echo "=== 4. task removed while playing ==="
+s=$(field "$(probe)" STATE); [ "$s" = "3" ] || { adb shell cmd media_session dispatch play >/dev/null 2>&1; sleep 3; }
+PID0=$(adb shell pidof $PKG | tr -d '\r'); info "before removal: state=$(field "$(probe)" STATE) pid=$PID0"
 TASK=$(adb shell am stack list 2>/dev/null | grep -m1 "$PKG" | grep -oE 'taskId=[0-9]+' | cut -d= -f2)
 [ -z "$TASK" ] && TASK=$(adb shell dumpsys activity recents | grep -m1 -B2 "$PKG" | grep -oE '#[0-9]+' | head -1 | tr -d '#')
 removed=0
@@ -146,6 +165,8 @@ fi
 if [ "$removed" = 1 ]; then
   sleep 6
   s=$(field "$(probe)" STATE)
+  info "after removal: pid=$(adb shell pidof $PKG | tr -d '\r') (was $PID0); task=$TASK"
+  adb logcat -d | grep -E "ActivityManager.*(genesisplayer|Killing|has died)|ActivityTaskManager.*genesisplayer" | tail -6 | sed 's/^/INFO  am: /' | tee -a "$R"
   [ "$s" = "3" ] && pass "task $TASK removed: playback continues in the foreground service" || fail "after task removal state=$s"
   adb logcat -d -s GenesisPlayer:* | grep -m1 "task removed" | sed 's/^/INFO  log: /' | tee -a "$R"
 else info "could not remove the task from the shell on this image (task=$TASK); swipe-away is on Zane's device checklist"; fi
