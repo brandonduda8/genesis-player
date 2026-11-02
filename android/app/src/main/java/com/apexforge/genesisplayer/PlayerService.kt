@@ -939,7 +939,7 @@ class PlayerService : MediaSessionService() {
             }.start()
             "play_url" -> mainHandler.post { // network streams through the normal Media3 path (screen-off proof)
                 val p = player ?: return@post
-                val urls = args.getString("url", "").split('|').filter { it.startsWith("https://") }
+                val urls = args.getString("url", "").split(',').filter { it.startsWith("https://") }
                 p.setMediaItems(urls.mapIndexed { i, u -> MediaItem.Builder().setMediaId("ci-stream-$i").setUri(u)
                     .setMediaMetadata(MediaMetadata.Builder().setTitle("CI stream ${i + 1}").setArtist("Audius").build()).build() })
                 p.prepare(); p.play()

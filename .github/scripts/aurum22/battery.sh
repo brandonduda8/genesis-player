@@ -97,9 +97,11 @@ fi
 echo "=== 2. background + screen off ==="
 adb logcat -c
 [ -n "$STREAMS" ] || fail "no Audius stream URL in the catalog to test with"
-vault --es mode play_url --es url "$STREAMS"
+vault --es mode play_url --es url "'$STREAMS'"   # quoted for the DEVICE shell too
 python3 "$here/probe.py" --raw >/dev/null
-if wait_playing 60; then pass "network stream playing through Media3 ($(echo "$STREAMS" | tr '|' '\n' | wc -l) Audius URLs)"; else fail "stream never played"; log 30; echo "--- session block ---"; head -c 3000 "$OUT/session_raw.txt"; fi
+sleep 2; adb logcat -d -s GenesisPlayer:* | grep -m1 "VaultCI: streaming" | sed 's/^/INFO  /' | tee -a "$R"
+adb logcat -d -s GenesisPlayer:* | grep -q "VaultCI: streaming 3 url(s)" || fail "player did not receive all 3 stream URLs"
+if wait_playing 60; then pass "network stream playing through Media3 ($(echo "$STREAMS" | tr ',' '\n' | wc -l) Audius URLs)"; else fail "stream never played"; log 30; echo "--- session block ---"; head -c 3000 "$OUT/session_raw.txt"; fi
 adb shell input keyevent KEYCODE_HOME; sleep 2
 adb shell input keyevent KEYCODE_SLEEP; sleep 3
 adb shell dumpsys power | grep -iE "PARTIAL_WAKE_LOCK.*(genesis|ExoPlayer|AudioMix)|mWakefulness" > "$OUT/power_playing.txt"
@@ -180,7 +182,7 @@ adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode clear >/dev/null; sleep 
 cat "$OUT/download_permission.txt" | sed 's/^# /INFO  source: /' | tail -8 | tee -a "$R"
 res=""
 if [ -n "$DL" ]; then
-  vault --es mode download_url --es id "offline:ci-$DL" --es url "$DLBASE/v1/tracks/$DL/download?app_name=aurum_player"
+  vault --es mode download_url --es id "offline:ci-$DL" --es url "'$DLBASE/v1/tracks/$DL/download?app_name=aurum_player'"
   for _ in $(seq 1 90); do adb logcat -d -s GenesisPlayer:* | grep -q "VaultCI: download offline:ci-$DL ->" && break; sleep 2; done
   res=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "VaultCI: download offline:ci-$DL ->" | sed 's/.*-> //')
   [ "$res" = "stored" ] && pass "permitted Audius track $DL streamed straight into the encrypted vault (Offline Crate path)" || fail "download of permitted $DL: $res"

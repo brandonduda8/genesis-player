@@ -25,5 +25,5 @@ for t in tracks:
     if ok:
         print(f"{m.group(2)} {m.group(1)}")
 streams = [m.group(0) + "?app_name=aurum_player" for m in (rx.match(t.get("audius_stream_url", "") or "") for t in tracks) if m][:3]
-open(sys.argv[1] if len(sys.argv) > 1 else "/tmp/aurum22/streams.txt", "w").write("|".join(streams))
+open(sys.argv[1] if len(sys.argv) > 1 else "/tmp/aurum22/streams.txt", "w").write(",".join(streams))
 print(f"# audius tracks checked: {checked} of {len(tracks)} catalog tracks", file=sys.stderr)
