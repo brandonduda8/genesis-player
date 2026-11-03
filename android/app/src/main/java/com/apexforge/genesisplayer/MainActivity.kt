@@ -356,6 +356,7 @@ fun AurumApp() {
         // Aurum naming: Apollo (intelligence) · Signal Archive · Crate (vault + offline sanctuary) · Pulse Chamber · Sound Forge
         Tab("apollo", "Apollo", Icons.Filled.Psychology),
         Tab("library", "Archive", Icons.Filled.LibraryMusic),
+        Tab("playlists", "Lists", Icons.Filled.QueueMusic),
         Tab("crate", "Crate", Icons.Filled.Inventory2),
         Tab("nowplaying", "Chamber", Icons.Filled.PlayCircle),
         Tab("eq", "Forge", Icons.Filled.GraphicEq)
@@ -399,6 +400,7 @@ fun AurumApp() {
             androidx.compose.animation.Crossfade(targetState = tabs[tab].id, label = "aurum-tab") { id -> when (id) {
                 "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
                 "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad), onPlayAurum = playLocal)
+                "playlists" -> com.apexforge.genesisplayer.ui.mymusic.PlaylistsTab(Modifier.padding(pad), onPlayAurum = playLocal)
                 "crate" -> com.apexforge.genesisplayer.ui.mymusic.CrateScreen(playLocal, Modifier.padding(pad))
                 "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
                 "eq" -> EqScreen(Modifier.padding(pad))
