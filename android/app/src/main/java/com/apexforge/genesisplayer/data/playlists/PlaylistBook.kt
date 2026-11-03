@@ -184,3 +184,41 @@ class PlaylistStore(private val file: File) {
         if (!tmp.renameTo(file)) { tmp.copyTo(file, overwrite = true); tmp.delete() }
     }
 }
+
+/**
+ * Where a playlist plays. Same rule as the Signal Archive: a song with an exact or offline copy plays in Aurum
+ * (EQ, background, lock screen); otherwise it plays through YouTube. Nothing is substituted, and offline only what
+ * truly works offline is queued.
+ */
+object PlaylistPlayback {
+    enum class Route { AURUM, YOUTUBE, NONE }
+    data class Plan(val route: Route, val ids: List<String>, val index: Int, val skipped: Int, val reason: String = "")
+
+    /**
+     * [aurumId] maps an entry id to its Aurum track id (offline:/crate:/owned:/phone ids), or null.
+     * [worksOffline] is true for Aurum ids that play with no network. [onYouTube] tells whether YouTube can play it.
+     */
+    fun plan(entries: List<Entry>, start: Int, online: Boolean, shuffle: Boolean,
+             aurumId: (String) -> String?, worksOffline: (String) -> Boolean, onYouTube: (String) -> Boolean,
+             random: java.util.Random = java.util.Random()): Plan {
+        if (entries.isEmpty()) return Plan(Route.NONE, emptyList(), 0, 0, "This playlist is empty.")
+        val tapped = entries[start.coerceIn(entries.indices)]
+        val tappedAurum = aurumId(tapped.id)
+        fun order(ids: List<String>, first: String): Pair<List<String>, Int> =
+            if (!shuffle) ids to ids.indexOf(first).coerceAtLeast(0)
+            else (listOf(first) + (ids - first).shuffled(random)) to 0
+        if (tappedAurum != null && (online || worksOffline(tappedAurum))) {
+            val ids = entries.mapNotNull { aurumId(it.id) }.filter { online || worksOffline(it) }.distinct()
+            val (o, i) = order(ids, tappedAurum)
+            return Plan(Route.AURUM, o, i, entries.size - ids.size)
+        }
+        if (!online) return Plan(Route.NONE, emptyList(), 0, entries.size,
+            "Offline: \"${tapped.title}\" needs the internet. Songs saved in your Crate still play.")
+        if (onYouTube(tapped.id)) {
+            val ids = entries.map { it.id }.filter(onYouTube).distinct()
+            val (o, i) = order(ids, tapped.id)
+            return Plan(Route.YOUTUBE, o, i, entries.size - ids.size)
+        }
+        return Plan(Route.NONE, emptyList(), 0, entries.size, "\"${tapped.title}\" isn't available in this library anymore.")
+    }
+}

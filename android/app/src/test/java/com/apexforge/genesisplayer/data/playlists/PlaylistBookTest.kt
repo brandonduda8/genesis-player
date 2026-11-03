@@ -113,3 +113,50 @@ class PlaylistBookTest {
         assertTrue(PlaylistBook.matchKey("A", "B") != PlaylistBook.matchKey("A", "C"))
     }
 }
+
+class PlaylistPlaybackTest {
+    private val entries = listOf("s1", "s2", "s3", "s4").map { Entry(it, "A", "T $it") }
+    // s1: offline copy; s2: exact stream (online only); s3: YouTube only; s4: gone from the library
+    private val aurum = mapOf("s1" to "offline:s1", "s2" to "crate:s2")
+    private fun plan(start: Int, online: Boolean, shuffle: Boolean = false) = PlaylistPlayback.plan(
+        entries, start, online, shuffle, aurumId = { aurum[it] }, worksOffline = { it.startsWith("offline:") },
+        onYouTube = { it in setOf("s1", "s2", "s3") }, random = java.util.Random(7))
+
+    @Test fun aurumCopyPlaysInAurumWithTheOtherAurumSongs() {
+        val p = plan(1, online = true)
+        assertEquals(PlaylistPlayback.Route.AURUM, p.route)
+        assertEquals(listOf("offline:s1", "crate:s2"), p.ids)
+        assertEquals(1, p.index)
+        assertEquals(2, p.skipped)
+    }
+
+    @Test fun offlineQueuesOnlyWhatTrulyPlaysOffline() {
+        val p = plan(0, online = false)
+        assertEquals(PlaylistPlayback.Route.AURUM, p.route)
+        assertEquals(listOf("offline:s1"), p.ids)
+        val q = plan(2, online = false)
+        assertEquals(PlaylistPlayback.Route.NONE, q.route)
+        assertTrue(q.reason.startsWith("Offline"))
+    }
+
+    @Test fun youTubeOnlySongPlaysTheYouTubeQueue() {
+        val p = plan(2, online = true)
+        assertEquals(PlaylistPlayback.Route.YOUTUBE, p.route)
+        assertEquals(listOf("s1", "s2", "s3"), p.ids)
+        assertEquals(2, p.index)
+    }
+
+    @Test fun missingTrackIsExplainedNotPlayedAsSomethingElse() {
+        val p = plan(3, online = true)
+        assertEquals(PlaylistPlayback.Route.NONE, p.route)
+        assertTrue(p.reason.contains("isn't available"))
+    }
+
+    @Test fun shuffleStartsWithTheTappedSongAndKeepsEveryOne() {
+        val p = plan(2, online = true, shuffle = true)
+        assertEquals("s3", p.ids.first())
+        assertEquals(0, p.index)
+        assertEquals(setOf("s1", "s2", "s3"), p.ids.toSet())
+        assertEquals(PlaylistPlayback.Route.NONE, PlaylistPlayback.plan(emptyList(), 0, true, false, { null }, { false }, { false }).route)
+    }
+}
