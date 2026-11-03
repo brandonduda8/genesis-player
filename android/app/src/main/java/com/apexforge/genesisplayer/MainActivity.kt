@@ -356,7 +356,7 @@ fun AurumApp() {
         // Aurum naming: Apollo (intelligence) · Signal Archive · Crate (vault + offline sanctuary) · Pulse Chamber · Sound Forge
         Tab("apollo", "Apollo", Icons.Filled.Psychology),
         Tab("library", "Archive", Icons.Filled.LibraryMusic),
-        Tab("playlists", "Lists", Icons.Filled.QueueMusic),
+        Tab("playlists", "Lists", Icons.AutoMirrored.Filled.QueueMusic),
         Tab("crate", "Crate", Icons.Filled.Inventory2),
         Tab("nowplaying", "Chamber", Icons.Filled.PlayCircle),
         Tab("eq", "Forge", Icons.Filled.GraphicEq)

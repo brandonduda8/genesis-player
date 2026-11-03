@@ -145,7 +145,8 @@ jobs:
           adb shell pidof $PKG
       - name: Logcat on failure
         if: failure()
-        run: adb logcat -d -s GenesisPlayer AurumMyMusic AndroidRuntime System.err | tail -80
+        # bounded: if the failure came before the emulator booted there is no device, and adb would wait forever
+        run: timeout 30 adb logcat -d -s GenesisPlayer AurumMyMusic AurumPlaylists AndroidRuntime System.err | tail -80 || echo "no device (failure happened before the emulator booted)"
       - name: Upload smoke screenshots
         if: always()
         uses: actions/upload-artifact@v4
