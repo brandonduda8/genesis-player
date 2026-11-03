@@ -12,7 +12,7 @@ name: aurum-2.2
 
 on:
   push:
-    branches: [claude/aurum-2.2]
+    branches: [claude/aurum-2.2, claude/aurum-2.3]
   workflow_dispatch:
 
 permissions:
@@ -115,7 +115,7 @@ jobs:
         run: |
           set +e
           /tmp/gradle-8.7/bin/gradle connectedDebugAndroidTest --no-daemon \
-            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest
+            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest,com.apexforge.genesisplayer.PlaylistsInstrumentedTest
           RC=$?
           python3 ../.github/scripts/junit_summary.py app/build/outputs/androidTest-results "Aurum 2.2 instrumented"
           SRC=$?
