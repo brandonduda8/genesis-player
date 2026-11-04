@@ -50,7 +50,8 @@ cat "$OUT/data_before.txt" | awk '{print $2}' > "$OUT/files_before.txt"
 echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-[ "$VC" = "versionCode=6" ] && pass "$VC $VN" || fail "expected versionCode=6, got $VC $VN"
+WANT_VC=${WANT_VC:-7}
+[ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
   pass "every 2.1 data file byte-identical after the update ($(wc -l < "$OUT/data_before.txt") files, sha256)"
