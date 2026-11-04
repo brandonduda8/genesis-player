@@ -29,6 +29,10 @@ class SoundCurveTest {
         assertTrue("presets differ", SoundCurve.distanceMb(bass, vocal) > 300)
     }
 
+    @Test fun levelsComeInWholeDecibelsLikeTheDeviceHoldsThem() {
+        for (p in Preset.values()) assertTrue(p.name, lv(p).all { it % 100 == 0 })
+    }
+
     @Test fun boostIsCappedAndDeviceRangeRespected() {
         for (p in Preset.values()) assertTrue(lv(p).all { it <= SoundCurve.MAX_BOOST_MB })
         val narrow = lv(Preset.BASS, min = -300, max = 300)

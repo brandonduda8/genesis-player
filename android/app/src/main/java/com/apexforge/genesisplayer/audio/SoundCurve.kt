@@ -28,7 +28,7 @@ object SoundCurve {
     /** Gain in dB at frequency [hz] for [p]: a few broad, smooth shelves/bells (no sharp peaks). */
     fun gainDb(p: Preset, hz: Double): Double = when (p) {
         Preset.FLAT -> 0.0
-        Preset.BASS -> 5.0 * lowShelf(hz, 120.0) - 0.5 * bell(hz, 3000.0, 1.5)
+        Preset.BASS -> 6.0 * lowShelf(hz, 150.0) - 0.5 * bell(hz, 3000.0, 1.5)
         Preset.VOCAL -> -2.0 * lowShelf(hz, 150.0) + 3.0 * bell(hz, 2500.0, 1.2) + 1.0 * bell(hz, 1000.0, 1.0)
         Preset.NIGHT -> -3.0 * lowShelf(hz, 100.0) + 1.5 * bell(hz, 2000.0, 1.3) - 2.0 * highShelf(hz, 8000.0)
     }
@@ -44,12 +44,13 @@ object SoundCurve {
 
     /**
      * Band levels (millibels) for the device: sampled at each centre ([centresMilliHz], as Equalizer reports them),
-     * capped at [MAX_BOOST_MB], and clamped to the device's [minMb]..[maxMb] range.
+     * rounded to whole decibels (Android EQs hold band levels in 100 mB steps: measured on the API-34 emulator,
+     * which turned 107/-5/-48 mB into 100/0/0), capped at [MAX_BOOST_MB], and clamped to [minMb]..[maxMb].
      */
     fun bandLevels(p: Preset, centresMilliHz: IntArray, minMb: Int, maxMb: Int): IntArray =
         IntArray(centresMilliHz.size) { i ->
             val db = gainDb(p, max(centresMilliHz[i], 1) / 1000.0)
-            val mb = (db * 100).roundToInt()
+            val mb = db.roundToInt() * 100
             min(min(mb, MAX_BOOST_MB), maxMb).coerceAtLeast(minMb)
         }
 
