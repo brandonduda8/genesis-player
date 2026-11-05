@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
         handleTestXfade(intent)
         handleTestQueueDump(intent)
         handleTestImport(intent)
+        handleTestVault(intent)
         setContent { GenesisTheme { AurumApp() } }
     }
 
@@ -89,6 +90,7 @@ class MainActivity : ComponentActivity() {
         handleTestXfade(intent)
         handleTestQueueDump(intent)
         handleTestImport(intent)
+        handleTestVault(intent)
     }
 
     private var testController: MediaController? = null
@@ -169,6 +171,7 @@ class MainActivity : ComponentActivity() {
         const val TEST_XFADE_ACTION = "com.apexforge.genesisplayer.TEST_XFADE"
         const val TEST_QUEUE_DUMP_ACTION = "com.apexforge.genesisplayer.TEST_QUEUE_DUMP"
         const val TEST_IMPORT_ACTION = "com.apexforge.genesisplayer.TEST_IMPORT"
+        const val TEST_VAULT_ACTION = "com.apexforge.genesisplayer.TEST_VAULT"
     }
 
     /**
@@ -277,6 +280,21 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    /** DEBUG-ONLY 2.2 vault proof hook (mode=seed_play|fill|cap|play|clear|dump). Release builds ignore it. */
+    private fun handleTestVault(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_VAULT_ACTION) return
+        val args = Bundle().apply {
+            putString("mode", intent.getStringExtra("mode") ?: "dump")
+            putInt("seconds", intent.getIntExtra("seconds", 240))
+            putInt("count", intent.getIntExtra("count", 3))
+            putLong("bytes", intent.getLongExtra("bytes", 0L))
+            putString("id", intent.getStringExtra("id") ?: "")
+            putString("url", intent.getStringExtra("url") ?: "")
+        }
+        sendTestCommand(PlayerService.ACTION_VAULT_TEST, args, "TEST_VAULT fired mode=${args.getString("mode")}")
+    }
+
     /** Shared DEBUG-hook plumbing: build a controller, send one custom command. */
     private fun sendTestCommand(action: String, args: Bundle, logLine: String) {
         val token = SessionToken(this, ComponentName(this, PlayerService::class.java))
@@ -338,6 +356,7 @@ fun AurumApp() {
         // Aurum naming: Apollo (intelligence) · Signal Archive · Crate (vault + offline sanctuary) · Pulse Chamber · Sound Forge
         Tab("apollo", "Apollo", Icons.Filled.Psychology),
         Tab("library", "Archive", Icons.Filled.LibraryMusic),
+        Tab("playlists", "Lists", Icons.AutoMirrored.Filled.QueueMusic),
         Tab("crate", "Crate", Icons.Filled.Inventory2),
         Tab("nowplaying", "Chamber", Icons.Filled.PlayCircle),
         Tab("eq", "Forge", Icons.Filled.GraphicEq)
@@ -381,6 +400,7 @@ fun AurumApp() {
             androidx.compose.animation.Crossfade(targetState = tabs[tab].id, label = "aurum-tab") { id -> when (id) {
                 "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
                 "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad), onPlayAurum = playLocal)
+                "playlists" -> com.apexforge.genesisplayer.ui.mymusic.PlaylistsTab(Modifier.padding(pad), onPlayAurum = playLocal)
                 "crate" -> com.apexforge.genesisplayer.ui.mymusic.CrateScreen(playLocal, Modifier.padding(pad))
                 "nowplaying" -> NowPlayingScreen(controller, Modifier.padding(pad))
                 "eq" -> EqScreen(Modifier.padding(pad))

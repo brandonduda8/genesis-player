@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -188,6 +189,16 @@ private fun MixRow(name: String, why: String, keys: List<String>) {
                 Text(name, color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                 Text("$why · ${keys.size} songs", color = Dim, style = MaterialTheme.typography.bodySmall)
             }
+            val ctx = LocalContext.current
+            IconButton(onClick = {
+                try {
+                    val p = com.apexforge.genesisplayer.data.playlists.Playlists.create(ctx, name)
+                    val n = com.apexforge.genesisplayer.data.playlists.Playlists.add(ctx, p.id, keys)
+                    android.widget.Toast.makeText(ctx, "Saved \"${p.name}\" ($n songs) to your playlists", android.widget.Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    android.widget.Toast.makeText(ctx, e.message ?: "Couldn't save", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }) { Icon(Icons.Filled.PlaylistAdd, "Save $name as a playlist", tint = Dim) }
             IconButton(onClick = { YtQueue.play(keys) }) { Icon(Icons.Filled.PlayCircle, "Play $name", tint = Gold) }
         }
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -213,6 +224,8 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
     var mode by remember { mutableIntStateOf(0) }
     var artist by remember { mutableStateOf<String?>(null) }
     val online = rememberOnline()
+    var adding by remember { mutableStateOf<List<String>?>(null) }
+    adding?.let { AddToPlaylistDialog(it) { adding = null } }
     Column(modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         BrandHeader("Signal Archive", "Your archive", Aurum.MEMORY_LINE, Modifier.padding(top = 12.dp))
         OutlinedTextField(value = query, onValueChange = { query = it; artist = null }, singleLine = true,
@@ -245,7 +258,8 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
                         aurum != null -> " · IN AURUM"
                         else -> ""
                     }
-                    SongRow(Library.track(k)?.artworkUrl ?: "", s.title, "${s.artist} · ${s.plays} plays$badge") {
+                    SongRow(Library.track(k)?.artworkUrl ?: "", s.title, "${s.artist} · ${s.plays} plays$badge",
+                        onLongClick = { adding = listOf(k) }) {
                         if (!online && !st.worksOffline) {
                             android.widget.Toast.makeText(ctx, "Offline: \"${s.title}\" needs the internet. " +
                                 "Your sanctuary in the Crate still plays.", android.widget.Toast.LENGTH_SHORT).show()
@@ -279,8 +293,11 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
 }
 
 @Composable
-private fun SongRow(art: String, title: String, sub: String, onClick: () -> Unit) {
-    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+private fun SongRow(art: String, title: String, sub: String, onLongClick: (() -> Unit)? = null, onClick: () -> Unit) {
+    Row(Modifier.fillMaxWidth().combinedClickable(onClick = onClick, onLongClick = onLongClick,
+            onLongClickLabel = if (onLongClick != null) "Add to playlist" else null)
+        .padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         if (art.isNotEmpty()) AsyncImage(model = art, contentDescription = null, contentScale = ContentScale.Crop,
             modifier = Modifier.size(52.dp).clip(RoundedCornerShape(8.dp)).background(CardBg))
         else Box(Modifier.size(52.dp).clip(RoundedCornerShape(8.dp)).background(Brush.linearGradient(listOf(Gold, Color(0xFF7A3CFF)))))

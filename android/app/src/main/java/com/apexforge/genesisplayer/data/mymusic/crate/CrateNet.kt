@@ -88,7 +88,11 @@ object CrateNet {
         CrateMatcher.parseArchiveFiles(get("https://archive.org/metadata/${enc(item.identifier)}"), item)
 
     /** Stream a permitted download to [dest] atomically (".part" then rename). Returns bytes written. */
-    fun download(url: String, dest: File): Long {
+    /**
+     * Open a permitted download and hand its bytes to [sink] as a stream (2.2: straight into the vault encryptor,
+     * so no plaintext file ever exists). Plaintext-to-disk downloading was removed in 2.2.
+     */
+    fun <T> stream(url: String, sink: (java.io.InputStream) -> T): T {
         val c = URL(url).openConnection() as HttpURLConnection
         c.connectTimeout = 20_000
         c.readTimeout = 60_000
@@ -96,12 +100,7 @@ object CrateNet {
         c.setRequestProperty("User-Agent", UA)
         try {
             if (c.responseCode !in 200..299) throw java.io.IOException("HTTP ${c.responseCode}")
-            val part = File(dest.parentFile, dest.name + ".part")
-            dest.parentFile?.mkdirs()
-            val n = c.inputStream.use { inp -> part.outputStream().use { out -> inp.copyTo(out, 64 * 1024) } }
-            if (n < 10_000) { part.delete(); throw java.io.IOException("download too small ($n bytes)") }
-            if (!part.renameTo(dest)) throw java.io.IOException("could not save ${dest.name}")
-            return n
+            return c.inputStream.use(sink)
         } finally {
             c.disconnect()
         }

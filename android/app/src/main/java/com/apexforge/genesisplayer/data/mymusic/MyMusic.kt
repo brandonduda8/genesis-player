@@ -11,6 +11,8 @@ import com.apexforge.genesisplayer.data.Library
 import com.apexforge.genesisplayer.data.Playlist
 import com.apexforge.genesisplayer.data.Track
 import java.io.File
+import com.apexforge.genesisplayer.data.vault.Vault
+import com.apexforge.genesisplayer.data.vault.VaultDataSource
 import java.util.concurrent.Executors
 
 /**
@@ -33,6 +35,7 @@ object MyMusic {
     @Volatile var localTracks: List<Track> = emptyList(); private set
     private val recent = ArrayDeque<String>()
     @Volatile private var appContext: Context? = null
+    @Volatile private var vaultHooked = false
 
     /** Re-publish the Library (the Offline Crate calls this when matches or downloads change). */
     fun refresh() = publish()
@@ -43,6 +46,7 @@ object MyMusic {
     fun load(context: Context) {
         val app = context.applicationContext
         appContext = app
+        if (!vaultHooked) { vaultHooked = true; Vault.addListener { publish() } } // cap evictions, removals
         worker.execute {
             try {
                 File(app.filesDir, FEEDBACK).takeIf { it.exists() }?.let { feedback = MyMusicCodec.decodeFeedback(it.readText()) }
@@ -52,6 +56,7 @@ object MyMusic {
                     model = ApolloEngine.build(r.events, r.searches, r.playlists, System.currentTimeMillis())
                 }
                 com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.load(app)
+                try { migrateOwned(app) } catch (e: Exception) { Log.e(TAG, "owned-file migration paused: ${e.message}") }
                 publish()
             } catch (e: Exception) {
                 Log.e(TAG, "load failed", e)
@@ -65,8 +70,15 @@ object MyMusic {
         val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
             if (c.moveToFirst()) c.getString(0) else null
         } ?: uri.lastPathSegment ?: "import"
-        val r = context.contentResolver.openInputStream(uri)?.use { Takeout.read(name, it) }
+        val raw = context.contentResolver.openInputStream(uri)?.buffered()
             ?: throw IllegalStateException("could not open $name")
+        raw.mark(64)
+        val head = ByteArray(40).let { b -> String(b, 0, maxOf(0, raw.read(b)), Charsets.UTF_8) }
+        raw.reset()
+        if (head.replace(Regex("\\s"), "").startsWith("{\"aurum_transfer\"")) {
+            return raw.use { restoreTransfer(context, it.readBytes().toString(Charsets.UTF_8)) }
+        }
+        val r = raw.use { Takeout.read(name, it) }
         require(r.events.isNotEmpty()) {
             "No YouTube Music plays found in $name. Pick the Takeout .zip or watch-history.json (JSON format)."
         }
@@ -75,6 +87,35 @@ object MyMusic {
         imported = merged
         model = ApolloEngine.build(merged.events, merged.searches, merged.playlists, System.currentTimeMillis())
         publish()
+        return r.audit
+    }
+
+    /**
+     * 2.2: restore the library, Apollo feedback and Crate matches from an Aurum 2.2 Preview transfer file
+     * (tools/transfer_from_preview.sh). It carries listening data only, never audio. Every part is decoded and
+     * validated before anything is written, so a bad file changes nothing.
+     */
+    private fun restoreTransfer(context: Context, text: String): ImportAudit {
+        val o = org.json.JSONObject(text)
+        require(o.optInt("aurum_transfer") == 1) { "unsupported transfer file" }
+        val musicText = o.getString("my_music")
+        val r = MyMusicCodec.decode(musicText)
+        require(r.events.isNotEmpty()) { "the transfer file has no plays" }
+        val fbText = o.optString("feedback", "").ifEmpty { null }?.also { MyMusicCodec.decodeFeedback(it) }
+        val crateText = o.optString("crate", "").ifEmpty { null }?.also {
+            com.apexforge.genesisplayer.data.mymusic.crate.CrateMatcher.decode(it)
+        }
+        val merged = imported?.let { old -> merge(old, r) } ?: r
+        File(context.filesDir, DATA).writeText(MyMusicCodec.encode(merged))
+        fbText?.let { File(context.filesDir, FEEDBACK).writeText(it); feedback = MyMusicCodec.decodeFeedback(it) }
+        imported = merged
+        model = ApolloEngine.build(merged.events, merged.searches, merged.playlists, System.currentTimeMillis())
+        crateText?.let {
+            File(context.filesDir, "aurum_crate.json").writeText(it)
+            com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.load(context)
+        }
+        publish()
+        Log.i(TAG, "restored from Preview transfer: ${merged.events.size} plays")
         return r.audit
     }
 
@@ -140,25 +181,38 @@ object MyMusic {
         }
     }
 
-    // ---------- music the owner imports into the vault (files they own; copied into app-private storage) ----------
-    private val ownedMeta = java.util.concurrent.ConcurrentHashMap<String, Pair<String, String>>()
+    // ---------- music the owner imports into the vault (files they own) ----------
+    // 2.2: each file is streamed from the picker straight into the encrypted vault (AES-256-GCM, Keystore-wrapped
+    // key). Nothing is copied in plaintext. These entries are pinned: the offline cap never evicts them.
 
-    fun ownedDir(context: Context) = File(context.filesDir, "owned").also { it.mkdirs() }
+    private fun meta(context: Context, uri: Uri, fallback: String): Pair<String, String> {
+        val r = android.media.MediaMetadataRetriever()
+        return try {
+            r.setDataSource(context, uri)
+            (r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_TITLE) ?: fallback) to
+                (r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "Your file")
+        } catch (e: Exception) {
+            fallback to "Your file"
+        } finally {
+            try { r.release() } catch (_: Exception) {}
+        }
+    }
 
-    /** Copy the picked audio files into the vault. Returns how many were added. Blocking: call off the main thread. */
+    /** Encrypt the picked audio files into the vault. Returns how many were added. Blocking: call off the main thread. */
     fun importAudio(context: Context, uris: List<Uri>): Int {
         var n = 0
+        val have = Vault.all(context).filter(Vault::isPinned).map { it.title to it.artist }.toMutableSet()
         for (uri in uris) {
             try {
                 val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
                     if (c.moveToFirst()) c.getString(0) else null
-                } ?: "track-${System.currentTimeMillis()}.mp3"
-                val safe = name.replace(Regex("[^A-Za-z0-9 ._()&'-]"), "_").take(150)
-                val dest = File(ownedDir(context), safe)
-                if (dest.exists()) continue
-                val part = File(dest.path + ".part")
-                context.contentResolver.openInputStream(uri)?.use { inp -> part.outputStream().use { inp.copyTo(it) } } ?: continue
-                if (part.renameTo(dest)) n++
+                } ?: "track-${System.currentTimeMillis()}"
+                val (title, artist) = meta(context, uri, name.substringBeforeLast('.'))
+                if (!have.add(title to artist)) continue // already imported
+                val err = context.contentResolver.openInputStream(uri)?.use {
+                    Vault.store(context, Vault.OWNED_PREFIX + java.util.UUID.randomUUID(), title, artist, it)
+                } ?: "could not open"
+                if (err == null) n++ else Log.w(TAG, "could not import a file: $err")
             } catch (e: Exception) {
                 Log.w(TAG, "could not import a file: ${e.message}")
             }
@@ -167,27 +221,26 @@ object MyMusic {
         return n
     }
 
-    fun removeOwned(context: Context, id: String) {
-        File(ownedDir(context), id.removePrefix("owned:")).delete()
-        publish()
-    }
+    fun removeOwned(context: Context, id: String) = Vault.remove(context, id) { publish() }
 
-    fun ownedTracks(context: Context): List<Track> = ownedDir(context).listFiles { f -> f.isFile && !f.name.endsWith(".part") }
-        .orEmpty().sortedBy { it.name.lowercase() }.map { f ->
-            val (title, artist) = ownedMeta.getOrPut(f.path) {
-                val r = android.media.MediaMetadataRetriever()
-                try {
-                    r.setDataSource(f.path)
-                    (r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_TITLE) ?: f.nameWithoutExtension) to
-                        (r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "Your file")
-                } catch (e: Exception) {
-                    f.nameWithoutExtension to "Your file"
-                } finally {
-                    try { r.release() } catch (_: Exception) {}
-                }
-            }
-            Track("owned:${f.name}", artist, title, Uri.fromFile(f).toString(), "", 0)
+    fun ownedTracks(context: Context): List<Track> = try {
+        Vault.all(context).filter(Vault::isPinned).sortedBy { it.title.lowercase() }.map { e ->
+            Track(e.trackId, e.artist, e.title, VaultDataSource.uriFor(e.fileId).toString(), "", 0)
         }
+    } catch (e: Exception) { Log.e(TAG, "vault unreadable: ${e.message}"); emptyList() }
+
+    /** Plaintext files an earlier build copied into files/owned: encrypt each, verify, then delete the plaintext. */
+    private fun migrateOwned(context: Context) {
+        val dir = File(context.filesDir, "owned")
+        if (!dir.isDirectory) return
+        dir.listFiles()?.forEach { f ->
+            if (f.name.endsWith(".part")) { f.delete(); return@forEach }
+            if (!f.isFile) return@forEach
+            val (title, artist) = meta(context, Uri.fromFile(f), f.nameWithoutExtension)
+            Vault.migratePlaintext(context, f, Vault.OWNED_PREFIX + "legacy-" + f.name.hashCode().toUInt().toString(16), title, artist)
+        }
+        if (dir.list().isNullOrEmpty()) dir.delete()
+    }
 
     // ---------- the app's Library ----------
     fun mixes(): List<Mix> {

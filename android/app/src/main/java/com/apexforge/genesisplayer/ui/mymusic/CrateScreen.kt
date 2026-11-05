@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -42,8 +43,12 @@ private val importer = Executors.newSingleThreadExecutor()
  * The Crate: the owner's matched music vault. The Offline Sanctuary comes first (everything that plays with no internet),
  * then what can be saved, what streams online, other versions, and what only YouTube has. Each list is kept separate.
  */
+/** Aurum 2.3: the track ids a long-press asked to add to a playlist (one dialog for the whole Crate). */
+private val crateAdding = mutableStateOf<List<String>?>(null)
+
 @Composable
 fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = Modifier) {
+    crateAdding.value?.let { ids -> AddToPlaylistDialog(ids) { crateAdding.value = null } }
     val context = LocalContext.current
     val v1 = MyMusic.version.intValue
     val v2 = OfflineCrate.version.intValue
@@ -52,6 +57,7 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
     val online = rememberOnline()
     val model = MyMusic.model ?: run { Box(modifier.fillMaxSize()) { Text("Import your history first", color = Aurum.Dim) }; return }
     var section by remember { mutableIntStateOf(0) }
+    var vaultOpen by remember { mutableStateOf(false) }
     val main = remember { Handler(Looper.getMainLooper()) }
     val perm = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok -> if (ok) MyMusic.scanLocal(context) }
@@ -99,6 +105,8 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
                 }
             }
         }
+        com.apexforge.genesisplayer.ui.VaultBar { vaultOpen = true }
+        if (vaultOpen) com.apexforge.genesisplayer.ui.VaultManagerDialog(onChanged = { OfflineCrate.publish() }) { vaultOpen = false }
         val labels = listOf("Sanctuary", "Can save", "Exact · online", "Alternate · online", "YouTube only")
         ScrollableTabRow(selectedTabIndex = section, edgePadding = 0.dp, containerColor = Color.Transparent, contentColor = Aurum.Gold) {
             labels.forEachIndexed { i, l -> Tab(selected = section == i, onClick = { section = i }, text = { Text(l) }) }
@@ -171,10 +179,12 @@ private fun VaultList(keys: List<String>, st: SongStatus, empty: String, action:
 }
 
 @Composable
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 private fun SongVaultRow(songKey: String, st: SongStatus, note: String, action: (@Composable () -> Unit)?, onClick: () -> Unit) {
     val s = MyMusic.model?.songs?.get(songKey) ?: return
     val c = OfflineCrate.matches[songKey]?.candidate
-    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().combinedClickable(onClick = onClick, onLongClick = { crateAdding.value = listOf(songKey) },
+            onLongClickLabel = "Add to playlist").padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(model = c?.artworkUrl?.ifEmpty { null } ?: Library.track(songKey)?.artworkUrl, contentDescription = null,
             contentScale = ContentScale.Crop, modifier = Modifier.size(50.dp).clip(RoundedCornerShape(10.dp)).background(Aurum.Card))
         Spacer(Modifier.width(12.dp))
@@ -192,8 +202,10 @@ private fun SongVaultRow(songKey: String, st: SongStatus, note: String, action: 
 }
 
 @Composable
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 private fun FileRow(t: Track, note: String, action: (@Composable () -> Unit)?, onClick: () -> Unit) {
-    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().combinedClickable(onClick = onClick, onLongClick = { crateAdding.value = listOf(t.id) },
+            onLongClickLabel = "Add to playlist").padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(50.dp).clip(RoundedCornerShape(10.dp)).background(Aurum.goldBrush), contentAlignment = Alignment.Center) {
             Icon(Icons.Filled.MusicNote, null, tint = Aurum.Obsidian)
         }

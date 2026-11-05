@@ -39,6 +39,9 @@ object YtQueue {
     val keys = mutableStateListOf<String>()
     var index by mutableIntStateOf(0)
     var shuffle by mutableStateOf(false)
+    /** Aurum 2.3: 0 = off, 1 = repeat the queue, 2 = repeat this song. Survives queue changes, like Aurum's player. */
+    var repeat by mutableIntStateOf(0)
+    fun cycleRepeat() { repeat = (repeat + 1) % 3 }
     var open by mutableStateOf(false)
     var playing by mutableStateOf(false)
     var notice by mutableStateOf<String?>(null)
@@ -73,7 +76,12 @@ object YtQueue {
         if (userSkip && key != null && (startedAtMs == 0L || System.currentTimeMillis() - startedAtMs < 30_000)) {
             MyMusic.skipped(context, key)
         }
-        if (index < keys.size - 1) { index++; loadCurrent() } else { playing = false; web?.evaluateJavascript("pause()", null) }
+        when {
+            !userSkip && repeat == 2 -> loadCurrent()                       // song ended: play it again
+            index < keys.size - 1 -> { index++; loadCurrent() }
+            repeat == 1 && keys.isNotEmpty() -> { index = 0; loadCurrent() } // queue ended: from the top
+            else -> { playing = false; web?.evaluateJavascript("pause()", null) }
+        }
     }
 
     fun prev() { if (index > 0) { index--; loadCurrent() } }
@@ -213,6 +221,9 @@ fun YouTubePlayerScreen(onCollapse: () -> Unit) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = YtQueue.shuffle, onClick = { YtQueue.toggleShuffle() }, label = { Text("Shuffle") },
                     leadingIcon = { Icon(Icons.Filled.Shuffle, null) })
+                FilterChip(selected = YtQueue.repeat != 0, onClick = { YtQueue.cycleRepeat() },
+                    label = { Text(when (YtQueue.repeat) { 1 -> "Repeat all"; 2 -> "Repeat one"; else -> "Repeat" }) },
+                    leadingIcon = { Icon(if (YtQueue.repeat == 2) Icons.Filled.RepeatOne else Icons.Filled.Repeat, null) })
                 AssistChip(onClick = { YtQueue.moreLikeThis() }, label = { Text("More like this") },
                     leadingIcon = { Icon(Icons.Filled.AutoAwesome, null) })
                 AssistChip(onClick = { YtQueue.openInYouTubeMusic(context) }, label = { Text("YouTube Music") },

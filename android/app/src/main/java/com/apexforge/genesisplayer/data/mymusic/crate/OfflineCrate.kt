@@ -6,13 +6,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.apexforge.genesisplayer.data.Track
 import com.apexforge.genesisplayer.data.mymusic.MyMusic
+import com.apexforge.genesisplayer.data.vault.Vault
+import com.apexforge.genesisplayer.data.vault.VaultDataSource
 import java.io.File
 import java.util.concurrent.Executors
 
 /**
  * The Offline Crate: for each song in the owner's history, the legitimate copies that exist, by the same artist only.
  * Matching runs on the phone, artists in order of how much the owner plays them, and resumes where it stopped.
- * Downloads go to app-private storage and happen only where the rights holder allows it.
+ * Downloads happen only where the rights holder allows it, and (2.2) stream straight into the encrypted vault:
+ * no plaintext copy is ever written. Plaintext files left by 2.1/2.2-preview-era builds are migrated, verified.
  */
 object OfflineCrate {
     private const val TAG = "AurumCrate"
@@ -30,8 +33,35 @@ object OfflineCrate {
     @Volatile var checkedAtMs = 0L; private set
     @Volatile private var running = false
 
-    fun offlineFile(context: Context, songKey: String): File =
+    /** Where builds before 2.2 left PLAINTEXT offline copies. Read only by [migrateLegacy]. */
+    private fun legacyFile(context: Context, songKey: String): File =
         File(File(context.filesDir, OFFLINE_DIR), songKey.replace(Regex("[^A-Za-z0-9._-]"), "_").take(120) + ".mp3")
+
+    private fun vaultId(songKey: String) = "offline:$songKey"
+
+    /** Encrypt any plaintext offline copies an earlier build left behind; each is deleted only after a verified copy. */
+    private fun migrateLegacy(context: Context) {
+        val dir = File(context.filesDir, OFFLINE_DIR)
+        if (!dir.isDirectory) return
+        val model = MyMusic.model
+        for ((k, _) in matches) {
+            val f = legacyFile(context, k)
+            if (!f.isFile) continue
+            val s = model?.songs?.get(k)
+            Vault.migratePlaintext(context, f, vaultId(k), s?.title ?: k, s?.artist ?: "")
+        }
+        dir.listFiles()?.filter { it.name.endsWith(".part") }?.forEach { it.delete() } // never-finished downloads
+        if (dir.list().isNullOrEmpty()) dir.delete()
+    }
+
+    /** Download a permitted file straight into the vault. Returns null on success, else why. Blocking. */
+    fun saveFromUrl(context: Context, trackId: String, title: String, artist: String, url: String): String? {
+        val err = CrateNet.stream(url) { Vault.store(context, trackId, title, artist, it) }
+        if (err != null) return err
+        val e = Vault.entry(context, trackId) ?: return "not stored"
+        if (e.plainBytes < 10_000) { Vault.remove(context, trackId); return "download too small (${e.plainBytes} bytes)" }
+        return null
+    }
 
     fun load(context: Context) {
         val f = File(context.filesDir, FILE)
@@ -45,6 +75,7 @@ object OfflineCrate {
         } catch (e: Exception) {
             Log.e(TAG, "crate file unreadable; starting fresh", e)
         }
+        try { migrateLegacy(context) } catch (e: Exception) { Log.e(TAG, "offline migration paused: ${e.message}") }
     }
 
     private fun save(context: Context) {
@@ -105,14 +136,15 @@ object OfflineCrate {
         val app = context.applicationContext
         // only the EXACT recording, and only with permission: alternates never enter the offline vault
         val todo = songKeys.filter { k -> matches[k]?.let { it.kind == MatchKind.EXACT && it.downloadable } == true &&
-            !offlineFile(app, k).exists() }
+            !isOffline(app, k) }
         if (todo.isEmpty()) return
         downloading.value = downloading.value + todo
         dl.execute {
             for (k in todo) {
                 try {
-                    val bytes = CrateNet.download(matches.getValue(k).candidate!!.downloadUrl, offlineFile(app, k))
-                    Log.i(TAG, "saved offline: ${bytes / 1024} KB")
+                    val s = MyMusic.model?.songs?.get(k)
+                    val err = saveFromUrl(app, vaultId(k), s?.title ?: k, s?.artist ?: "", matches.getValue(k).candidate!!.downloadUrl)
+                    if (err == null) Log.i(TAG, "saved offline (encrypted)") else Log.w(TAG, "download failed: $err")
                 } catch (e: Exception) {
                     Log.w(TAG, "download failed: ${e.message}")
                 } finally {
@@ -123,12 +155,10 @@ object OfflineCrate {
         }
     }
 
-    fun removeOffline(context: Context, songKey: String) {
-        offlineFile(context, songKey).delete()
-        publish()
-    }
+    fun removeOffline(context: Context, songKey: String) = Vault.remove(context, vaultId(songKey)) { publish() }
 
-    fun isOffline(context: Context, songKey: String) = offlineFile(context, songKey).exists()
+    fun isOffline(context: Context, songKey: String) =
+        try { Vault.entry(context, vaultId(songKey)) != null } catch (e: Exception) { false }
 
     fun status(context: Context, songKey: String): SongStatus = SongStatus.of(isOffline(context, songKey), matches[songKey])
 
@@ -150,8 +180,8 @@ object OfflineCrate {
             val s = model.songs[k] ?: continue
             val c = m.candidate
             val art = c?.artworkUrl?.ifEmpty { null } ?: "https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg"
-            val f = offlineFile(context, k)
-            if (f.exists()) out += Track("offline:$k", s.artist, s.title, android.net.Uri.fromFile(f).toString(), art, c?.durationS ?: 0)
+            val v = try { Vault.entry(context, vaultId(k)) } catch (e: Exception) { null }
+            if (v != null) out += Track(vaultId(k), s.artist, s.title, VaultDataSource.uriFor(v.fileId).toString(), art, c?.durationS ?: 0)
             if (c != null && m.kind != MatchKind.UNAVAILABLE) {
                 val title = if (m.kind == MatchKind.ALTERNATE) "${s.title} · ${c.title}" else s.title
                 out += Track((if (m.kind == MatchKind.EXACT) "crate:" else "alt:") + k, s.artist, title, c.streamUrl, art, c.durationS)
@@ -160,7 +190,7 @@ object OfflineCrate {
         return out
     }
 
-    private fun publish() {
+    fun publish() {
         MyMusic.refresh()
         version.intValue = version.intValue + 1
     }

@@ -1,5 +1,6 @@
 package com.apexforge.genesisplayer.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -68,6 +70,12 @@ fun EqScreen(modifier: Modifier = Modifier) {
             Text("Real system DSP — bass, EQ and loudness on the live audio session",
                 color = TextDim, fontSize = 13.sp)
             Spacer(Modifier.height(12.dp))
+        }
+
+        // ---- Aurum 2.3: one-tap presets shaped for this phone's own EQ bands, with a clip guard ----
+        item {
+            AurumSoundRow(fx) { rev++ }
+            Spacer(Modifier.height(16.dp))
         }
 
         // ---- Golden Phase 1: AMPLIFIER — 4-stage EQ (drives the same chain) ----
@@ -223,3 +231,21 @@ private fun saveEqOn(c: android.content.Context, v: Boolean) = prefs(c).edit().p
 private fun savedLoudGain(c: android.content.Context) = prefs(c).getInt("loud_gain_mb", 0)
 private fun saveLoudGain(c: android.content.Context, v: Int) = prefs(c).edit().putInt("loud_gain_mb", v).apply()
 private fun saveLoudOn(c: android.content.Context, v: Boolean) = prefs(c).edit().putBoolean("loud_on", v).apply()
+
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun AurumSoundRow(fx: AudioFxController?, onChanged: () -> Unit) {
+    var current by remember(fx) { mutableStateOf(fx?.aurumPreset()) }
+    Text("Aurum sound", color = PhoenixGold, fontSize = 16.sp)
+    Text(if (fx == null) "Start a song to shape it" else
+        current?.blurb?.let { "$it · clip guard on" } ?: "Pick a preset, or use the fine controls below",
+        color = TextDim, fontSize = 12.sp)
+    Spacer(Modifier.height(6.dp))
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        com.apexforge.genesisplayer.audio.SoundCurve.Preset.values().forEach { p ->
+            FilterChip(selected = current == p, enabled = fx?.eqAvailable == true,
+                onClick = { fx?.applyAurumPreset(p); current = p; onChanged() },
+                label = { Text(p.label) })
+        }
+    }
+}
