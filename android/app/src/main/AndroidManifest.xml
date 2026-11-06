@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- AURUM GOLDEN (2.4): ask once for battery-optimization exemption so OEM
+         power managers (Motorola especially) cannot kill background playback. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- Phase 1 Apollo voice: input-only push-to-talk, requested at first mic
          use (Apollo tab). The ONLY new permission in this release. -->

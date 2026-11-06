@@ -49,8 +49,9 @@ info "2.1 data files: $(wc -l < "$OUT/data_before.txt")"
 cat "$OUT/data_before.txt" | awk '{print $2}' > "$OUT/files_before.txt"
 echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
+adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-WANT_VC=${WANT_VC:-7}
+WANT_VC=${WANT_VC:-8}
 [ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
@@ -79,6 +80,7 @@ runas 'mkdir -p files/owned && cp /data/local/tmp/legacy.wav "files/owned/My Son
 adb shell rm /data/local/tmp/legacy.wav
 runas 'ls -la files/owned' | sed 's/^/INFO  before: /' | tee -a "$R"
 adb install -r "$NEW_APK" >/dev/null && pass "2.2 installed in place over the pre-vault Aurum build" || fail "install over pre-vault Aurum"
+adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 adb shell am start -n $ACT >/dev/null; sleep 15
 if runas 'ls files/owned 2>/dev/null' | grep -q "My Song"; then fail "plaintext owned file still present after 2.2 launch"
 else pass "plaintext files/owned/My Song.wav is gone after first 2.2 launch"; fi
@@ -295,6 +297,22 @@ if [ -n "${PREVIEW_APK:-}" ] && [ -f "$PREVIEW_APK" ]; then
   adb shell pm list packages | grep -q "^package:$PRE$" && [ "$(adb exec-out run-as $PRE cat files/aurum_my_music.json | sha256sum | cut -d' ' -f1)" = "$PRE_SHA" ] \
     && pass "the Preview is still installed and its library is byte-identical" || fail "the Preview or its data changed"
 else info "no PREVIEW_APK given: transfer test skipped"; fi
+
+# ---------------------------------------------------------------- 8. 2.4 keep-playing setup on a FRESH install
+echo "=== 8. fresh install asks for notifications, then the battery exemption (one dialog at a time) ==="
+adb uninstall $PKG >/dev/null 2>&1 || true
+adb install "$NEW_APK" >/dev/null
+adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true   # simulate "Allow"
+adb logcat -c
+adb shell am start -n $ACT >/dev/null; sleep 6
+TOP=$(adb shell dumpsys activity activities | grep -m3 -E "topResumedActivity|mResumedActivity" | tr -d '\r')
+info "top after fresh launch: $(echo "$TOP" | head -1 | cut -c1-160)"
+if adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption requested" && echo "$TOP" | grep -qiE "BatteryOptimization|RequestIgnore|settings"; then
+  pass "fresh install opens the battery-optimisation exemption request (Moto power manager guard)"
+else fail "fresh install did not open the battery exemption request"; adb logcat -d -s GenesisPlayer:* | grep KeepPlaying | head -3 | sed 's/^/INFO  log: /' | tee -a "$R"; fi
+adb shell input keyevent KEYCODE_BACK; sleep 2
+adb shell am force-stop $PKG; adb shell am start -n $ACT >/dev/null; sleep 5
+adb logcat -d -s GenesisPlayer:* | grep -c "KeepPlaying: battery exemption requested" | grep -qx 1 && pass "the battery ask happens once, not on every launch" || fail "battery ask repeated"
 
 adb logcat -d > "$OUT/logcat.txt"
 grep -i "FATAL EXCEPTION" -A8 "$OUT/logcat.txt" | grep -q "$PKG" && fail "a crash was logged" || pass "no crash during the battery"

@@ -1,11 +1,18 @@
 package com.apexforge.genesisplayer
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -78,6 +85,50 @@ class MainActivity : ComponentActivity() {
         handleTestImport(intent)
         handleTestVault(intent)
         setContent { GenesisTheme { AurumApp() } }
+        maybeAskKeepPlaying()
+    }
+
+    // ---- AURUM GOLDEN (2.4): keep-playing setup --------------------------------
+    // Founder defect (Nov 5, 2026): music died when Brandon left the app on his
+    // Moto G, twice (2.2, 2.3). The Media3 foreground service itself is correct,
+    // but the app never (a) requested POST_NOTIFICATIONS, so on Android 13+ the
+    // media foreground-service notification cannot post, and never (b) asked
+    // for a battery-optimization exemption, so Motorola's power manager is free
+    // to kill playback in the background. Ask for each exactly once.
+    private val notifPermLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            Log.i("GenesisPlayer", "KeepPlaying: POST_NOTIFICATIONS granted=$granted")
+            maybeAskBatteryExemption() // Claude review: one system dialog at a time, never stacked
+        }
+
+    private fun maybeAskKeepPlaying() {
+        if (Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notifPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return // the battery ask follows the notification answer
+        }
+        maybeAskBatteryExemption()
+    }
+
+    private fun maybeAskBatteryExemption() {
+        val prefs = getSharedPreferences("aurum_keep_playing", MODE_PRIVATE)
+        if (prefs.getBoolean("battery_asked", false)) return
+        val pm = getSystemService(PowerManager::class.java) ?: return
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            prefs.edit().putBoolean("battery_asked", true).apply()
+            try {
+                startActivity(
+                    Intent(
+                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        Uri.parse("package:$packageName")
+                    )
+                )
+                Log.i("GenesisPlayer", "KeepPlaying: battery exemption requested")
+            } catch (e: Exception) {
+                Log.w("GenesisPlayer", "KeepPlaying: battery exemption dialog unavailable (${e.message})")
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
