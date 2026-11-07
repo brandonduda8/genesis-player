@@ -65,6 +65,13 @@ object YtQueue {
 
     fun current() = keys.getOrNull(index)?.let { Library.track(it) }
 
+    /** 2.4 golden: an Aurum play takes over; the embed is paused and closed so the two never play at once. */
+    fun stop() {
+        web?.evaluateJavascript("pause()", null)
+        playing = false
+        open = false
+    }
+
     fun loadCurrent() {
         val vid = current()?.youtubeId ?: return
         startedAtMs = 0L
@@ -154,7 +161,9 @@ fun YouTubePlayerScreen(onCollapse: () -> Unit) {
             }
             Column {
                 Overline("Pulse Chamber · YouTube", Aurum.Gold)
-                Text("Official YouTube player · needs the internet", color = Aurum.Dim, style = MaterialTheme.typography.labelSmall)
+                // 2.4 golden: the honest label. This player stops when the app leaves the screen (YouTube's terms).
+                Text(com.apexforge.genesisplayer.data.playlists.PlayRouter.YOUTUBE_LABEL + " · needs the internet",
+                    color = Color(0xFFFFCC66), style = MaterialTheme.typography.labelSmall)
             }
         }
         AndroidView(
@@ -227,6 +236,12 @@ fun YouTubePlayerScreen(onCollapse: () -> Unit) {
                 AssistChip(onClick = { YtQueue.moreLikeThis() }, label = { Text("More like this") },
                     leadingIcon = { Icon(Icons.Filled.AutoAwesome, null) })
                 AssistChip(onClick = { YtQueue.openInYouTubeMusic(context) }, label = { Text("YouTube Music") },
+                    leadingIcon = { Icon(Icons.Filled.OpenInNew, null) })
+            }
+            Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // 2.4 golden: hand the rest of this queue to YouTube's own app (background play there depends on the
+                // owner's YouTube plan; Aurum promises nothing about it).
+                AssistChip(onClick = { AurumPlay.continueInYouTube(context) }, label = { Text("Continue in YouTube") },
                     leadingIcon = { Icon(Icons.Filled.OpenInNew, null) })
             }
         }

@@ -159,7 +159,7 @@ fun CrateScreen(onPlayAurum: (List<String>, Int) -> Unit, modifier: Modifier = M
                 else Toast.makeText(context, "Offline: alternate versions stream online only.", Toast.LENGTH_SHORT).show()
             }
             4 -> VaultList(yt, SongStatus.YOUTUBE, "Nothing is YouTube-only yet.", action = null) { list, i ->
-                if (online) YtQueue.play(list, i)
+                if (online) { YtQueue.play(list, i); YtQueue.notice = com.apexforge.genesisplayer.data.playlists.PlayRouter.YOUTUBE_LABEL }
                 else Toast.makeText(context, "Offline: YouTube needs the internet.", Toast.LENGTH_SHORT).show()
             }
         }

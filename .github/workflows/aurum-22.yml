@@ -12,7 +12,7 @@ name: aurum-2.2
 
 on:
   push:
-    branches: [claude/aurum-2.2, claude/aurum-2.3]
+    branches: [claude/aurum-2.2, claude/aurum-2.3, claude/aurum-2.4-golden]
   workflow_dispatch:
 
 permissions:
@@ -89,10 +89,10 @@ jobs:
           aapt2 dump permissions android/app/build/outputs/apk/debug/app-debug.apk | grep -v '^package' | sort > $d/perms-2.2.txt
           echo "--- vs pre-vault Aurum Pulse (what the Preview has) ---"
           diff $d/perms-pulse.txt $d/perms-2.2.txt | tee $d/perms.diff || true
-          ADDED=$(grep '^>' $d/perms.diff | grep -v "android.permission.WAKE_LOCK" || true)
+          ADDED=$(grep '^>' $d/perms.diff | grep -vE "android.permission.(WAKE_LOCK|REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)" || true)
           REMOVED=$(grep '^<' $d/perms.diff || true)
           [ -z "$ADDED$REMOVED" ] || { echo "UNEXPECTED PERMISSION CHANGE"; exit 1; }
-          echo "strict delta: +WAKE_LOCK only (ExoPlayer WAKE_MODE_NETWORK; held only while playing)"
+          echo "strict delta: +WAKE_LOCK (ExoPlayer WAKE_MODE_NETWORK; held only while playing), +REQUEST_IGNORE_BATTERY_OPTIMIZATIONS (2.4: one-time ask)"
           echo "--- vs 2.1-deepspace (informational) ---"
           diff $d/perms-2.1.txt $d/perms-2.2.txt | tee $d/perms-vs-2.1.diff || true
           aapt2 dump badging android/app/build/outputs/apk/release/app-release-unsigned.apk | head -1
