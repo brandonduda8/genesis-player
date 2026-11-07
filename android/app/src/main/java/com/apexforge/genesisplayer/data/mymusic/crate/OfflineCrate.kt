@@ -187,6 +187,17 @@ object OfflineCrate {
                 out += Track((if (m.kind == MatchKind.EXACT) "crate:" else "alt:") + k, s.artist, title, c.streamUrl, art, c.durationS)
             }
         }
+        // 2.4 golden: a vault copy whose match record is gone still plays. aurumTrackId() already routes it to
+        // "offline:<key>", so the engine must be able to resolve that id too (no silent fall-back to YouTube).
+        val all = try { Vault.all(context) } catch (e: Exception) { emptyList() }
+        for (v in all) {
+            if (!v.trackId.startsWith("offline:")) continue
+            val k = v.trackId.removePrefix("offline:")
+            if (k in matches) continue
+            val s = model.songs[k] ?: continue
+            out += Track(v.trackId, s.artist, s.title, VaultDataSource.uriFor(v.fileId).toString(),
+                "https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg", 0)
+        }
         return out
     }
 

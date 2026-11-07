@@ -84,6 +84,7 @@ class MainActivity : ComponentActivity() {
         handleTestQueueDump(intent)
         handleTestImport(intent)
         handleTestVault(intent)
+        handleTestRoute(intent)
         setContent { GenesisTheme { AurumApp() } }
         maybeAskKeepPlaying()
     }
@@ -142,6 +143,7 @@ class MainActivity : ComponentActivity() {
         handleTestQueueDump(intent)
         handleTestImport(intent)
         handleTestVault(intent)
+        handleTestRoute(intent)
     }
 
     private var testController: MediaController? = null
@@ -223,6 +225,7 @@ class MainActivity : ComponentActivity() {
         const val TEST_QUEUE_DUMP_ACTION = "com.apexforge.genesisplayer.TEST_QUEUE_DUMP"
         const val TEST_IMPORT_ACTION = "com.apexforge.genesisplayer.TEST_IMPORT"
         const val TEST_VAULT_ACTION = "com.apexforge.genesisplayer.TEST_VAULT"
+        const val TEST_ROUTE_ACTION = "com.apexforge.genesisplayer.TEST_ROUTE"
     }
 
     /**
@@ -346,6 +349,61 @@ class MainActivity : ComponentActivity() {
         sendTestCommand(PlayerService.ACTION_VAULT_TEST, args, "TEST_VAULT fired mode=${args.getString("mode")}")
     }
 
+    /**
+     * DEBUG-ONLY (2.4 golden, charge 2): drives the SAME router the Apollo buttons use, so the CI battery can prove an
+     * Apollo play lands in Aurum's engine and survives screen-off, and that a YouTube-only play is labeled.
+     * Modes: seed (an encrypted offline copy of the most-played song), apollo (Play For You over the whole library),
+     * youtube (a YouTube-only song). Release builds ignore it.
+     */
+    private fun handleTestRoute(intent: Intent?) {
+        if (!BuildConfig.DEBUG) return
+        if (intent?.action != TEST_ROUTE_ACTION) return
+        val mode = intent.getStringExtra("mode") ?: "apollo"
+        val main = android.os.Handler(mainLooper)
+        fun withModel(tries: Int = 40, block: (com.apexforge.genesisplayer.data.mymusic.ApolloModel) -> Unit) {
+            val m = com.apexforge.genesisplayer.data.mymusic.MyMusic.model
+            if (m != null && m.songs.isNotEmpty()) block(m)
+            else if (tries > 0) main.postDelayed({ withModel(tries - 1, block) }, 500)
+            else Log.e("GenesisPlayer", "RouteCI: no library model")
+        }
+        withModel { m ->
+            val keys = m.songs.values.sortedByDescending { it.plays }.map { it.key }
+            when (mode) {
+                "seed" -> {
+                    val k = keys.first()
+                    com.apexforge.genesisplayer.data.vault.Vault.seedTone(this, "offline:$k", 240) { err ->
+                        main.post {
+                            com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.publish()
+                            Log.i("GenesisPlayer", "RouteCI: seeded offline:$k err=$err")
+                        }
+                    }
+                }
+                "apollo" -> {
+                    val c = com.apexforge.genesisplayer.ui.mymusic.AurumPlay.coverage(this, keys)
+                    Log.i("GenesisPlayer", "RouteCI: coverage aurum=${c.aurum} offline=${c.offline} youtubeOnly=${c.youtubeOnly} total=${c.total}")
+                    com.apexforge.genesisplayer.ui.mymusic.AurumPlay.play(this, keys, null, from = "ci-apollo") { ids, i ->
+                        sendTestCommand(PlayerService.ACTION_PLAY_IDS, Bundle().apply {
+                            putStringArrayList("ids", ArrayList(ids)); putInt("index", i)
+                        }, "RouteCI: Aurum engine queue ${ids.size} start=${ids.getOrNull(i)}")
+                    }
+                }
+                "youtube" -> {
+                    val yt = keys.filter {
+                        com.apexforge.genesisplayer.ui.mymusic.AurumPlay.engineOf(this, it) ==
+                            com.apexforge.genesisplayer.data.playlists.PlayRouter.Engine.YOUTUBE_ONLY }.take(3)
+                    if (yt.isEmpty()) { Log.e("GenesisPlayer", "RouteCI: no YouTube-only song"); return@withModel }
+                    val p = com.apexforge.genesisplayer.ui.mymusic.AurumPlay.play(this, yt, 0, from = "ci-youtube") { _, _ -> }
+                    val n = com.apexforge.genesisplayer.ui.mymusic.YtQueue.notice ?: ""
+                    Log.i("GenesisPlayer", "RouteCI: youtube route=${p.route} labeled=${n.startsWith(
+                        com.apexforge.genesisplayer.data.playlists.PlayRouter.YOUTUBE_LABEL)} handoff=${
+                        com.apexforge.genesisplayer.data.playlists.PlayRouter.handoffUrl(
+                            yt.mapNotNull { com.apexforge.genesisplayer.data.Library.track(it)?.youtubeId }) != null}")
+                    com.apexforge.genesisplayer.ui.mymusic.YtQueue.stop()
+                }
+            }
+        }
+    }
+
     /** Shared DEBUG-hook plumbing: build a controller, send one custom command. */
     private fun sendTestCommand(action: String, args: Bundle, logLine: String) {
         val token = SessionToken(this, ComponentName(this, PlayerService::class.java))
@@ -413,7 +471,7 @@ fun AurumApp() {
         Tab("eq", "Forge", Icons.Filled.GraphicEq)
     )
     val playLocal: (List<String>, Int) -> Unit = { ids, i ->
-        yt.web?.evaluateJavascript("pause()", null)
+        yt.stop() // 2.4 golden: pause AND close the embed, so the Aurum player is what's on screen
         controller?.sendGenesis(PlayerService.ACTION_PLAY_IDS, Bundle().apply {
             putStringArrayList("ids", ArrayList(ids)); putInt("index", i)
         })
@@ -449,7 +507,7 @@ fun AurumApp() {
             }
         ) { pad ->
             androidx.compose.animation.Crossfade(targetState = tabs[tab].id, label = "aurum-tab") { id -> when (id) {
-                "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true })
+                "apollo" -> com.apexforge.genesisplayer.ui.mymusic.ApolloHome(Modifier.padding(pad), onImport = { importing = true }, onPlayAurum = playLocal)
                 "library" -> com.apexforge.genesisplayer.ui.mymusic.LibraryTab(Modifier.padding(pad), onPlayAurum = playLocal)
                 "playlists" -> com.apexforge.genesisplayer.ui.mymusic.PlaylistsTab(Modifier.padding(pad), onPlayAurum = playLocal)
                 "crate" -> com.apexforge.genesisplayer.ui.mymusic.CrateScreen(playLocal, Modifier.padding(pad))

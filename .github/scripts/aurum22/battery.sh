@@ -51,7 +51,7 @@ echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-WANT_VC=${WANT_VC:-8}
+WANT_VC=${WANT_VC:-9}
 [ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
@@ -297,6 +297,43 @@ if [ -n "${PREVIEW_APK:-}" ] && [ -f "$PREVIEW_APK" ]; then
   adb shell pm list packages | grep -q "^package:$PRE$" && [ "$(adb exec-out run-as $PRE cat files/aurum_my_music.json | sha256sum | cut -d' ' -f1)" = "$PRE_SHA" ] \
     && pass "the Preview is still installed and its library is byte-identical" || fail "the Preview or its data changed"
 else info "no PREVIEW_APK given: transfer test skipped"; fi
+
+# ---------------------------------------------------------------- 9. golden charge 2: one router for every play button
+# Runs on the library restored in section 7. The hook calls the SAME AurumPlay.play() the Apollo buttons call.
+echo "=== 9. Apollo plays route to Aurum's engine and survive screen-off; YouTube-only is labeled ==="
+route() { adb shell am start -n $ACT -a $PKG.TEST_ROUTE --es mode "$1" >/dev/null; }
+waitlog() { for _ in $(seq 1 "$2"); do adb logcat -d -s GenesisPlayer:* | grep -q "$1" && return 0; sleep 1; done; return 1; }
+adb logcat -c
+adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard 2>/dev/null || true
+route youtube
+if waitlog "RouteCI: youtube" 30; then
+  yl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "RouteCI: youtube")
+  echo "$yl" | grep -q "route=YOUTUBE labeled=true handoff=true" \
+    && pass "a YouTube-only song plays labeled (\"pauses when you leave the app\") with the Continue-in-YouTube hand-off" \
+    || fail "YouTube-only play not labeled: $yl"
+else fail "route youtube: no log"; log 20; fi
+route seed
+waitlog "RouteCI: seeded" 40 && adb logcat -d -s GenesisPlayer:* | grep -m1 "RouteCI: seeded" | sed 's/^/INFO  /' | tee -a "$R" || fail "could not seed an offline copy"
+sleep 2
+adb logcat -c
+route apollo
+if waitlog "AurumRoute: from=ci-apollo" 30; then
+  adb logcat -d -s GenesisPlayer:* | grep -m1 "RouteCI: coverage" | sed 's/^/INFO  /' | tee -a "$R"
+  rl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "AurumRoute: from=ci-apollo")
+  echo "$rl" | grep -q "route=AURUM" && pass "Apollo Play For You routes to Aurum's engine (not the YouTube embed) when the library has Aurum sources: ${rl#*AurumRoute: }" \
+    || fail "Apollo play went to: $rl"
+  adb logcat -d -s GenesisPlayer:* | grep -q "RouteCI: coverage aurum=[1-9]" && pass "coverage counted from the router (>=1 Aurum song after saving one offline)" || fail "coverage line missing or zero"
+else fail "route apollo: no AurumRoute log"; log 30; fi
+if wait_playing 40; then
+  pass "the Apollo-routed song is playing in Media3 (decrypted from the vault)"
+  adb shell input keyevent KEYCODE_HOME; sleep 2; adb shell input keyevent KEYCODE_SLEEP; sleep 3
+  r0=$(probe); p0=$(field "$r0" POS); sleep 60; r1=$(probe); p1=$(field "$r1" POS); s1=$(field "$r1" STATE)
+  if [ "$s1" = "3" ] && [ -n "$p0" ] && [ -n "$p1" ] && [ $((p1 - p0)) -ge 50000 ]; then
+    pass "Apollo play survives home + screen off for 60 s: position advanced $(( (p1 - p0) / 1000 )) s"
+  else fail "Apollo-routed play stopped with the screen off (p0=$p0 p1=$p1 state=$s1)"; fi
+  adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard 2>/dev/null || true
+  adb shell cmd media_session dispatch pause 2>/dev/null || adb shell input keyevent KEYCODE_MEDIA_PAUSE; sleep 2
+else fail "the Apollo-routed song never played"; log 30; fi
 
 # ---------------------------------------------------------------- 8. 2.4 keep-playing setup on a FRESH install
 echo "=== 8. fresh install asks for notifications, then the battery exemption (one dialog at a time) ==="
