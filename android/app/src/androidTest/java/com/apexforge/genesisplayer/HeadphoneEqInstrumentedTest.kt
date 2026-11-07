@@ -10,6 +10,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.apexforge.genesisplayer.audio.AurumEqProcessor
 import com.apexforge.genesisplayer.audio.HeadphoneEq
 import com.apexforge.genesisplayer.audio.HeadphoneProfiles
 import com.apexforge.genesisplayer.audio.aurumRenderers
@@ -60,6 +61,61 @@ class HeadphoneEqInstrumentedTest {
         assertTrue(c.enabled)
         assertEquals(0.5, c.strength, 1e-9)
         assertEquals(HeadphoneEq.Status.ESTIMATED, c.profile?.status)
+    }
+
+    /** The Media3 processor itself, fed real direct native-order buffers the way DefaultAudioSink feeds it. */
+    private fun throughProcessor(p: AurumEqProcessor, freq: Double, rate: Int = 44_100, ch: Int = 2): Pair<ShortArray, ShortArray> {
+        val frames = rate // 1 s
+        val input = ShortArray(frames * ch) { i -> (12000 * Math.sin(2 * Math.PI * freq * (i / ch) / rate)).toInt().toShort() }
+        val out = ShortArray(input.size)
+        var w = 0
+        var r = 0
+        while (r < input.size) {
+            val n = minOf(4096 * ch, input.size - r)
+            val buf = ByteBuffer.allocateDirect(n * 2).order(ByteOrder.nativeOrder())
+            for (i in 0 until n) buf.putShort(input[r + i])
+            buf.flip()
+            p.queueInput(buf)
+            val o = p.output.order(ByteOrder.nativeOrder())
+            while (o.hasRemaining()) out[w++] = o.getShort()
+            r += n
+        }
+        assertEquals("every sample came out", input.size, w)
+        return input to out
+    }
+
+    private fun rmsDb(x: ShortArray): Double {
+        val h = x.size / 2 // skip the filter's settling
+        return 10 * Math.log10((h until x.size).sumOf { x[it].toDouble() * x[it] } / (x.size - h))
+    }
+
+    @Test fun processorMatchesTheAnalyticResponseOnRealMedia3Buffers() {
+        val shelf = HeadphoneEq.Profile("it", "IT shelf", HeadphoneEq.Status.MEASURED, 1.0, "test",
+            listOf(ParametricEq.Filter(ParametricEq.Type.LSC, 150.0, 9.0, 0.7)))
+        val p = AurumEqProcessor()
+        val fmt = androidx.media3.common.audio.AudioProcessor.AudioFormat(44_100, 2, androidx.media3.common.C.ENCODING_PCM_16BIT)
+        p.configure(fmt); p.flush()
+        assertTrue(p.isActive)
+        // off: bit-transparent
+        HeadphoneEq.set(HeadphoneEq.Config())
+        val (inOff, outOff) = throughProcessor(p, 1000.0)
+        assertTrue("correction off is bit-for-bit", inOff.contentEquals(outOff))
+        // on: each tone's gain equals the analytic biquad response plus the clip-safe preamp
+        HeadphoneEq.set(HeadphoneEq.Config(true, shelf, 1.0))
+        val plan = HeadphoneEq.plan(HeadphoneEq.config, 44_100.0)!!
+        for (f in listOf(60.0, 1000.0)) {
+            p.flush()
+            val (i, o) = throughProcessor(p, f)
+            val got = rmsDb(o) - rmsDb(i)
+            val want = ParametricEq.responseDb(plan.filters, f, 44_100.0) + plan.preampDb
+            Log.i("AurumHpTest", "processor gain at $f Hz: measured=$got dB analytic=$want dB")
+            assertEquals("gain at $f Hz", want, got, 0.25)
+        }
+        // mono and float formats are accepted; anything else passes through untouched
+        assertTrue(androidx.media3.common.audio.AudioProcessor.AudioFormat(48_000, 1, androidx.media3.common.C.ENCODING_PCM_FLOAT)
+            .let { p.configure(it) != androidx.media3.common.audio.AudioProcessor.AudioFormat.NOT_SET })
+        assertEquals(androidx.media3.common.audio.AudioProcessor.AudioFormat.NOT_SET,
+            p.configure(androidx.media3.common.audio.AudioProcessor.AudioFormat(48_000, 2, androidx.media3.common.C.ENCODING_PCM_24BIT)))
     }
 
     private fun twoTone(seconds: Int): ByteArray {
@@ -128,8 +184,12 @@ class HeadphoneEqInstrumentedTest {
             val on = lowToHighDb()
             Log.i("AurumHpTest", "MEASURED low/high through Aurum's engine: off=$off dB on=$on dB")
             assumeTrue("Visualizer captured no audio (silent sink): SKIPPED, not measured", off != null && on != null)
-            assertTrue("+9 dB low shelf must lift 60 Hz vs 1 kHz by >= 4 dB on the real output (off=$off, on=$on)",
-                on!! - off!! >= 4.0)
+            // Visualizer is an 8-bit FFT with ~43 Hz bins at 44.1 kHz (60 Hz sits between bins 1 and 2) and the
+            // shelf's preamp pushes 1 kHz toward its quantisation floor, so it compresses the difference. This end-
+            // to-end check proves direction on the device's real output; the exact size is proven by
+            // processorMatchesTheAnalyticResponseOnRealMedia3Buffers below.
+            assertTrue("+9 dB low shelf must lift 60 Hz vs 1 kHz on the real output (off=$off, on=$on)",
+                on!! - off!! >= 1.5)
         } finally {
             v.release()
         }
