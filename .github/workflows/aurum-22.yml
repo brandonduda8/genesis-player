@@ -115,7 +115,7 @@ jobs:
         run: |
           set +e
           /tmp/gradle-8.7/bin/gradle connectedDebugAndroidTest --no-daemon \
-            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest,com.apexforge.genesisplayer.PlaylistsInstrumentedTest,com.apexforge.genesisplayer.SoundInstrumentedTest
+            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest,com.apexforge.genesisplayer.PlaylistsInstrumentedTest,com.apexforge.genesisplayer.SoundInstrumentedTest,com.apexforge.genesisplayer.HeadphoneEqInstrumentedTest
           RC=$?
           python3 ../.github/scripts/junit_summary.py app/build/outputs/androidTest-results "Aurum 2.2 instrumented"
           SRC=$?

@@ -51,7 +51,7 @@ echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-WANT_VC=${WANT_VC:-9}
+WANT_VC=${WANT_VC:-10}
 [ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
@@ -326,6 +326,13 @@ if waitlog "AurumRoute: from=ci-apollo" 30; then
 else fail "route apollo: no AurumRoute log"; log 30; fi
 if wait_playing 40; then
   pass "the Apollo-routed song is playing in Media3 (decrypted from the vault)"
+  # charge 3: no saved choice on this install -> Brandon's JBL Tune 530BT estimate runs ON in the engine; format shown
+  hl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] chain active")
+  echo "$hl" | grep -q "profile=jbl_tune_530bt_est strength=0.5" \
+    && pass "headphone correction runs in Aurum's engine by default: ${hl#*\[HIFI\] }" || fail "headphone correction not active by default: $hl"
+  fl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] format:")
+  echo "$fl" | grep -q "format: PCM · 16-bit · 44.1 kHz · Mono · Lossless" \
+    && pass "Now Playing format line from the decoder: ${fl#*\[HIFI\] format: }" || fail "format line wrong or missing: $fl"
   adb shell input keyevent KEYCODE_HOME; sleep 2; adb shell input keyevent KEYCODE_SLEEP; sleep 3
   r0=$(probe); p0=$(field "$r0" POS); sleep 60; r1=$(probe); p1=$(field "$r1" POS); s1=$(field "$r1" STATE)
   if [ "$s1" = "3" ] && [ -n "$p0" ] && [ -n "$p1" ] && [ $((p1 - p0)) -ge 50000 ]; then

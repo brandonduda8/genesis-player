@@ -73,11 +73,15 @@ class PlayerService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
         Library.load(this)
+        com.apexforge.genesisplayer.audio.HeadphoneProfiles.load(this) // 2.4 golden: headphone correction state
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(C.USAGE_MEDIA)
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
-        val p = ExoPlayer.Builder(this)
+        // 2.4 golden, charge 3: Aurum's own audio sink carries the headphone-correction processor (AutoEq biquads),
+        // so the correction runs inside Aurum's engine on every song it plays, offline or streamed.
+        val renderers = com.apexforge.genesisplayer.audio.aurumRenderers(this)
+        val p = ExoPlayer.Builder(this, renderers)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             // WO-AURUM-2.2 §3: WAKE_MODE_NETWORK holds a partial CPU wake lock + Wi-Fi lock ONLY while playing, so
@@ -87,6 +91,20 @@ class PlayerService : MediaSessionService() {
             .setMediaSourceFactory(DefaultMediaSourceFactory(RoutingDataSource.Factory(this)))
             .build()
         player = p
+        // 2.4 golden, charge 3: the format line on Now Playing comes from the decoder's real input format.
+        p.addAnalyticsListener(object : androidx.media3.exoplayer.analytics.AnalyticsListener {
+            override fun onAudioInputFormatChanged(eventTime: androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime,
+                                                   format: androidx.media3.common.Format,
+                                                   decoderReuseEvaluation: androidx.media3.exoplayer.DecoderReuseEvaluation?) {
+                val bits = if (format.pcmEncoding != androidx.media3.common.Format.NO_VALUE)
+                    com.apexforge.genesisplayer.audio.FormatLabel.bitsForPcmEncoding(format.pcmEncoding) else null
+                val br = listOf(format.averageBitrate, format.bitrate, format.peakBitrate).firstOrNull { it > 0 }
+                val label = com.apexforge.genesisplayer.audio.FormatLabel.label(com.apexforge.genesisplayer.audio.FormatLabel.info(
+                    format.sampleMimeType, format.sampleRate, format.channelCount, bits, br))
+                AudioSessionHub.formatLabel.value = label
+                Log.i(TAG, "[HIFI] format: $label (mime=${format.sampleMimeType})")
+            }
+        })
         p.addListener(object : Player.Listener {
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 Log.i(TAG, "audioSessionId changed -> $audioSessionId")

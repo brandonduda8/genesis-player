@@ -72,6 +72,12 @@ fun EqScreen(modifier: Modifier = Modifier) {
             Spacer(Modifier.height(12.dp))
         }
 
+        // ---- Aurum 2.4 golden: headphone correction (AutoEq, parametric, inside Aurum's engine) ----
+        item {
+            HeadphoneRow()
+            Spacer(Modifier.height(16.dp))
+        }
+
         // ---- Aurum 2.3: one-tap presets shaped for this phone's own EQ bands, with a clip guard ----
         item {
             AurumSoundRow(fx) { rev++ }
@@ -247,5 +253,44 @@ private fun AurumSoundRow(fx: AudioFxController?, onChanged: () -> Unit) {
                 onClick = { fx?.applyAurumPreset(p); current = p; onChanged() },
                 label = { Text(p.label) })
         }
+    }
+}
+
+/**
+ * 2.4 golden, charge 3: pick the headphones; the measured AutoEq correction runs as exact parametric filters in
+ * Aurum's own engine. ESTIMATED profiles (a measured sibling of the owner's model) say so, and start at half strength.
+ */
+@Composable
+private fun HeadphoneRow() {
+    val ctx = LocalContext.current
+    LaunchedEffect(Unit) { com.apexforge.genesisplayer.audio.HeadphoneProfiles.load(ctx) }
+    val profiles = com.apexforge.genesisplayer.audio.HeadphoneProfiles.catalog
+    var cfg by remember { mutableStateOf(com.apexforge.genesisplayer.audio.HeadphoneEq.config) }
+    fun choose(c: com.apexforge.genesisplayer.audio.HeadphoneEq.Config) {
+        com.apexforge.genesisplayer.audio.HeadphoneProfiles.choose(ctx, c); cfg = com.apexforge.genesisplayer.audio.HeadphoneEq.config
+    }
+    Text("Headphones", color = PhoenixGold, fontSize = 16.sp)
+    Text(cfg.label(), color = TextDim, fontSize = 12.sp)
+    cfg.profile?.let { p ->
+        Text("${p.filters.size} filters from AutoEq (MIT) · measurement: ${p.source}" +
+            (if (p.status == com.apexforge.genesisplayer.audio.HeadphoneEq.Status.ESTIMATED)
+                " · no exact measurement of your model exists; this is its closest measured sibling" else ""),
+            color = TextDim, fontSize = 11.sp)
+    }
+    Spacer(Modifier.height(6.dp))
+    SettingRow("Headphone correction", "flattens your headphones to a neutral target", cfg.enabled,
+        { on -> choose(cfg.copy(enabled = on, profile = cfg.profile ?: profiles.firstOrNull())) })
+    androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(profiles.size) { i ->
+            val p = profiles[i]
+            FilterChip(selected = cfg.profile?.id == p.id && cfg.enabled,
+                onClick = { choose(com.apexforge.genesisplayer.audio.HeadphoneEq.Config(true, p, p.defaultStrength)) },
+                label = { Text(p.label, maxLines = 1) })
+        }
+    }
+    if (cfg.enabled && cfg.profile != null) {
+        Text("Strength ${(cfg.strength * 100).toInt()}%", color = TextDim, fontSize = 12.sp)
+        Slider(cfg.strength.toFloat(), { v -> cfg = cfg.copy(strength = v.toDouble()) },
+            onValueChangeFinished = { choose(cfg) }, valueRange = 0f..1f, colors = emberSlider())
     }
 }
