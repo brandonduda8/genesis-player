@@ -367,19 +367,20 @@ lossless_case() { # $1 file, $2 vault id, $3 codec label regex
   runas "test -f files/$f && echo PRESENT" 2>/dev/null | grep -q PRESENT && fail "$f plaintext still in the sandbox" || pass "$f plaintext removed after the verified encrypted copy"
   adb logcat -c
   vault --es mode play_entry --es id "$id"
-  if wait_playing 40; then
-    pass "$f plays through Media3 from the encrypted vault"
-    fl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] format:")
-    for _ in $(seq 1 10); do adb logcat -d -s GenesisPlayer:* | grep -q "\[HIFI\] format:" && break; sleep 1; done
+  # "Plays" means an audio track was really decoded: a running clock alone is NOT proof (ExoPlayer advances the
+  # position over silence when no decoder supports the track; run 42482463751 showed exactly that for ALAC).
+  for _ in $(seq 1 30); do adb logcat -d -s GenesisPlayer:* | grep -qE "\[HIFI\] (format:|unsupported:)" && break; sleep 1; done
+  if adb logcat -d -s GenesisPlayer:* | grep -q "\[HIFI\] unsupported:"; then
+    info "$f: this emulator image (API 34) has NO platform decoder for it: $(adb logcat -d -s GenesisPlayer:* | grep -m1 '\[HIFI\] unsupported:' | sed 's/.*unsupported: //'). NOT proven here; check on the Moto G"
+    pass "$f: an undecodable format is told to the listener and skipped, never played as silence"
+  elif wait_playing 40 && adb logcat -d -s GenesisPlayer:* | grep -q "\[HIFI\] format:"; then
+    pass "$f decoded and playing through Media3 from the encrypted vault"
     fl=$(adb logcat -d -s GenesisPlayer:* | grep "\[HIFI\] format:" | tail -1)
-    if echo "$fl" | grep -qE "format: $want"; then pass "format line: ${fl#*\[HIFI\] format: }"
-    else fail "$f format line: $fl"; adb logcat -d -s GenesisPlayer:* | grep -E "HIFI|transition|vault:" | tail -12 | cut -c1-220 | sed 's/^/INFO  log: /' | tee -a "$R"; fi
+    echo "$fl" | grep -qE "format: $want" && pass "format line: ${fl#*\[HIFI\] format: }" || fail "$f format line: $fl"
     adb logcat -d -s GenesisPlayer:* | grep -m1 -E "\[HIFI\] (chain active|passthrough|chain off)" | sed 's/^.*\[HIFI\]/INFO  correction on this stream:/' | tee -a "$R"
   else
-    if adb logcat -d | grep -qiE "DecoderInitializationException|No decoder|NO_UNSUPPORTED|MediaCodecRenderer.*error"; then
-      info "$f: this emulator image has no platform decoder for it (logged decoder error); NOT proven here, check on the Moto G"
-      adb logcat -d | grep -m3 -iE "DecoderInitializationException|No decoder|NO_UNSUPPORTED" | cut -c1-200 | sed 's/^/INFO  log: /' | tee -a "$R"
-    else fail "$f did not play"; log 30; fi
+    fail "$f: no decoded audio track and no 'unsupported' notice"
+    adb logcat -d -s GenesisPlayer:* | grep -E "HIFI|transition|vault:" | tail -12 | cut -c1-220 | sed 's/^/INFO  log: /' | tee -a "$R"
   fi
   adb shell cmd media_session dispatch pause >/dev/null 2>&1; sleep 2
 }

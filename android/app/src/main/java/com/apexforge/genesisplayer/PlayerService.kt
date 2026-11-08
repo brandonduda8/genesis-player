@@ -117,9 +117,20 @@ class PlayerService : MediaSessionService() {
         p.addListener(object : Player.Listener {
             // 2.4 golden, 3b: second, independent source for the format line: the selected audio track.
             override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
-                for (g in tracks.groups) {
-                    if (g.type != C.TRACK_TYPE_AUDIO || !g.isSelected) continue
+                val audio = tracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }
+                for (g in audio) {
+                    if (!g.isSelected) continue
                     for (i in 0 until g.length) if (g.isTrackSelected(i)) { publishFormat(g.getTrackFormat(i), "track"); return }
+                }
+                // 2.4 golden, 3b: an audio track this phone can't decode would otherwise "play" silence with the
+                // clock running. Say so, and move on.
+                if (audio.isNotEmpty() && audio.none { it.isSupported }) {
+                    val mime = audio.first().getTrackFormat(0).sampleMimeType
+                    val name = com.apexforge.genesisplayer.audio.FormatLabel.codecOf(mime).first
+                    AudioSessionHub.formatLabel.value = "$name · this phone has no decoder for it"
+                    Log.w(TAG, "[HIFI] unsupported: no decoder for $mime on this device; skipping")
+                    toast("This song is $name, which this phone can't decode. Skipping.")
+                    mainHandler.post { player?.let { pl -> if (pl.hasNextMediaItem()) pl.seekToNext() else pl.pause() } }
                 }
             }
 
