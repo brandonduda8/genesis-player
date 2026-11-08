@@ -264,7 +264,7 @@ grep -q "evicted=\[vault-ci-fill-1\]" "$OUT/cap.txt" && grep -E "VaultCI: dump" 
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode cap --el bytes 2147483648 >/dev/null
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode clear >/dev/null; sleep 3
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode dump >/dev/null; sleep 3
-adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | grep -qE "cap=2147483648 ids=\[(owned:legacy-[0-9a-f]+)?\]" \
+adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | grep -qE "cap=2147483648 (tiers=[^ ]+ [^ ]+ [^ ]+ [^ ]+ )?ids=\[(owned:legacy-[0-9a-f]+)?\]" \
   && pass "clear-all removes every download (your own imported file stays); cap back to the 2 GB default" || fail "clear-all/default cap (see log)"
 
 # ---------------------------------------------------------------- 7. move a library from the Preview, nothing uninstalled
@@ -370,7 +370,10 @@ lossless_case() { # $1 file, $2 vault id, $3 codec label regex
   if wait_playing 40; then
     pass "$f plays through Media3 from the encrypted vault"
     fl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] format:")
-    echo "$fl" | grep -qE "format: $want" && pass "format line: ${fl#*\[HIFI\] format: }" || fail "$f format line: $fl"
+    for _ in $(seq 1 10); do adb logcat -d -s GenesisPlayer:* | grep -q "\[HIFI\] format:" && break; sleep 1; done
+    fl=$(adb logcat -d -s GenesisPlayer:* | grep "\[HIFI\] format:" | tail -1)
+    if echo "$fl" | grep -qE "format: $want"; then pass "format line: ${fl#*\[HIFI\] format: }"
+    else fail "$f format line: $fl"; adb logcat -d -s GenesisPlayer:* | grep -E "HIFI|transition|vault:" | tail -12 | cut -c1-220 | sed 's/^/INFO  log: /' | tee -a "$R"; fi
     adb logcat -d -s GenesisPlayer:* | grep -m1 -E "\[HIFI\] (chain active|passthrough|chain off)" | sed 's/^.*\[HIFI\]/INFO  correction on this stream:/' | tee -a "$R"
   else
     if adb logcat -d | grep -qiE "DecoderInitializationException|No decoder|NO_UNSUPPORTED|MediaCodecRenderer.*error"; then

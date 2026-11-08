@@ -70,6 +70,21 @@ class PlayerService : MediaSessionService() {
         }
     }
 
+    /** The Now Playing format line, from either source (decoder input format, selected track). */
+    private fun publishFormat(format: androidx.media3.common.Format, source: String) {
+        try {
+            val bits = if (format.pcmEncoding != androidx.media3.common.Format.NO_VALUE)
+                com.apexforge.genesisplayer.audio.FormatLabel.bitsForPcmEncoding(format.pcmEncoding) else null
+            val br = listOf(format.averageBitrate, format.bitrate, format.peakBitrate).firstOrNull { it > 0 }
+            val label = com.apexforge.genesisplayer.audio.FormatLabel.label(com.apexforge.genesisplayer.audio.FormatLabel.info(
+                format.sampleMimeType, format.sampleRate, format.channelCount, bits, br))
+            AudioSessionHub.formatLabel.value = label
+            Log.i(TAG, "[HIFI] format: $label (mime=${format.sampleMimeType}, from $source)")
+        } catch (e: Exception) {
+            Log.e(TAG, "[HIFI] format line failed for ${format.sampleMimeType}: ${e.message}")
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         Library.load(this)
@@ -96,16 +111,18 @@ class PlayerService : MediaSessionService() {
             override fun onAudioInputFormatChanged(eventTime: androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime,
                                                    format: androidx.media3.common.Format,
                                                    decoderReuseEvaluation: androidx.media3.exoplayer.DecoderReuseEvaluation?) {
-                val bits = if (format.pcmEncoding != androidx.media3.common.Format.NO_VALUE)
-                    com.apexforge.genesisplayer.audio.FormatLabel.bitsForPcmEncoding(format.pcmEncoding) else null
-                val br = listOf(format.averageBitrate, format.bitrate, format.peakBitrate).firstOrNull { it > 0 }
-                val label = com.apexforge.genesisplayer.audio.FormatLabel.label(com.apexforge.genesisplayer.audio.FormatLabel.info(
-                    format.sampleMimeType, format.sampleRate, format.channelCount, bits, br))
-                AudioSessionHub.formatLabel.value = label
-                Log.i(TAG, "[HIFI] format: $label (mime=${format.sampleMimeType})")
+                publishFormat(format, "decoder")
             }
         })
         p.addListener(object : Player.Listener {
+            // 2.4 golden, 3b: second, independent source for the format line: the selected audio track.
+            override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+                for (g in tracks.groups) {
+                    if (g.type != C.TRACK_TYPE_AUDIO || !g.isSelected) continue
+                    for (i in 0 until g.length) if (g.isTrackSelected(i)) { publishFormat(g.getTrackFormat(i), "track"); return }
+                }
+            }
+
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 Log.i(TAG, "audioSessionId changed -> $audioSessionId")
                 // BRKN wave 1: publish to the shared hub so the UI's ember
