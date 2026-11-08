@@ -157,6 +157,11 @@ jobs:
           export ANDROID_HOME=/usr/local/lib/android/sdk
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
           APK=android/app/build/outputs/apk/debug/app-debug.apk
+          # Start this phase's logcat window here, like every later phase does.
+          # Without it the any-package ANR check below also reads ANRs the stock
+          # launcher / GMS raise while the emulator is still settling after boot,
+          # before our APK is even installed. ANRs during this phase still fail.
+          adb logcat -c
           echo "--- install ---"
           adb install -r "$APK"
           adb shell pm grant com.apexforge.genesisplayer android.permission.POST_NOTIFICATIONS || true
