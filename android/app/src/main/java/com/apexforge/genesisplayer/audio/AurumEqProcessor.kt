@@ -49,6 +49,7 @@ class AurumEqProcessor : BaseAudioProcessor() {
         val out = replaceOutputBuffer(bytes)
         val ch = chain
         if (ch == null) { out.put(inputBuffer); out.flip(); return }
+        correctedFrames += bytes / inputAudioFormat.bytesPerFrame
         if (inputAudioFormat.encoding == C.ENCODING_PCM_16BIT) {
             val n = bytes / 2
             if (shorts.size < n) { shorts = ShortArray(n); floats = FloatArray(n) }
@@ -69,5 +70,9 @@ class AurumEqProcessor : BaseAudioProcessor() {
     override fun onFlush() { chain?.reset() }
     override fun onReset() { chain = null; builtGen = -1 }
 
-    companion object { private const val TAG = "GenesisPlayer" }
+    companion object {
+        private const val TAG = "GenesisPlayer"
+        /** Frames that went through an active correction chain (evidence for tests and the log; process-wide). */
+        @Volatile @JvmStatic var correctedFrames: Long = 0
+    }
 }
