@@ -43,9 +43,19 @@ There were two causes. The second one matters more.
   - No ripping, no stream extractors, no DRM work-arounds.
   - The embed is never played in the background.
 
+## What's new in 2.4.2 (charge 3a)
+
+- **Headphone correction inside Aurum's engine.**
+  - Measured AutoEq profiles (MIT) now run as exact parametric filters on every song Aurum plays.
+  - **Default: your JBL Tune 530BT, on at 50%, labelled *estimated*.** AutoEq has no measurement of the 530BT, so
+    the profile comes from the measured Tune 520BT.
+  - Change it in Sound Forge → Headphones: pick a profile, turn it off, or set the strength.
+- **Now Playing format line.** For example "FLAC · 24-bit · 96 kHz · Lossless", read from the decoder, plus the
+  correction in use. Anything the file doesn't report is left out, never guessed.
+
 ## Real-phone checklist (Brandon, Moto G). This is the only DONE gate
 
-1. Install the AURUM-signed 2.4.1. It updates 2.2/2.3/2.4 in place (versionCode 9).
+1. Install the AURUM-signed 2.4.2. It updates 2.2/2.3/2.4/2.4.1 in place (versionCode 10).
 2. First launch: allow notifications, then allow "don't optimise battery" (one dialog at a time).
 3. Apollo: note the coverage number. If it is 0, save at least one song offline in the Crate first.
 4. Tap Play For You. Check that the player that opens is Aurum's Now Playing screen, not the YouTube video.
@@ -54,7 +64,9 @@ There were two causes. The second one matters more.
    controls work.
 7. Tap a YOUTUBE-ONLY song. It must show the label. Leave the app: it pauses (expected, and labeled). Tap
    "Continue in YouTube" and report whether YouTube keeps playing in the background on your plan.
-8. Report pass or fail for each step, with the coverage number.
+8. On your JBLs, play a song you know well, then turn Headphones off and on in Sound Forge. Say whether 50% sounds
+   better, worse, or should be stronger.
+9. Report pass or fail for each step, with the coverage number.
 
 ## Evidence
 
@@ -67,6 +79,15 @@ There were two causes. The second one matters more.
     - an Apollo play routes to Aurum's engine and keeps playing after Home plus screen-off for 60 s;
     - a YouTube-only play is labeled and has the hand-off.
   - The CI run, the hashes and the battery count are in the Commons receipt for this charge.
+
+- **Charge 3a (2.4.2, versionCode 10), code commit 6e99a59; tests last changed at 93df629**
+  - Run https://github.com/brandonduda8/genesis-player/actions/runs/42429301749: battery 41/41, instrumented tests 12/12.
+  - `aurum-2.4.2-release-unsigned.apk` sha256 `8274dce90a53df311a8865241c134be5056f49405afdb417b5cc1dd2a4bd496b`,
+    artifact aurum-release, id 13596349977.
+  - The headphone processor's gain matches the analytic response within 0.25 dB on real Media3 buffers, and real
+    playback runs through it.
+  - The Visualizer FFT could not measure a 60 Hz lift reliably (+2.7 / +0.7 dB for the same +9 dB shelf), so it is
+    logged as information only.
 
 ## Signing (Zane)
 
@@ -81,4 +102,5 @@ There were two causes. The second one matters more.
 - Anything on the Moto G itself. The emulator is not Motorola's power manager.
 - Background play after "Continue in YouTube". It depends on Brandon's YouTube plan.
 - How many of Brandon's real songs have an Aurum source today. The coverage card counts it on his phone.
-- Charges 3 (sound suite) and 4 (AURUM icon and brand) are not built yet.
+- Whether the 530BT estimate sounds right on Brandon's own headphones.
+- Not built yet: charge 3b (FLAC/ALAC proof, tiered offline storage) and charge 4 (AURUM icon and brand).
