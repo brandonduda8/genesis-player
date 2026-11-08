@@ -51,7 +51,7 @@ echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-WANT_VC=${WANT_VC:-10}
+WANT_VC=${WANT_VC:-11}
 [ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
@@ -341,6 +341,50 @@ if wait_playing 40; then
   adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard 2>/dev/null || true
   adb shell cmd media_session dispatch pause 2>/dev/null || adb shell input keyevent KEYCODE_MEDIA_PAUSE; sleep 2
 else fail "the Apollo-routed song never played"; log 30; fi
+
+# ---------------------------------------------------------------- 10. golden charge 3b: hi-res lossless through the vault
+# Fixtures are generated here (ffmpeg sine, no third-party audio), pushed into the app sandbox, encrypted by the real
+# Vault.store path (plaintext deleted after), then played by the service. Never faked: a missing platform decoder is
+# reported as exactly that.
+echo "=== 10. FLAC / ALAC 24-bit 96 kHz: tiered vault + playback + format line ==="
+command -v ffmpeg >/dev/null || { sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq ffmpeg >/dev/null; }
+SINE="sine=frequency=440:sample_rate=96000:duration=30"
+ffmpeg -hide_banner -loglevel error -y -f lavfi -i "$SINE" -ac 2 -c:a flac -sample_fmt s32 -bits_per_raw_sample 24 "$OUT/ci-hr.flac"
+ffmpeg -hide_banner -loglevel error -y -f lavfi -i "$SINE" -ac 2 -c:a alac -sample_fmt s32p -movflags +faststart "$OUT/ci-hr.m4a"
+for f in ci-hr.flac ci-hr.m4a; do
+  [ -s "$OUT/$f" ] && info "fixture $f: $(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,bits_per_raw_sample,channels -of csv=p=0 "$OUT/$f") ($(stat -c %s "$OUT/$f") bytes)" || fail "ffmpeg could not make $f"
+done
+lossless_case() { # $1 file, $2 vault id, $3 codec label regex
+  local f=$1 id=$2 want=$3
+  adb push "$OUT/$f" /data/local/tmp/$f >/dev/null
+  adb shell "cat /data/local/tmp/$f | run-as $PKG sh -c 'cat > files/$f'"; adb shell rm /data/local/tmp/$f
+  adb logcat -c
+  vault --es mode store_file --es id "$id" --es url "$f"
+  if waitlog "VaultCI: store_file $id" 60; then
+    sl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "VaultCI: store_file $id")
+    echo "$sl" | grep -q "stored tier=LOSSLESS" && pass "$f encrypted into the vault and filed in the LOSSLESS tier (detected from its own bytes)" || fail "$f store: $sl"
+  else fail "$f: no store result"; fi
+  runas "test -f files/$f && echo PRESENT" 2>/dev/null | grep -q PRESENT && fail "$f plaintext still in the sandbox" || pass "$f plaintext removed after the verified encrypted copy"
+  adb logcat -c
+  vault --es mode play_entry --es id "$id"
+  if wait_playing 40; then
+    pass "$f plays through Media3 from the encrypted vault"
+    fl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] format:")
+    echo "$fl" | grep -qE "format: $want" && pass "format line: ${fl#*\[HIFI\] format: }" || fail "$f format line: $fl"
+    adb logcat -d -s GenesisPlayer:* | grep -m1 -E "\[HIFI\] (chain active|passthrough|chain off)" | sed 's/^.*\[HIFI\]/INFO  correction on this stream:/' | tee -a "$R"
+  else
+    if adb logcat -d | grep -qiE "DecoderInitializationException|No decoder|NO_UNSUPPORTED|MediaCodecRenderer.*error"; then
+      info "$f: this emulator image has no platform decoder for it (logged decoder error); NOT proven here, check on the Moto G"
+      adb logcat -d | grep -m3 -iE "DecoderInitializationException|No decoder|NO_UNSUPPORTED" | cut -c1-200 | sed 's/^/INFO  log: /' | tee -a "$R"
+    else fail "$f did not play"; log 30; fi
+  fi
+  adb shell cmd media_session dispatch pause >/dev/null 2>&1; sleep 2
+}
+lossless_case ci-hr.flac "offline:ci-hr-flac" "FLAC · 24-bit · 96 kHz · Lossless"
+lossless_case ci-hr.m4a "offline:ci-hr-alac" "ALAC( · 24-bit)? · 96 kHz · Lossless"
+vault --es mode dump; sleep 3
+adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | cut -c1-240 | sed 's/^/INFO  /' | tee -a "$R"
+rm -f "$OUT/ci-hr.flac" "$OUT/ci-hr.m4a"
 
 # ---------------------------------------------------------------- 8. 2.4 keep-playing setup on a FRESH install
 echo "=== 8. fresh install asks for notifications, then the battery exemption (one dialog at a time) ==="

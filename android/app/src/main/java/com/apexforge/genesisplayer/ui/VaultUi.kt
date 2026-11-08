@@ -66,6 +66,13 @@ fun VaultBar(onOpen: () -> Unit) {
             Text("Offline vault", color = PhoenixGold, fontSize = 15.sp)
             Text("$count track${if (count == 1) "" else "s"} · downloads ${formatBytes(used)} of ${formatBytes(cap)} · encrypted",
                 color = TextDim, fontSize = 12.sp)
+            // 2.4 golden, charge 3b: the two storage tiers, each with what it holds and its own ceiling.
+            val tiers = remember(version) { runCatching { Vault.tierUse(ctx) }.getOrNull() }
+            tiers?.let { t ->
+                Text("Lossless tier (FLAC/ALAC/WAV) ${formatBytes(t.losslessBytes)} of ${formatBytes(t.losslessCap)} · " +
+                    "Bulk tier (MP3/AAC/Opus, kept in the source's own format) ${formatBytes(t.bulkBytes)}",
+                    color = TextDim, fontSize = 11.sp)
+            }
         }
         Text("Manage", color = EmberOrange, fontSize = 14.sp)
     }

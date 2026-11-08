@@ -11,8 +11,12 @@ data class VaultEntry(
     val artist: String,
     val plainBytes: Long,
     val cipherBytes: Long,
-    val addedAtMs: Long
+    val addedAtMs: Long,
+    /** 2.4 golden, charge 3b: LOSSLESS (FLAC/ALAC/WAV) or BULK (lossy). Entries from older builds read as BULK. */
+    val tier: Tier = Tier.BULK
 )
+
+enum class Tier { LOSSLESS, BULK }
 
 object VaultIndex {
     const val DEFAULT_CAP_BYTES = 2L * 1024 * 1024 * 1024 // 2 GiB, the shipped default
@@ -36,10 +40,53 @@ object VaultIndex {
         return victims
     }
 
+    /** The lossless tier's own ceiling: 2 GiB, or the overall cap if the owner chose a smaller one. */
+    const val LOSSLESS_CAP_BYTES = 2L * 1024 * 1024 * 1024
+
+    /**
+     * What kind of audio a file is, from its first bytes (never from a file name or a claim):
+     * FLAC ("fLaC"), WAV ("RIFF....WAVE"), and ALAC (an MP4 "ftyp" file whose sample description says "alac") are
+     * LOSSLESS; everything else (MP3, AAC, Opus, Vorbis, unknown) is BULK.
+     */
+    fun tierOf(head: ByteArray, n: Int = head.size): Tier {
+        fun at(i: Int, s: String) = i + s.length <= n && s.indices.all { head[i + it] == s[it].code.toByte() }
+        if (at(0, "fLaC")) return Tier.LOSSLESS
+        if (at(0, "RIFF") && at(8, "WAVE")) return Tier.LOSSLESS
+        if (at(4, "ftyp")) { for (i in 8 until n - 4) if (at(i, "alac")) return Tier.LOSSLESS }
+        return Tier.BULK
+    }
+
+    /**
+     * Tiered eviction (oldest first, never [keep]):
+     *  1. while the lossless tier exceeds min([losslessCap], [capBytes]), evict its oldest entries;
+     *  2. then, while everything exceeds [capBytes], evict the oldest of what is left (either tier).
+     * Returns null when [keep] alone can't fit its own limit.
+     */
+    fun tieredEvictionPlan(entries: List<VaultEntry>, capBytes: Long, losslessCap: Long = LOSSLESS_CAP_BYTES,
+                           keep: String? = null): List<VaultEntry>? {
+        val lCap = minOf(losslessCap, capBytes)
+        val keeper = entries.firstOrNull { it.trackId == keep }
+        if (keeper != null && keeper.cipherBytes > (if (keeper.tier == Tier.LOSSLESS) lCap else capBytes)) return null
+        val victims = ArrayList<VaultEntry>()
+        var lossless = entries.filter { it.tier == Tier.LOSSLESS }.sumOf { it.cipherBytes }
+        for (e in entries.filter { it.tier == Tier.LOSSLESS }.sortedBy { it.addedAtMs }) {
+            if (lossless <= lCap) break
+            if (e.trackId == keep) continue
+            victims += e; lossless -= e.cipherBytes
+        }
+        val rest = entries - victims.toSet()
+        return victims + (evictionPlan(rest, capBytes, keep) ?: return null)
+    }
+
+    data class TierUse(val losslessBytes: Long, val bulkBytes: Long, val losslessCap: Long, val capBytes: Long)
+    fun use(entries: List<VaultEntry>, capBytes: Long) = TierUse(
+        entries.filter { it.tier == Tier.LOSSLESS }.sumOf { it.cipherBytes },
+        entries.filter { it.tier == Tier.BULK }.sumOf { it.cipherBytes }, minOf(LOSSLESS_CAP_BYTES, capBytes), capBytes)
+
     fun encode(entries: List<VaultEntry>): ByteArray = JSONObject().put("v", 1).put("entries", JSONArray().also { a ->
         entries.forEach { e ->
             a.put(JSONObject().put("t", e.trackId).put("f", e.fileId).put("ti", e.title).put("ar", e.artist)
-                .put("p", e.plainBytes).put("c", e.cipherBytes).put("at", e.addedAtMs))
+                .put("p", e.plainBytes).put("c", e.cipherBytes).put("at", e.addedAtMs).put("tr", e.tier.name))
         }
     }).toString().toByteArray(Charsets.UTF_8)
 
@@ -48,7 +95,8 @@ object VaultIndex {
         return List(a.length()) { i ->
             val o = a.getJSONObject(i)
             VaultEntry(o.getString("t"), o.getString("f"), o.optString("ti"), o.optString("ar"), o.getLong("p"),
-                o.getLong("c"), o.getLong("at"))
+                o.getLong("c"), o.getLong("at"),
+                if (o.optString("tr") == Tier.LOSSLESS.name) Tier.LOSSLESS else Tier.BULK)
         }
     }
 

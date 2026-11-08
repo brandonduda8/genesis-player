@@ -973,12 +973,19 @@ class PlayerService : MediaSessionService() {
                     Log.i(TAG, "vault: playing offline copy of $id")
                 }
             }
+            "store_file" -> { // 2.4 golden 3b: a fixture the gate pushed into files/ goes through the real store path
+                val id = args.getString("id", "")
+                val src = java.io.File(filesDir, args.getString("url", ""))
+                Vault.storeFile(this, id, src.nameWithoutExtension, "Aurum CI", src) { err ->
+                    Log.i(TAG, "VaultCI: store_file $id -> ${err ?: "stored"} tier=${Vault.entry(this, id)?.tier}")
+                }
+            }
             "clear" -> Vault.clearAll(this)
             else -> {}
         }
         Thread {
             val all = Vault.all(this)
-            Log.i(TAG, "VaultCI: dump count=${all.size} used=${Vault.usedBytes(this)} cap=${Vault.capBytes(this)} ids=${all.map { it.trackId }}")
+            Log.i(TAG, "VaultCI: dump count=${all.size} used=${Vault.usedBytes(this)} cap=${Vault.capBytes(this)} tiers=${Vault.tierUse(this)} ids=${all.map { it.trackId }}")
         }.start()
     }
 
