@@ -64,9 +64,17 @@ There were two causes. The second one matters more.
 - **Songs the phone can't decode are skipped, not played silently.** Aurum says so and moves on. The emulator has no
   ALAC decoder, so check one ALAC file on the Moto G.
 
+## What's new in 2.4.4 (charge 4)
+
+- **Aurum has its own icon now.** It's an original gold mark: a vault ring, an "A" apex and an ember core on deep
+  space. On Android 13+, themed icons get a matching single-colour version.
+- **The lock-screen and notification player** show the AURUM mark.
+- **On Android 12+, Aurum opens on a deep-space splash** instead of a white flash.
+
 ## Real-phone checklist (Brandon, Moto G). This is the only DONE gate
 
-1. Install the AURUM-signed 2.4.3. It updates every earlier 2.x in place (versionCode 11).
+1. Install the AURUM-signed 2.4.4. It updates every earlier 2.x in place, including the signed 2.4.3
+   (versionCode 12). Check that the AURUM icon shows in your app drawer.
 2. First launch: allow notifications, then allow "don't optimise battery" (one dialog at a time).
 3. Apollo: note the coverage number. If it is 0, save at least one song offline in the Crate first.
 4. Tap Play For You. Check that the player that opens is Aurum's Now Playing screen, not the YouTube video.
@@ -108,6 +116,12 @@ There were two causes. The second one matters more.
   - FLAC 24/96: proven end to end.
   - ALAC: the emulator has no decoder for it. Aurum reports this and skips the song. Not proven on a phone.
 
+- **Charge 4 (2.4.4, versionCode 12), app code commit 2cbaff0; battery fixes up to 024853e**
+  - Run https://github.com/brandonduda8/genesis-player/actions/runs/42577956403: battery 49/49, instrumented tests 12/12.
+  - `aurum-2.4.4-release-unsigned.apk` sha256 `5539fd7703e1702497c185e6c9feb8d5ab003cc44bfde429362359f6b0e32d5f`. The hash
+    is identical across three runs, and it is also published as a check-run annotation, so it can be checked without
+    downloading anything. Artifact aurum-release, id 13656718656.
+
 ## Signing (Zane)
 
 1. Fetch the `aurum-release` artifact from the charge-2 run.
@@ -123,4 +137,4 @@ There were two causes. The second one matters more.
 - How many of Brandon's real songs have an Aurum source today. The coverage card counts it on his phone.
 - Whether the 530BT estimate sounds right on Brandon's own headphones.
 - ALAC playback on the Moto G, which needs a platform decoder.
-- Not built yet: converting lossless files to Opus, and charge 4 (AURUM icon and brand).
+- Not built yet: converting lossless files to Opus. Charges 1–4 are all built and tested on the emulator.
