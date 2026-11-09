@@ -140,6 +140,7 @@ object Vault {
     fun all(ctx: Context): List<VaultEntry> = synchronized(lock) { load(ctx).sortedByDescending { it.addedAtMs } }
     fun entry(ctx: Context, trackId: String): VaultEntry? = synchronized(lock) { load(ctx).firstOrNull { it.trackId == trackId } }
     fun entryByFile(ctx: Context, fileId: String): VaultEntry? = synchronized(lock) { load(ctx).firstOrNull { it.fileId == fileId } }
+    fun tierUse(ctx: Context): VaultIndex.TierUse = synchronized(lock) { VaultIndex.use(load(ctx).filterNot(::isPinned), capBytes(ctx)) }
     fun usedBytes(ctx: Context): Long = synchronized(lock) { load(ctx).sumOf { it.cipherBytes } }
 
     fun capBytes(ctx: Context): Long =
@@ -158,7 +159,7 @@ object Vault {
 
     private fun enforceCap(ctx: Context, keep: String?): Boolean {
         val list = load(ctx)
-        val plan = VaultIndex.evictionPlan(list.filterNot(::isPinned), capBytes(ctx), keep) ?: return false
+        val plan = VaultIndex.tieredEvictionPlan(list.filterNot(::isPinned), capBytes(ctx), keep = keep) ?: return false
         if (plan.isEmpty()) return true
         plan.forEach { v ->
             fileFor(ctx, v.fileId).delete()
@@ -272,21 +273,29 @@ object Vault {
         val k = key(ctx)
         val fileId = UUID.randomUUID().toString()
         val f = fileFor(ctx, fileId)
-        val plain = try { VaultCrypto.encrypt(k, input, f) } catch (e: Exception) {
+        // 2.4 golden, charge 3b: the tier comes from the audio's own first bytes (FLAC/ALAC/WAV = lossless).
+        val buffered = java.io.BufferedInputStream(input, 64 * 1024)
+        buffered.mark(4096)
+        val head = ByteArray(4096)
+        var got = 0
+        while (got < head.size) { val r = buffered.read(head, got, head.size - got); if (r < 0) break; got += r }
+        buffered.reset()
+        val tier = VaultIndex.tierOf(head, got)
+        val plain = try { VaultCrypto.encrypt(k, buffered, f) } catch (e: Exception) {
             File(f.path + ".part").delete(); f.delete(); return "could not store: ${e.message}"
         }
         synchronized(lock) {
             val list = load(ctx)
             list.filter { it.trackId == trackId }.forEach { fileFor(ctx, it.fileId).delete() }
             list.removeAll { it.trackId == trackId }
-            list += VaultEntry(trackId, fileId, title, artist, plain, f.length(), System.currentTimeMillis())
+            list += VaultEntry(trackId, fileId, title, artist, plain, f.length(), System.currentTimeMillis(), tier)
             if (!trackId.startsWith(OWNED_PREFIX) && !enforceCap(ctx, trackId)) {
                 f.delete(); list.removeAll { it.fileId == fileId }; save(ctx, list)
                 return "this track is bigger than the offline cap"
             }
             save(ctx, list)
         }
-        Log.i(TAG, "vault: stored $artist - $title (${plain} bytes, encrypted)")
+        Log.i(TAG, "vault: stored $artist - $title (${plain} bytes, encrypted, tier=$tier)")
         return null
     }
 
@@ -320,6 +329,13 @@ object Vault {
     }
 
     /** DEBUG/CI only: store a generated tone without any plaintext file (WAV bytes are produced in memory). */
+    /** Encrypt a local file into the vault on the vault thread; the plaintext is deleted once the copy is stored. */
+    fun storeFile(ctx: Context, trackId: String, title: String, artist: String, src: File, done: (String?) -> Unit) = io.execute {
+        val r = try { src.inputStream().use { store(ctx, trackId, title, artist, it) } } catch (e: Exception) { "could not read: ${e.message}" }
+        if (r == null) src.delete()
+        changed(); done(r)
+    }
+
     fun seedTone(ctx: Context, trackId: String, seconds: Int, done: (String?) -> Unit) = io.execute {
         val r = store(ctx, trackId, "Vault test tone", "Aurum CI", ToneWav(seconds))
         changed(); done(r)

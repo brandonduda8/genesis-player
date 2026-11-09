@@ -126,7 +126,7 @@ fun AuditCard(a: ImportAudit) {
 }
 
 @Composable
-fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit) {
+fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit, onPlayAurum: (List<String>, Int) -> Unit = { _, _ -> }) {
     val context = LocalContext.current
     val version = MyMusic.version.intValue // read eagerly: subscribes before any early return
     val model = MyMusic.model
@@ -136,18 +136,22 @@ fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit) {
     }
     val mixes = remember(version) { MyMusic.mixes() }
     val recent = MyMusic.recentKeys()
+    // 2.4 golden: the honest coverage number, counted from the same router every play button uses.
+    val coverage = remember(version, com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.version.intValue) {
+        AurumPlay.coverage(context, model.songs.keys) }
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         item {
             BrandHeader("Intelligence", "Apollo", Aurum.SIGNAL_LINE)
             Text("${model.songs.size} of your songs · ${model.artists.size} artists · learning from every like, skip and full play",
                 color = Aurum.Dim, style = MaterialTheme.typography.bodySmall)
+            CoverageCard(coverage)
         }
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Button(onClick = { mixes.firstOrNull()?.let { YtQueue.play(it.songKeys) } }) {
+                Button(onClick = { mixes.firstOrNull()?.let { AurumPlay.play(context, it.songKeys, null, from = "apollo-foryou", onPlayAurum = onPlayAurum) } }) {
                     Icon(Icons.Filled.AutoAwesome, null); Spacer(Modifier.width(6.dp)); Text("Play For You")
                 }
-                OutlinedButton(onClick = { YtQueue.play(model.songs.keys.toList(), 0, shuffled = true) }) {
+                OutlinedButton(onClick = { AurumPlay.play(context, model.songs.keys.toList(), null, shuffle = true, from = "apollo-shuffle", onPlayAurum = onPlayAurum) }) {
                     Icon(Icons.Filled.Shuffle, null); Spacer(Modifier.width(6.dp)); Text("Shuffle all")
                 }
             }
@@ -155,9 +159,9 @@ fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit) {
         if (recent.isNotEmpty()) item {
             val seed = recent.first()
             val picks = remember(version, seed) { ApolloEngine.moreLike(model, MyMusic.feedback, seed, 30) }
-            MixRow("Because you played ${model.songs[seed]?.title ?: ""}", "What you play around it", picks.map { it.songKey })
+            MixRow("Because you played ${model.songs[seed]?.title ?: ""}", "What you play around it", picks.map { it.songKey }, onPlayAurum)
         }
-        items(mixes, key = { it.id }) { mix -> MixRow(mix.name, mix.why, mix.songKeys) }
+        items(mixes, key = { it.id }) { mix -> MixRow(mix.name, mix.why, mix.songKeys, onPlayAurum) }
         if (model.searchedNeverPlayed.isNotEmpty()) item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("You searched, never played", color = Color.White, fontWeight = FontWeight.Bold)
@@ -181,7 +185,7 @@ fun ApolloHome(modifier: Modifier = Modifier, onImport: () -> Unit) {
 }
 
 @Composable
-private fun MixRow(name: String, why: String, keys: List<String>) {
+private fun MixRow(name: String, why: String, keys: List<String>, onPlayAurum: (List<String>, Int) -> Unit) {
     if (keys.isEmpty()) return
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -199,19 +203,50 @@ private fun MixRow(name: String, why: String, keys: List<String>) {
                     android.widget.Toast.makeText(ctx, e.message ?: "Couldn't save", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }) { Icon(Icons.Filled.PlaylistAdd, "Save $name as a playlist", tint = Dim) }
-            IconButton(onClick = { YtQueue.play(keys) }) { Icon(Icons.Filled.PlayCircle, "Play $name", tint = Gold) }
+            IconButton(onClick = { AurumPlay.play(ctx, keys, null, from = "mix", onPlayAurum = onPlayAurum) }) { Icon(Icons.Filled.PlayCircle, "Play $name", tint = Gold) }
         }
+        val ctx2 = LocalContext.current
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             itemsIndexed(keys.take(20)) { i, k ->
                 val t = Library.track(k) ?: return@itemsIndexed
-                Column(Modifier.width(136.dp).clickable { YtQueue.play(keys, i) }) {
+                Column(Modifier.width(136.dp).clickable { AurumPlay.play(ctx2, keys, i, from = "mix-tap", onPlayAurum = onPlayAurum) }) {
                     AsyncImage(model = t.artworkUrl, contentDescription = null, contentScale = ContentScale.Crop,
                         modifier = Modifier.size(136.dp).clip(RoundedCornerShape(12.dp)).background(CardBg))
                     Text(t.title, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyMedium)
                     Text(t.artist, color = Dim, maxLines = 1, style = MaterialTheme.typography.bodySmall)
+                    EngineTag(AurumPlay.engineOf(ctx2, k))
                 }
             }
+        }
+    }
+}
+
+/** 2.4 golden: which engine a song plays in, shown on every song tile and row. */
+@Composable
+fun EngineTag(e: com.apexforge.genesisplayer.data.playlists.PlayRouter.Engine) {
+    val (label, color) = when (e) {
+        com.apexforge.genesisplayer.data.playlists.PlayRouter.Engine.AURUM -> "AURUM ENGINE" to Gold
+        com.apexforge.genesisplayer.data.playlists.PlayRouter.Engine.YOUTUBE_ONLY -> "YOUTUBE-ONLY" to Color(0xFFFFCC66)
+        com.apexforge.genesisplayer.data.playlists.PlayRouter.Engine.UNAVAILABLE -> "UNAVAILABLE" to Dim
+    }
+    Text(label, color = color, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+}
+
+@Composable
+private fun CoverageCard(c: com.apexforge.genesisplayer.data.playlists.PlayRouter.Coverage) {
+    Card(colors = CardDefaults.cardColors(containerColor = CardBg), modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Keeps playing with the screen off: ${c.aurum} of ${c.total} (${c.percent}%)", color = Color.White,
+                fontWeight = FontWeight.Bold)
+            LinearProgressIndicator(progress = { if (c.total == 0) 0f else c.aurum.toFloat() / c.total },
+                modifier = Modifier.fillMaxWidth(), color = Gold, trackColor = Color(0xFF2A2A36))
+            Text("${c.aurum} play in Aurum's engine (${c.offline} saved offline). ${c.youtubeOnly} are YouTube-only: " +
+                "they play in YouTube's player, which pauses when you leave the app" +
+                (if (c.unavailable > 0) ". ${c.unavailable} unavailable." else "."), color = Dim,
+                style = MaterialTheme.typography.bodySmall)
+            Text("Raise this number from the Crate: match songs to their exact recordings, or save them offline.",
+                color = Dim, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -245,7 +280,8 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 6.dp)) {
                 Text(artist?.let { a -> model.artists.first { it.key == a }.name } ?: "${songKeys.size} songs",
                     color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                TextButton(onClick = { YtQueue.play(songKeys, 0, shuffled = true) }) { Icon(Icons.Filled.Shuffle, null); Text(" Shuffle") }
+                val sctx = LocalContext.current
+                TextButton(onClick = { AurumPlay.play(sctx, songKeys, null, shuffle = true, from = "archive-shuffle", onPlayAurum = onPlayAurum) }) { Icon(Icons.Filled.Shuffle, null); Text(" Shuffle") }
             }
             LazyColumn(Modifier.fillMaxSize()) {
                 itemsIndexed(songKeys, key = { _, k -> k }) { i, k ->
@@ -255,22 +291,15 @@ fun LibraryTab(modifier: Modifier = Modifier, onPlayAurum: (List<String>, Int) -
                     val st = com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.status(ctx, k)
                     val badge = when {
                         st.worksOffline -> " · OFFLINE"
-                        aurum != null -> " · IN AURUM"
-                        else -> ""
+                        aurum != null -> " · AURUM ENGINE"
+                        Library.track(k)?.youtubeId?.isNotEmpty() == true -> " · YOUTUBE-ONLY"
+                        else -> " · UNAVAILABLE"
                     }
                     SongRow(Library.track(k)?.artworkUrl ?: "", s.title, "${s.artist} · ${s.plays} plays$badge",
                         onLongClick = { adding = listOf(k) }) {
-                        if (!online && !st.worksOffline) {
-                            android.widget.Toast.makeText(ctx, "Offline: \"${s.title}\" needs the internet. " +
-                                "Your sanctuary in the Crate still plays.", android.widget.Toast.LENGTH_SHORT).show()
-                        } else if (aurum != null) {
-                            // Your exact recording plays in Aurum (EQ, bass, background); the queue keeps only the
-                            // songs from this list that also have an exact or offline copy. Nothing is substituted.
-                            val playable = songKeys.mapNotNull { key ->
-                                com.apexforge.genesisplayer.data.mymusic.crate.OfflineCrate.aurumTrackId(ctx, key) }
-                                .filter { online || it.startsWith("offline:") } // offline: only what truly plays offline
-                            onPlayAurum(playable, playable.indexOf(aurum).coerceAtLeast(0))
-                        } else YtQueue.play(songKeys, i)
+                        // 2.4 golden: one router. Your exact recording plays in Aurum (EQ, bass, background); a
+                        // YouTube-only song plays labeled in YouTube's player. Nothing is substituted.
+                        AurumPlay.play(ctx, songKeys, i, from = "archive", onPlayAurum = onPlayAurum)
                     }
                 }
             }

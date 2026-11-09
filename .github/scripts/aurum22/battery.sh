@@ -49,8 +49,9 @@ info "2.1 data files: $(wc -l < "$OUT/data_before.txt")"
 cat "$OUT/data_before.txt" | awk '{print $2}' > "$OUT/files_before.txt"
 echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
+adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-WANT_VC=${WANT_VC:-7}
+WANT_VC=${WANT_VC:-12}
 [ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
@@ -79,6 +80,7 @@ runas 'mkdir -p files/owned && cp /data/local/tmp/legacy.wav "files/owned/My Son
 adb shell rm /data/local/tmp/legacy.wav
 runas 'ls -la files/owned' | sed 's/^/INFO  before: /' | tee -a "$R"
 adb install -r "$NEW_APK" >/dev/null && pass "2.2 installed in place over the pre-vault Aurum build" || fail "install over pre-vault Aurum"
+adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 adb shell am start -n $ACT >/dev/null; sleep 15
 if runas 'ls files/owned 2>/dev/null' | grep -q "My Song"; then fail "plaintext owned file still present after 2.2 launch"
 else pass "plaintext files/owned/My Song.wav is gone after first 2.2 launch"; fi
@@ -118,6 +120,10 @@ grep -qi "Asleep\|Dozing" "$OUT/power_playing.txt" && info "device wakefulness w
 grep -qiE "PARTIAL_WAKE_LOCK" "$OUT/power_playing.txt" && pass "partial wake lock held while playing" || info "no partial wake lock line matched (see power_playing.txt)"
 adb shell dumpsys notification --noredact | grep -A3 "pkg=$PKG" | head -20 > "$OUT/notification.txt"
 grep -q "pkg=$PKG" "$OUT/notification.txt" && pass "media notification posted (lock-screen + shade controls)" || fail "no notification for $PKG"
+# charge 4: the notification's small icon is the AURUM mark (resource id resolved from the installed APK)
+RID=$(aapt2 dump resources "$NEW_APK" 2>/dev/null | grep -m1 "drawable/ic_stat_aurum" | grep -oE "0x[0-9a-fA-F]{8}" | tr A-F a-f)
+NID=$(adb shell dumpsys notification --noredact | grep -A40 "pkg=$PKG" | grep -m1 -oE "icon=Icon\(typ=RESOURCE pkg=$PKG id=0x[0-9a-fA-F]+" | grep -oE "0x[0-9a-fA-F]+$" | tr A-F a-f)
+[ -n "$RID" ] && [ "$RID" = "$NID" ] && pass "media notification shows the AURUM mark (drawable/ic_stat_aurum $RID)" || fail "notification small icon $NID is not ic_stat_aurum ($RID)"
 
 # ---------------------------------------------------------------- 3. hardware / headset media keys (screen still off)
 echo "=== 3. media keys ==="
@@ -262,7 +268,7 @@ grep -q "evicted=\[vault-ci-fill-1\]" "$OUT/cap.txt" && grep -E "VaultCI: dump" 
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode cap --el bytes 2147483648 >/dev/null
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode clear >/dev/null; sleep 3
 adb shell am start -n $ACT -a $PKG.TEST_VAULT --es mode dump >/dev/null; sleep 3
-adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | grep -qE "cap=2147483648 ids=\[(owned:legacy-[0-9a-f]+)?\]" \
+adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | grep -qE "cap=2147483648 (tiers=[^ ]+ [^ ]+ [^ ]+ [^ ]+ )?ids=\[(owned:legacy-[0-9a-f]+)?\]" \
   && pass "clear-all removes every download (your own imported file stays); cap back to the 2 GB default" || fail "clear-all/default cap (see log)"
 
 # ---------------------------------------------------------------- 7. move a library from the Preview, nothing uninstalled
@@ -295,6 +301,133 @@ if [ -n "${PREVIEW_APK:-}" ] && [ -f "$PREVIEW_APK" ]; then
   adb shell pm list packages | grep -q "^package:$PRE$" && [ "$(adb exec-out run-as $PRE cat files/aurum_my_music.json | sha256sum | cut -d' ' -f1)" = "$PRE_SHA" ] \
     && pass "the Preview is still installed and its library is byte-identical" || fail "the Preview or its data changed"
 else info "no PREVIEW_APK given: transfer test skipped"; fi
+
+# ---------------------------------------------------------------- 9. golden charge 2: one router for every play button
+# Runs on the library restored in section 7. The hook calls the SAME AurumPlay.play() the Apollo buttons call.
+echo "=== 9. Apollo plays route to Aurum's engine and survive screen-off; YouTube-only is labeled ==="
+route() { adb shell am start -n $ACT -a $PKG.TEST_ROUTE --es mode "$1" >/dev/null; }
+waitlog() { for _ in $(seq 1 "$2"); do adb logcat -d -s GenesisPlayer:* | grep -q "$1" && return 0; sleep 1; done; return 1; }
+adb logcat -c
+adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard 2>/dev/null || true
+route youtube
+if waitlog "RouteCI: youtube" 30; then
+  yl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "RouteCI: youtube")
+  echo "$yl" | grep -q "route=YOUTUBE labeled=true handoff=true" \
+    && pass "a YouTube-only song plays labeled (\"pauses when you leave the app\") with the Continue-in-YouTube hand-off" \
+    || fail "YouTube-only play not labeled: $yl"
+else fail "route youtube: no log"; log 20; fi
+route seed
+waitlog "RouteCI: seeded" 40 && adb logcat -d -s GenesisPlayer:* | grep -m1 "RouteCI: seeded" | sed 's/^/INFO  /' | tee -a "$R" || fail "could not seed an offline copy"
+sleep 2
+adb logcat -c
+route apollo
+if waitlog "AurumRoute: from=ci-apollo" 30; then
+  adb logcat -d -s GenesisPlayer:* | grep -m1 "RouteCI: coverage" | sed 's/^/INFO  /' | tee -a "$R"
+  rl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "AurumRoute: from=ci-apollo")
+  echo "$rl" | grep -q "route=AURUM" && pass "Apollo Play For You routes to Aurum's engine (not the YouTube embed) when the library has Aurum sources: ${rl#*AurumRoute: }" \
+    || fail "Apollo play went to: $rl"
+  adb logcat -d -s GenesisPlayer:* | grep -q "RouteCI: coverage aurum=[1-9]" && pass "coverage counted from the router (>=1 Aurum song after saving one offline)" || fail "coverage line missing or zero"
+else fail "route apollo: no AurumRoute log"; log 30; fi
+if wait_playing 40; then
+  pass "the Apollo-routed song is playing in Media3 (decrypted from the vault)"
+  # charge 3: no saved choice on this install -> Brandon's JBL Tune 530BT estimate runs ON in the engine; format shown
+  hl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] chain active")
+  echo "$hl" | grep -q "profile=jbl_tune_530bt_est strength=0.5" \
+    && pass "headphone correction runs in Aurum's engine by default: ${hl#*\[HIFI\] }" || fail "headphone correction not active by default: $hl"
+  fl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "\[HIFI\] format:")
+  echo "$fl" | grep -q "format: PCM · 16-bit · 44.1 kHz · Mono · Lossless" \
+    && pass "Now Playing format line from the decoder: ${fl#*\[HIFI\] format: }" || fail "format line wrong or missing: $fl"
+  adb shell input keyevent KEYCODE_HOME; sleep 2; adb shell input keyevent KEYCODE_SLEEP; sleep 3
+  r0=$(probe); p0=$(field "$r0" POS); sleep 60; r1=$(probe); p1=$(field "$r1" POS); s1=$(field "$r1" STATE)
+  if [ "$s1" = "3" ] && [ -n "$p0" ] && [ -n "$p1" ] && [ $((p1 - p0)) -ge 50000 ]; then
+    pass "Apollo play survives home + screen off for 60 s: position advanced $(( (p1 - p0) / 1000 )) s"
+  else fail "Apollo-routed play stopped with the screen off (p0=$p0 p1=$p1 state=$s1)"; fi
+  adb shell input keyevent KEYCODE_WAKEUP; adb shell wm dismiss-keyguard 2>/dev/null || true
+  adb shell cmd media_session dispatch pause 2>/dev/null || adb shell input keyevent KEYCODE_MEDIA_PAUSE; sleep 2
+else fail "the Apollo-routed song never played"; log 30; fi
+
+# ---------------------------------------------------------------- 10. golden charge 3b: hi-res lossless through the vault
+# Fixtures are generated here (ffmpeg sine, no third-party audio), pushed into the app sandbox, encrypted by the real
+# Vault.store path (plaintext deleted after), then played by the service. Never faked: a missing platform decoder is
+# reported as exactly that.
+echo "=== 10. FLAC / ALAC 24-bit 96 kHz: tiered vault + playback + format line ==="
+command -v ffmpeg >/dev/null || { sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq ffmpeg >/dev/null; }
+SINE="sine=frequency=440:sample_rate=96000:duration=30"
+ffmpeg -hide_banner -loglevel error -y -f lavfi -i "$SINE" -ac 2 -c:a flac -sample_fmt s32 -bits_per_raw_sample 24 "$OUT/ci-hr.flac"
+ffmpeg -hide_banner -loglevel error -y -f lavfi -i "$SINE" -ac 2 -c:a alac -sample_fmt s32p -movflags +faststart "$OUT/ci-hr.m4a"
+for f in ci-hr.flac ci-hr.m4a; do
+  [ -s "$OUT/$f" ] && info "fixture $f: $(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,bits_per_raw_sample,channels -of csv=p=0 "$OUT/$f") ($(stat -c %s "$OUT/$f") bytes)" || fail "ffmpeg could not make $f"
+done
+lossless_case() { # $1 file, $2 vault id, $3 codec label regex
+  local f=$1 id=$2 want=$3
+  adb push "$OUT/$f" /data/local/tmp/$f >/dev/null
+  adb shell "cat /data/local/tmp/$f | run-as $PKG sh -c 'cat > files/$f'"; adb shell rm /data/local/tmp/$f
+  adb logcat -c
+  vault --es mode store_file --es id "$id" --es url "$f"
+  if waitlog "VaultCI: store_file $id" 60; then
+    sl=$(adb logcat -d -s GenesisPlayer:* | grep -m1 "VaultCI: store_file $id")
+    echo "$sl" | grep -q "stored tier=LOSSLESS" && pass "$f encrypted into the vault and filed in the LOSSLESS tier (detected from its own bytes)" || fail "$f store: $sl"
+  else fail "$f: no store result"; fi
+  runas "test -f files/$f && echo PRESENT" 2>/dev/null | grep -q PRESENT && fail "$f plaintext still in the sandbox" || pass "$f plaintext removed after the verified encrypted copy"
+  adb logcat -c
+  vault --es mode play_entry --es id "$id"
+  # "Plays" means an audio track was really decoded: a running clock alone is NOT proof (ExoPlayer advances the
+  # position over silence when no decoder supports the track; run 42482463751 showed exactly that for ALAC).
+  for _ in $(seq 1 30); do adb logcat -d -s GenesisPlayer:* | grep -qE "\[HIFI\] (format:|unsupported:)" && break; sleep 1; done
+  if adb logcat -d -s GenesisPlayer:* | grep -q "\[HIFI\] unsupported:"; then
+    info "$f: this emulator image (API 34) has NO platform decoder for it: $(adb logcat -d -s GenesisPlayer:* | grep -m1 '\[HIFI\] unsupported:' | sed 's/.*unsupported: //'). NOT proven here; check on the Moto G"
+    pass "$f: an undecodable format is told to the listener and skipped, never played as silence"
+  elif wait_playing 40 && adb logcat -d -s GenesisPlayer:* | grep -q "\[HIFI\] format:"; then
+    pass "$f decoded and playing through Media3 from the encrypted vault"
+    fl=$(adb logcat -d -s GenesisPlayer:* | grep "\[HIFI\] format:" | tail -1)
+    echo "$fl" | grep -qE "format: $want" && pass "format line: ${fl#*\[HIFI\] format: }" || fail "$f format line: $fl"
+    adb logcat -d -s GenesisPlayer:* | grep -m1 -E "\[HIFI\] (chain active|passthrough|chain off)" | sed 's/^.*\[HIFI\]/INFO  correction on this stream:/' | tee -a "$R"
+  else
+    fail "$f: no decoded audio track and no 'unsupported' notice"
+    adb logcat -d -s GenesisPlayer:* | grep -E "HIFI|transition|vault:" | tail -12 | cut -c1-220 | sed 's/^/INFO  log: /' | tee -a "$R"
+  fi
+  adb shell cmd media_session dispatch pause >/dev/null 2>&1; sleep 2
+}
+lossless_case ci-hr.flac "offline:ci-hr-flac" "FLAC · 24-bit · 96 kHz · Lossless"
+lossless_case ci-hr.m4a "offline:ci-hr-alac" "ALAC( · 24-bit)? · 96 kHz · Lossless"
+vault --es mode dump; sleep 3
+adb logcat -d -s GenesisPlayer:* | grep "VaultCI: dump" | tail -1 | cut -c1-240 | sed 's/^/INFO  /' | tee -a "$R"
+rm -f "$OUT/ci-hr.flac" "$OUT/ci-hr.m4a"
+
+# ---------------------------------------------------------------- 8. 2.4 keep-playing setup on a FRESH install
+echo "=== 8. fresh install asks for notifications, then the battery exemption (one dialog at a time) ==="
+adb uninstall $PKG >/dev/null 2>&1 || true
+adb install "$NEW_APK" >/dev/null
+adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true   # simulate "Allow"
+adb logcat -c
+# a person launches with the screen on: wake and unlock first (sections 9-10 run long enough for a screen timeout)
+adb shell input keyevent KEYCODE_WAKEUP; sleep 1; adb shell wm dismiss-keyguard 2>/dev/null || true; sleep 1
+info "before fresh launch: $(adb shell dumpsys power | grep -m1 mWakefulness= | tr -d '\r' | xargs)"
+adb shell am start -n $ACT >/dev/null
+# wait for the ask (the 2.4.4 splash makes a cold first launch a few seconds slower); 20 s ceiling, never assumed
+TOP=""
+for _ in $(seq 1 20); do
+  sleep 1
+  TOP=$(adb shell dumpsys activity activities | grep -m3 -E "topResumedActivity|mResumedActivity" | tr -d '\r')
+  adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption requested" && echo "$TOP" | grep -qiE "BatteryOptimization|RequestIgnore" && break
+done
+info "top after fresh launch: $(echo "$TOP" | head -1 | cut -c1-160)"
+if adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption requested" && echo "$TOP" | grep -qiE "BatteryOptimization|RequestIgnore|settings"; then
+  pass "fresh install opens the battery-optimisation exemption request (Moto power manager guard)"
+else fail "fresh install did not open the battery exemption request"
+  adb logcat -d -s GenesisPlayer:* | grep -E "KeepPlaying|POST_NOTIFICATIONS" | head -5 | sed 's/^/INFO  log: /' | tee -a "$R"
+  adb logcat -d | grep -iE "RequestIgnoreBattery|START u0.*genesisplayer|SplashScreen" | head -6 | cut -c1-200 | sed 's/^/INFO  log: /' | tee -a "$R"
+  info "wakefulness: $(adb shell dumpsys power | grep -m1 mWakefulness= | tr -d '\r' | xargs); top: $(echo "$TOP" | head -1 | cut -c1-160)"
+fi
+adb shell input keyevent KEYCODE_BACK; sleep 2
+# charge 4 evidence (looked at by people, not pass/fail): the app's first screen, and the launcher's app list
+adb exec-out screencap -p > "$OUT/brand-app.png" 2>/dev/null || true
+adb shell input keyevent KEYCODE_HOME; sleep 2; adb shell input swipe 540 1800 540 400 300; sleep 2
+adb exec-out screencap -p > "$OUT/brand-launcher.png" 2>/dev/null || true
+adb shell input keyevent KEYCODE_HOME
+info "brand screenshots saved: brand-app.png, brand-launcher.png (evidence artifact)"
+adb shell am force-stop $PKG; adb shell am start -n $ACT >/dev/null; sleep 5
+adb logcat -d -s GenesisPlayer:* | grep -c "KeepPlaying: battery exemption requested" | grep -qx 1 && pass "the battery ask happens once, not on every launch" || fail "battery ask repeated"
 
 adb logcat -d > "$OUT/logcat.txt"
 grep -i "FATAL EXCEPTION" -A8 "$OUT/logcat.txt" | grep -q "$PKG" && fail "a crash was logged" || pass "no crash during the battery"

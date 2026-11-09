@@ -122,13 +122,18 @@ private fun PlaylistDetail(p: UserPlaylist, modifier: Modifier, onPlayAurum: (Li
     }
     fun play(start: Int, shuffle: Boolean) {
         val plan = Playlists.plan(ctx, p, start, online, shuffle)
+        android.util.Log.i("GenesisPlayer", "AurumRoute: from=playlist route=${plan.route} n=${plan.ids.size} skipped=${plan.skipped}")
         when (plan.route) {
             PlaylistPlayback.Route.AURUM -> {
+                YtQueue.stop()
                 onPlayAurum(plan.ids, plan.index)
                 if (plan.skipped > 0) Toast.makeText(ctx, "Playing ${plan.ids.size} in Aurum; ${plan.skipped} " +
                     (if (online) "play through YouTube only" else "need the internet"), Toast.LENGTH_SHORT).show()
             }
-            PlaylistPlayback.Route.YOUTUBE -> YtQueue.play(plan.ids, plan.index)
+            PlaylistPlayback.Route.YOUTUBE -> {
+                YtQueue.play(plan.ids, plan.index)
+                YtQueue.notice = com.apexforge.genesisplayer.data.playlists.PlayRouter.notice(plan, online)
+            }
             PlaylistPlayback.Route.NONE -> Toast.makeText(ctx, plan.reason, Toast.LENGTH_SHORT).show()
         }
     }

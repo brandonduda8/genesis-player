@@ -102,6 +102,7 @@ object ParametricEq {
      * samples in, processed in place. One instance per audio stream; reset() on seek/format change.
      */
     class Chain(filters: List<Filter>, sampleRate: Double, private val channels: Int, preampDb: Double) {
+        val channelCount: Int get() = channels
         private val cs = filters.map { coeffs(it, sampleRate) }
         private val z1 = Array(cs.size) { DoubleArray(channels) }
         private val z2 = Array(cs.size) { DoubleArray(channels) }

@@ -236,6 +236,7 @@ fun NowPlayingScreen(
                 modifier = Modifier.fillMaxWidth(0.9f).height(84.dp)
             )
             Spacer(Modifier.height(6.dp))
+            com.apexforge.genesisplayer.ui.mymusic.Overline("Aurum · Pulse Chamber") // 2.4 golden, charge 4
             Text(
                 title, style = MaterialTheme.typography.headlineSmall, color = PhoenixGold,
                 maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center
@@ -244,6 +245,12 @@ fun NowPlayingScreen(
                 artist, style = MaterialTheme.typography.bodyLarge, color = TextDim,
                 maxLines = 1, overflow = TextOverflow.Ellipsis
             )
+            // 2.4 golden, charge 3: what is actually playing (from the decoder), and the headphone correction in use.
+            val fmt = com.apexforge.genesisplayer.data.AudioSessionHub.formatLabel.value
+            if (fmt.isNotEmpty()) Text(fmt, style = MaterialTheme.typography.labelMedium, color = PhoenixGold,
+                maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(com.apexforge.genesisplayer.audio.HeadphoneEq.config.label(), style = MaterialTheme.typography.labelSmall,
+                color = TextDim, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(2.dp))
             // Apollo taste: like / dislike. Tapping toggles; filled = rated.
             // (The gate asserts these two buttons render.)

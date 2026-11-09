@@ -12,4 +12,7 @@ package com.apexforge.genesisplayer.data
 object AudioSessionHub {
     @Volatile
     var audioSessionId: Int = 0
+
+    /** 2.4 golden: the playing stream's real format ("FLAC · 24-bit · 96 kHz · Lossless"); "" when unknown. */
+    val formatLabel = androidx.compose.runtime.mutableStateOf("")
 }

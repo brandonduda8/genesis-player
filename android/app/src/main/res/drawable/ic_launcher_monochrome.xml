@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AURUM mark, single colour, for Android 13+ themed icons (the system tints it). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M54,54m-27,0a27,27 0,1 1,54 0a27,27 0,1 1,-54 0" android:strokeWidth="3.2"
+        android:strokeColor="#FFFFFFFF" android:fillColor="#00000000" />
+    <path android:pathData="M44,67 L54,40 L64,67" android:strokeWidth="4" android:strokeLineCap="round"
+        android:strokeLineJoin="round" android:strokeColor="#FFFFFFFF" android:fillColor="#00000000" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M54,58.5m-3.8,0a3.8,3.8 0,1 1,7.6 0a3.8,3.8 0,1 1,-7.6 0" />
+</vector>

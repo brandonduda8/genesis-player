@@ -70,14 +70,33 @@ class PlayerService : MediaSessionService() {
         }
     }
 
+    /** The Now Playing format line, from either source (decoder input format, selected track). */
+    private fun publishFormat(format: androidx.media3.common.Format, source: String) {
+        try {
+            val bits = if (format.pcmEncoding != androidx.media3.common.Format.NO_VALUE)
+                com.apexforge.genesisplayer.audio.FormatLabel.bitsForPcmEncoding(format.pcmEncoding) else null
+            val br = listOf(format.averageBitrate, format.bitrate, format.peakBitrate).firstOrNull { it > 0 }
+            val label = com.apexforge.genesisplayer.audio.FormatLabel.label(com.apexforge.genesisplayer.audio.FormatLabel.info(
+                format.sampleMimeType, format.sampleRate, format.channelCount, bits, br))
+            AudioSessionHub.formatLabel.value = label
+            Log.i(TAG, "[HIFI] format: $label (mime=${format.sampleMimeType}, from $source)")
+        } catch (e: Exception) {
+            Log.e(TAG, "[HIFI] format line failed for ${format.sampleMimeType}: ${e.message}")
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         Library.load(this)
+        com.apexforge.genesisplayer.audio.HeadphoneProfiles.load(this) // 2.4 golden: headphone correction state
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(C.USAGE_MEDIA)
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
-        val p = ExoPlayer.Builder(this)
+        // 2.4 golden, charge 3: Aurum's own audio sink carries the headphone-correction processor (AutoEq biquads),
+        // so the correction runs inside Aurum's engine on every song it plays, offline or streamed.
+        val renderers = com.apexforge.genesisplayer.audio.aurumRenderers(this)
+        val p = ExoPlayer.Builder(this, renderers)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             // WO-AURUM-2.2 §3: WAKE_MODE_NETWORK holds a partial CPU wake lock + Wi-Fi lock ONLY while playing, so
@@ -87,7 +106,34 @@ class PlayerService : MediaSessionService() {
             .setMediaSourceFactory(DefaultMediaSourceFactory(RoutingDataSource.Factory(this)))
             .build()
         player = p
+        // 2.4 golden, charge 3: the format line on Now Playing comes from the decoder's real input format.
+        p.addAnalyticsListener(object : androidx.media3.exoplayer.analytics.AnalyticsListener {
+            override fun onAudioInputFormatChanged(eventTime: androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime,
+                                                   format: androidx.media3.common.Format,
+                                                   decoderReuseEvaluation: androidx.media3.exoplayer.DecoderReuseEvaluation?) {
+                publishFormat(format, "decoder")
+            }
+        })
         p.addListener(object : Player.Listener {
+            // 2.4 golden, 3b: second, independent source for the format line: the selected audio track.
+            override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+                val audio = tracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }
+                for (g in audio) {
+                    if (!g.isSelected) continue
+                    for (i in 0 until g.length) if (g.isTrackSelected(i)) { publishFormat(g.getTrackFormat(i), "track"); return }
+                }
+                // 2.4 golden, 3b: an audio track this phone can't decode would otherwise "play" silence with the
+                // clock running. Say so, and move on.
+                if (audio.isNotEmpty() && audio.none { it.isSupported }) {
+                    val mime = audio.first().getTrackFormat(0).sampleMimeType
+                    val name = com.apexforge.genesisplayer.audio.FormatLabel.codecOf(mime).first
+                    AudioSessionHub.formatLabel.value = "$name · this phone has no decoder for it"
+                    Log.w(TAG, "[HIFI] unsupported: no decoder for $mime on this device; skipping")
+                    toast("This song is $name, which this phone can't decode. Skipping.")
+                    mainHandler.post { player?.let { pl -> if (pl.hasNextMediaItem()) pl.seekToNext() else pl.pause() } }
+                }
+            }
+
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 Log.i(TAG, "audioSessionId changed -> $audioSessionId")
                 // BRKN wave 1: publish to the shared hub so the UI's ember
@@ -205,6 +251,9 @@ class PlayerService : MediaSessionService() {
             .setSessionActivity(pi)
             .setCallback(SessionCallback())
             .build()
+        // 2.4 golden, charge 4: the media notification (lock screen, shade, status bar) carries the AURUM mark.
+        setMediaNotificationProvider(androidx.media3.session.DefaultMediaNotificationProvider.Builder(this).build()
+            .also { it.setSmallIcon(R.drawable.ic_stat_aurum) })
         Log.i(TAG, "service created, library=${Library.tracks.size} tracks")
         val (nRatings, nUnsynced) = RatingsStore.loadSummary(this)
         Log.i(TAG, "RatingsStore: loaded $nRatings ratings ($nUnsynced unsynced)")
@@ -955,12 +1004,19 @@ class PlayerService : MediaSessionService() {
                     Log.i(TAG, "vault: playing offline copy of $id")
                 }
             }
+            "store_file" -> { // 2.4 golden 3b: a fixture the gate pushed into files/ goes through the real store path
+                val id = args.getString("id", "")
+                val src = java.io.File(filesDir, args.getString("url", ""))
+                Vault.storeFile(this, id, src.nameWithoutExtension, "Aurum CI", src) { err ->
+                    Log.i(TAG, "VaultCI: store_file $id -> ${err ?: "stored"} tier=${Vault.entry(this, id)?.tier}")
+                }
+            }
             "clear" -> Vault.clearAll(this)
             else -> {}
         }
         Thread {
             val all = Vault.all(this)
-            Log.i(TAG, "VaultCI: dump count=${all.size} used=${Vault.usedBytes(this)} cap=${Vault.capBytes(this)} ids=${all.map { it.trackId }}")
+            Log.i(TAG, "VaultCI: dump count=${all.size} used=${Vault.usedBytes(this)} cap=${Vault.capBytes(this)} tiers=${Vault.tierUse(this)} ids=${all.map { it.trackId }}")
         }.start()
     }
 

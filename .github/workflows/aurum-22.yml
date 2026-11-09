@@ -12,7 +12,7 @@ name: aurum-2.2
 
 on:
   push:
-    branches: [claude/aurum-2.2, claude/aurum-2.3]
+    branches: [claude/aurum-2.2, claude/aurum-2.3, claude/aurum-2.4-golden]
   workflow_dispatch:
 
 permissions:
@@ -89,13 +89,27 @@ jobs:
           aapt2 dump permissions android/app/build/outputs/apk/debug/app-debug.apk | grep -v '^package' | sort > $d/perms-2.2.txt
           echo "--- vs pre-vault Aurum Pulse (what the Preview has) ---"
           diff $d/perms-pulse.txt $d/perms-2.2.txt | tee $d/perms.diff || true
-          ADDED=$(grep '^>' $d/perms.diff | grep -v "android.permission.WAKE_LOCK" || true)
+          ADDED=$(grep '^>' $d/perms.diff | grep -vE "android.permission.(WAKE_LOCK|REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)" || true)
           REMOVED=$(grep '^<' $d/perms.diff || true)
           [ -z "$ADDED$REMOVED" ] || { echo "UNEXPECTED PERMISSION CHANGE"; exit 1; }
-          echo "strict delta: +WAKE_LOCK only (ExoPlayer WAKE_MODE_NETWORK; held only while playing)"
+          echo "strict delta: +WAKE_LOCK (ExoPlayer WAKE_MODE_NETWORK; held only while playing), +REQUEST_IGNORE_BATTERY_OPTIMIZATIONS (2.4: one-time ask)"
           echo "--- vs 2.1-deepspace (informational) ---"
           diff $d/perms-2.1.txt $d/perms-2.2.txt | tee $d/perms-vs-2.1.diff || true
           aapt2 dump badging android/app/build/outputs/apk/release/app-release-unsigned.apk | head -1
+
+      - name: Brand check (charge 4)
+        run: |
+          D=android/app/build/outputs/apk/debug/app-debug.apk
+          aapt2 dump badging "$D" | grep -E "^application:" | tee /tmp/aurum22/badging.txt
+          grep -q "label='Aurum'" /tmp/aurum22/badging.txt || { echo "launcher label is not Aurum"; exit 1; }
+          grep -qE "icon='[^']+'" /tmp/aurum22/badging.txt || { echo "no launcher icon"; exit 1; }
+          aapt2 dump xmltree --file AndroidManifest.xml "$D" | grep -E "android:(icon|roundIcon)" | tee -a /tmp/aurum22/badging.txt
+          aapt2 dump xmltree --file AndroidManifest.xml "$D" | grep -q "android:roundIcon" || { echo "no round icon"; exit 1; }
+          aapt2 dump resources "$D" | grep -E "mipmap/ic_launcher|drawable/ic_launcher_(fore|back)ground|drawable/ic_launcher_monochrome|drawable/ic_stat_aurum" | tee -a /tmp/aurum22/badging.txt
+          for r in mipmap/ic_launcher mipmap/ic_launcher_round drawable/ic_launcher_monochrome drawable/ic_stat_aurum; do
+            aapt2 dump resources "$D" | grep -q "$r" || { echo "missing $r"; exit 1; }
+          done
+          echo "brand resources present: adaptive icon (background, foreground, monochrome), round icon, notification mark"
 
       - name: Boot emulator
         run: bash .github/scripts/boot_emulator.sh
@@ -115,7 +129,7 @@ jobs:
         run: |
           set +e
           /tmp/gradle-8.7/bin/gradle connectedDebugAndroidTest --no-daemon \
-            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest,com.apexforge.genesisplayer.PlaylistsInstrumentedTest,com.apexforge.genesisplayer.SoundInstrumentedTest
+            -Pandroid.testInstrumentationRunnerArguments.class=com.apexforge.genesisplayer.VaultInstrumentedTest,com.apexforge.genesisplayer.FocusAndKeysInstrumentedTest,com.apexforge.genesisplayer.PlaylistsInstrumentedTest,com.apexforge.genesisplayer.SoundInstrumentedTest,com.apexforge.genesisplayer.HeadphoneEqInstrumentedTest
           RC=$?
           python3 ../.github/scripts/junit_summary.py app/build/outputs/androidTest-results "Aurum 2.2 instrumented"
           SRC=$?
@@ -147,6 +161,8 @@ jobs:
             echo "AURUM signing secrets not configured in this repo: shipping the UNSIGNED release for Zane to sign with the AURUM key (apksigner), then verify $EXPECTED_CERT" | tee /tmp/release/signing.txt
           fi
           cd /tmp/release && sha256sum *.apk | tee SHA256SUMS.txt
+          # Checkable without downloading the artifact: the check run's annotations and summary carry the APK hashes.
+          while read -r h n; do echo "::notice title=APK sha256::$n $h"; echo "- \`$n\` sha256 \`$h\`" >> "$GITHUB_STEP_SUMMARY"; done < SHA256SUMS.txt
 
       - name: Build log
         if: always()
