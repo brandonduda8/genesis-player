@@ -400,8 +400,14 @@ adb uninstall $PKG >/dev/null 2>&1 || true
 adb install "$NEW_APK" >/dev/null
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true   # simulate "Allow"
 adb logcat -c
-adb shell am start -n $ACT >/dev/null; sleep 6
-TOP=$(adb shell dumpsys activity activities | grep -m3 -E "topResumedActivity|mResumedActivity" | tr -d '\r')
+adb shell am start -n $ACT >/dev/null
+# wait for the ask (the 2.4.4 splash makes a cold first launch a few seconds slower); 20 s ceiling, never assumed
+TOP=""
+for _ in $(seq 1 20); do
+  sleep 1
+  TOP=$(adb shell dumpsys activity activities | grep -m3 -E "topResumedActivity|mResumedActivity" | tr -d '\r')
+  adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption requested" && echo "$TOP" | grep -qiE "BatteryOptimization|RequestIgnore" && break
+done
 info "top after fresh launch: $(echo "$TOP" | head -1 | cut -c1-160)"
 if adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption requested" && echo "$TOP" | grep -qiE "BatteryOptimization|RequestIgnore|settings"; then
   pass "fresh install opens the battery-optimisation exemption request (Moto power manager guard)"
