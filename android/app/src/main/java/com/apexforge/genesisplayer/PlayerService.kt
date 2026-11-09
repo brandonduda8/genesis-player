@@ -251,6 +251,9 @@ class PlayerService : MediaSessionService() {
             .setSessionActivity(pi)
             .setCallback(SessionCallback())
             .build()
+        // 2.4 golden, charge 4: the media notification (lock screen, shade, status bar) carries the AURUM mark.
+        setMediaNotificationProvider(androidx.media3.session.DefaultMediaNotificationProvider.Builder(this).build()
+            .also { it.setSmallIcon(R.drawable.ic_stat_aurum) })
         Log.i(TAG, "service created, library=${Library.tracks.size} tracks")
         val (nRatings, nUnsynced) = RatingsStore.loadSummary(this)
         Log.i(TAG, "RatingsStore: loaded $nRatings ratings ($nUnsynced unsynced)")

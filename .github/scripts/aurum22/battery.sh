@@ -51,7 +51,7 @@ echo "=== install 2.2 OVER it (adb install -r, same package, same signer) ==="
 if adb install -r "$NEW_APK" > "$OUT/upgrade_install.txt" 2>&1; then pass "2.2 installs over 2.1 in place (no uninstall)"; else fail "upgrade install: $(cat "$OUT/upgrade_install.txt")"; fi
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true; adb shell dumpsys deviceidle whitelist +$PKG >/dev/null 2>&1 || true
 VC=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionCode=[0-9]+'); VN=$(adb shell dumpsys package $PKG | grep -m1 -oE 'versionName=[^ ]+')
-WANT_VC=${WANT_VC:-11}
+WANT_VC=${WANT_VC:-12}
 [ "$VC" = "versionCode=$WANT_VC" ] && pass "$VC $VN" || fail "expected versionCode=$WANT_VC, got $VC $VN"
 snapshot "$OUT/data_after_install.txt"
 if diff -q "$OUT/data_before.txt" "$OUT/data_after_install.txt" >/dev/null; then
@@ -120,6 +120,10 @@ grep -qi "Asleep\|Dozing" "$OUT/power_playing.txt" && info "device wakefulness w
 grep -qiE "PARTIAL_WAKE_LOCK" "$OUT/power_playing.txt" && pass "partial wake lock held while playing" || info "no partial wake lock line matched (see power_playing.txt)"
 adb shell dumpsys notification --noredact | grep -A3 "pkg=$PKG" | head -20 > "$OUT/notification.txt"
 grep -q "pkg=$PKG" "$OUT/notification.txt" && pass "media notification posted (lock-screen + shade controls)" || fail "no notification for $PKG"
+# charge 4: the notification's small icon is the AURUM mark (resource id resolved from the installed APK)
+RID=$(aapt2 dump resources "$NEW_APK" 2>/dev/null | grep -m1 "drawable/ic_stat_aurum" | grep -oE "0x[0-9a-fA-F]{8}" | tr A-F a-f)
+NID=$(adb shell dumpsys notification --noredact | grep -A40 "pkg=$PKG" | grep -m1 -oE "icon=Icon\(typ=RESOURCE pkg=$PKG id=0x[0-9a-fA-F]+" | grep -oE "0x[0-9a-fA-F]+$" | tr A-F a-f)
+[ -n "$RID" ] && [ "$RID" = "$NID" ] && pass "media notification shows the AURUM mark (drawable/ic_stat_aurum $RID)" || fail "notification small icon $NID is not ic_stat_aurum ($RID)"
 
 # ---------------------------------------------------------------- 3. hardware / headset media keys (screen still off)
 echo "=== 3. media keys ==="
@@ -403,6 +407,12 @@ if adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption re
   pass "fresh install opens the battery-optimisation exemption request (Moto power manager guard)"
 else fail "fresh install did not open the battery exemption request"; adb logcat -d -s GenesisPlayer:* | grep KeepPlaying | head -3 | sed 's/^/INFO  log: /' | tee -a "$R"; fi
 adb shell input keyevent KEYCODE_BACK; sleep 2
+# charge 4 evidence (looked at by people, not pass/fail): the app's first screen, and the launcher's app list
+adb exec-out screencap -p > "$OUT/brand-app.png" 2>/dev/null || true
+adb shell input keyevent KEYCODE_HOME; sleep 2; adb shell input swipe 540 1800 540 400 300; sleep 2
+adb exec-out screencap -p > "$OUT/brand-launcher.png" 2>/dev/null || true
+adb shell input keyevent KEYCODE_HOME
+info "brand screenshots saved: brand-app.png, brand-launcher.png (evidence artifact)"
 adb shell am force-stop $PKG; adb shell am start -n $ACT >/dev/null; sleep 5
 adb logcat -d -s GenesisPlayer:* | grep -c "KeepPlaying: battery exemption requested" | grep -qx 1 && pass "the battery ask happens once, not on every launch" || fail "battery ask repeated"
 

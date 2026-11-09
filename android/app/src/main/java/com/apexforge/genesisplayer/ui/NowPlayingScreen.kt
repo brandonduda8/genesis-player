@@ -236,6 +236,7 @@ fun NowPlayingScreen(
                 modifier = Modifier.fillMaxWidth(0.9f).height(84.dp)
             )
             Spacer(Modifier.height(6.dp))
+            com.apexforge.genesisplayer.ui.mymusic.Overline("Aurum · Pulse Chamber") // 2.4 golden, charge 4
             Text(
                 title, style = MaterialTheme.typography.headlineSmall, color = PhoenixGold,
                 maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center
