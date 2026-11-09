@@ -400,6 +400,9 @@ adb uninstall $PKG >/dev/null 2>&1 || true
 adb install "$NEW_APK" >/dev/null
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS >/dev/null 2>&1 || true   # simulate "Allow"
 adb logcat -c
+# a person launches with the screen on: wake and unlock first (sections 9-10 run long enough for a screen timeout)
+adb shell input keyevent KEYCODE_WAKEUP; sleep 1; adb shell wm dismiss-keyguard 2>/dev/null || true; sleep 1
+info "before fresh launch: $(adb shell dumpsys power | grep -m1 mWakefulness= | tr -d '\r' | xargs)"
 adb shell am start -n $ACT >/dev/null
 # wait for the ask (the 2.4.4 splash makes a cold first launch a few seconds slower); 20 s ceiling, never assumed
 TOP=""
@@ -411,7 +414,11 @@ done
 info "top after fresh launch: $(echo "$TOP" | head -1 | cut -c1-160)"
 if adb logcat -d -s GenesisPlayer:* | grep -q "KeepPlaying: battery exemption requested" && echo "$TOP" | grep -qiE "BatteryOptimization|RequestIgnore|settings"; then
   pass "fresh install opens the battery-optimisation exemption request (Moto power manager guard)"
-else fail "fresh install did not open the battery exemption request"; adb logcat -d -s GenesisPlayer:* | grep KeepPlaying | head -3 | sed 's/^/INFO  log: /' | tee -a "$R"; fi
+else fail "fresh install did not open the battery exemption request"
+  adb logcat -d -s GenesisPlayer:* | grep -E "KeepPlaying|POST_NOTIFICATIONS" | head -5 | sed 's/^/INFO  log: /' | tee -a "$R"
+  adb logcat -d | grep -iE "RequestIgnoreBattery|START u0.*genesisplayer|SplashScreen" | head -6 | cut -c1-200 | sed 's/^/INFO  log: /' | tee -a "$R"
+  info "wakefulness: $(adb shell dumpsys power | grep -m1 mWakefulness= | tr -d '\r' | xargs); top: $(echo "$TOP" | head -1 | cut -c1-160)"
+fi
 adb shell input keyevent KEYCODE_BACK; sleep 2
 # charge 4 evidence (looked at by people, not pass/fail): the app's first screen, and the launcher's app list
 adb exec-out screencap -p > "$OUT/brand-app.png" 2>/dev/null || true
